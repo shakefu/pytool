@@ -147,27 +147,31 @@ class _UNSETMeta(type):
 
 
 class UNSET(object):
-    """ Special class that evaluates to bool(False), but can be distinctly
-        identified as seperate from None or False. This class can and should be
-        used without instantiation.
+    """ Special class that evaluates to ``bool(False)``, but can be distinctly
+        identified as seperate from ``None`` or ``False``. This class can and
+        should be used without instantiation.
 
         ::
 
             >>> from pytool.lang import UNSET
+            >>> # Evaluates to False
             >>> bool(UNSET)
             False
+            >>> # Is a class-singleton (cannot become an instance)
             >>> UNSET() is UNSET
             True
-            >>> UNSET
-            <class 'pytool.lang.UNSET'>
+            >>> # Is good for checking default values
             >>> if {}.get('example', UNSET) is UNSET:
             ...     print "Key is missing."
             ...     
             Key is missing.
+            >>> # Has no length
             >>> len(UNSET)
             0
+            >>> # Is iterable, but has no iterations
             >>> list(UNSET)
             []
+            >>> # It has a repr() equal to itself
             >>> UNSET
             UNSET
 
