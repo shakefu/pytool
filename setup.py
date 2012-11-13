@@ -5,7 +5,7 @@ import pytool
 
 def readme():
     try:
-        return open('README.md').read()
+        return open('README.rst').read()
     except:
         pass
     return ''
