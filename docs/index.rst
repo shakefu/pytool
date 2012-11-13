@@ -9,7 +9,7 @@ Welcome to pytool's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
 
    pytool
 
