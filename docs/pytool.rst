@@ -1,14 +1,6 @@
 pytool Package
 ==============
 
-:mod:`pytool` Package
----------------------
-
-.. automodule:: pytool.__init__
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`cmd` Module
 -----------------
 
