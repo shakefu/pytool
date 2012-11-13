@@ -1,7 +1,6 @@
 """
-Pytool Command helpers
-=======================
-
+This module contains helpers related to writing scripts and creating comamnd
+line utilities.
 """
 
 import sys

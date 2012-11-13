@@ -1,7 +1,5 @@
 """
-Pytool Time helpers
-===================
-
+This module contains time related things that make life easier.
 """
 # The regular 'import time' fails, because for some insane reason, Python lets
 # a module import itself. This is a work around to import the non-relative
@@ -17,7 +15,19 @@ from pytool.lang import singleton
 
 @singleton
 class UTC(datetime.tzinfo):
-    """ UTC timezone. """
+    """ UTC timezone. This is necessary since Python doesn't include any
+        explicit timezone objects in the standard library. This can be used
+        to create timezone-aware datetime objects, which are a pain to work
+        with, but a necessary evil sometimes.
+
+        ::
+
+            from datetime import datetime
+            from pytool.time import UTC
+
+            utc_now = datetime.now(UTC())
+
+    """
     def utcoffset(self, stamp):
         return datetime.timedelta(0)
 
@@ -38,14 +48,21 @@ def is_dst(stamp):
 
 
 def utcnow():
-    """ Returns the current UTC time as a timezone-aware datetime. """
+    """ Return the current UTC time as a timezone-aware datetime. """
     return datetime.datetime.now(UTC())
 
 
 def fromutctimestamp(stamp):
-    """ Creates a timezone-aware datetime object from a UTC unix timestamp.
+    """ Return a timezone-aware datetime object from a UTC unix timestamp.
 
         :param float stamp: Unix timestamp in UTC
+
+        ::
+
+            import time
+            from pytool.time import fromutctimestamp
+
+            utc_datetime = fromutctimestamp(time.time())
 
     """
     decimal = int(round(10**6 * (stamp - int(stamp))))
@@ -58,9 +75,18 @@ def fromutctimestamp(stamp):
 
 
 def toutctimestamp(stamp):
-    """ Converts a naive datetime object to a UTC unix timestamp.
+    """ Converts a naive datetime object to a UTC unix timestamp. This has an
+        advantage over `time.mktime` in that it preserves the decimal portion
+        of the timestamp when converting.
 
         :param datetime stamp: Datetime to convert
+
+        ::
+
+            from datetime import datetime
+            from pytool.time import toutctimestamp
+
+            utc_stamp = toutctimestamp(datetime.now())
 
     """
     decimal = (1.0 * stamp.microsecond / 10**6)
@@ -76,6 +102,13 @@ def as_utc(stamp):
     """ Converts any datetime (naive or aware) to UTC time.
 
         :param datetime stamp: Datetime to convert
+
+        ::
+
+            from datetime import datetime
+            from pytool.time import as_utc
+
+            utc_datetime = as_utc(datetime.now())
 
     """
     return fromutctimestamp(toutctimestamp(stamp))

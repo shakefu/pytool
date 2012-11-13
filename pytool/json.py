@@ -1,6 +1,5 @@
 """
-Pytool JSON helpers
-===================
+This module contains helpers for working with JSON data.
 
 Tries to use the `simplejson` module if it exists, otherwise falls back to the
 `json` module.
@@ -28,6 +27,11 @@ except ImportError:
             {'ObjectId': type('ObjectId', (object,), {})})
 
 
+__all__ = [
+        'as_json',
+        'from_json',
+]
+
 def as_json(obj):
     """ Returns an object JSON encoded properly.
 
@@ -53,6 +57,7 @@ def from_json(value):
     """ Decodes a JSON string into an object.
 
         :param str value: String to decode
+        :returns: Decoded JSON object
 
     """
     return json.loads(value)

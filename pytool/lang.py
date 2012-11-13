@@ -1,7 +1,6 @@
 """
-Pytools Language Helpers
-========================
-
+This module contains items that are "missing" from the Python standard library,
+that do miscelleneous things.
 """
 import inspect
 import functools
@@ -62,6 +61,20 @@ def classproperty(func):
     Makes a @classmethod-style property (since @property only works on
     instances).
 
+    ::
+
+        from pytool.lang import classproperty
+
+        class MyClass(object):
+            _attr = 'Hello World'
+
+            @classproperty
+            def attr(cls):
+                return cls._attr
+
+        MyClass.attr # 'Hello World'
+        MyClass().attr # Still 'Hello World'
+
     """
     def __get__(self, instance, owner):
         return func(owner)
@@ -109,20 +122,58 @@ def singleton(klass):
     return type(cls_name, (object,), cls_dict)
 
 
-class UNSET(object):
-    """ Special class that evaluates to bool(False), but can be distinctly
-        identified as seperate from None or False.
-    """
-    def __nonzero__(self):
+class _UNSETMeta(type):
+    def __nonzero__(cls):
         return False
-    def __len__(self):
+
+    def __len__(cls):
         return 0
-    def __eq__(self, other):
-        if self is other:
+
+    def __eq__(cls, other):
+        if cls is other:
             return True
         if not other:
             return True
         return False
-UNSET = UNSET()
 
+    def __iter__(cls):
+        return cls
+
+    def next(cls):
+        raise StopIteration()
+
+    def __repr__(cls):
+        return 'UNSET'
+
+
+class UNSET(object):
+    """ Special class that evaluates to bool(False), but can be distinctly
+        identified as seperate from None or False. This class can and should be
+        used without instantiation.
+
+        ::
+
+            >>> from pytool.lang import UNSET
+            >>> bool(UNSET)
+            False
+            >>> UNSET() is UNSET
+            True
+            >>> UNSET
+            <class 'pytool.lang.UNSET'>
+            >>> if {}.get('example', UNSET) is UNSET:
+            ...     print "Key is missing."
+            ...     
+            Key is missing.
+            >>> len(UNSET)
+            0
+            >>> list(UNSET)
+            []
+            >>> UNSET
+            UNSET
+
+    """
+    __metaclass__ = _UNSETMeta
+
+    def __new__(cls):
+        return cls
 

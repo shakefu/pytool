@@ -67,3 +67,22 @@ def test_unset_not_true():
     ok_(not (pytool.lang.UNSET == 'foo'))
 
 
+def test_unset_empty():
+    eq_(list(pytool.lang.UNSET), [])
+
+
+def test_unset_iter():
+    count = 0
+    for i in pytool.lang.UNSET:
+        count += 1
+    eq_(count, 0)
+
+
+def test_unset_repr():
+    eq_(repr(pytool.lang.UNSET), 'UNSET')
+
+
+def test_unset_instance():
+    eq_(pytool.lang.UNSET(), pytool.lang.UNSET)
+
+
