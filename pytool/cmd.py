@@ -1,6 +1,7 @@
 """
-This module contains helpers related to writing scripts and creating comamnd
+This module contains helpers related to writing scripts and creating command
 line utilities.
+
 """
 
 import sys
@@ -33,23 +34,113 @@ STOP_SIGNAL = signal.SIGTERM
 
 
 class Command(object):
-    """ Base class for creating commands that can be run easily as scripts. """
+    """
+    Base class for creating commands that can be run easily as scripts. This
+    class is designed to be used with the ``console_scripts`` entry point to
+    create Python-based commands for your packages.
+
+    **Hello world example**::
+
+        # hello.py
+        from pytool.cmd import Command
+
+        class HelloWorld(Command):
+            def run(self):
+                print "Hello World."
+
+    The only thing that *must* be defined in the subclass is the :meth:`run`
+    method, which should contain the code to launch your application, all other
+    methods are optional.
+
+    **Example setup.py**::
+
+        # setup.py
+        from setuptools import setup
+
+        setup(
+            # ...
+            entry_points={
+                'console_scripts':[
+                    'helloworld = hello:HelloWorld.console_script',
+                    ],
+                },
+            )
+
+    When using an entry point script, the :class:`Command` has a special
+    :meth:`console_script` method for launching the application.
+
+    **Starting without an entry point script**::
+
+        # hello.py [cont'd]
+        if __name__ == '__main__':
+            import sys
+            HelloWorld().start(sys.argv[1:])
+
+    The :meth:`start` method always requires an argument - even if it's just
+    an empty list.
+
+    **More complex example**::
+
+        from pytool.cmd import Command
+
+        class HelloAll(Command):
+            def set_opts(self):
+                self.opt('--world', default='World', help="use a different "
+                        "world")
+                self.opt('--verbose', '-v', action='store_true', help="use "
+                        "more verbose output")
+
+            def run(self):
+                print "Hello", self.args.world
+
+                if self.args.verbose:
+                    print "Hola", self.args.world
+
+    Whenever there are arguments for a command, they're made available for your
+    use as :attr:`self.args`. This object is created by :mod:`argparse` so
+    refer to that documentation for more information.
+
+    """
     def __init__(self):
         self.parser = argparse.ArgumentParser(add_help=False)
         self.set_opts()
         self.opt('--help', action='help', help='display this help and exit')
 
     def set_opts(self):
-        """ This method is to be overriden in subclasses. """
+        """ Subclasses should override this method to configure the command
+            line arguments and options.
+
+            **Example**::
+
+                class MyCommand(Command):
+                    def set_opts(self):
+                        self.opt('--verbose', '-v', action='store_true',
+                                help="be more verbose")
+
+                    def run(self):
+                        if self.args.verbose:
+                            print "I'm verbose."
+        """
         pass
 
     def opt(self, *args, **kwargs):
-        """ Add an option to this command. """
+        """ Add an option to this command. This takes the same arguments as
+            :meth:`ArgumentParser.add_argument`.
+        """
         self.parser.add_argument(*args, **kwargs)
 
     def run(self):
-        """ To be overridden in subclassses. """
+        """ Subclasses should override this method to start the command
+            process. In other words, this is where the magic happens.
+        """
         raise NotImplementedError("'run' is not implemented")
+
+    @classmethod
+    def console_script(cls):
+        """ Method used to start the command when launched from a distutils
+            console script.
+        """
+        cls().start(sys.argv[1:])
 
     def start(self, args):
         """ Starts a command and registers single handlers. """

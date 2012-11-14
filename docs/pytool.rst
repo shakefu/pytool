@@ -1,32 +1,35 @@
-pytool Package
-==============
+pytool: Python helper package
+=============================
 
-:mod:`cmd` Module
------------------
+This package contains a lot of helpful little methods and functions to make
+your life a little easier and your day a little better. Enjoy!
+
+:mod:`pytool.cmd`: Command helpers
+----------------------------------
 
 .. automodule:: pytool.cmd
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`json` Module
-------------------
+:mod:`pytool.json`: JSON helpers
+--------------------------------
 
 .. automodule:: pytool.json
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`lang` Module
-------------------
+:mod:`pytool.lang`: Language helpers
+------------------------------------
 
 .. automodule:: pytool.lang
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`time` Module
-------------------
+:mod:`pytool.time`: Time and Date related helpers
+-------------------------------------------------
 
 .. automodule:: pytool.time
     :members:
