@@ -174,3 +174,17 @@ def make_week_seconds(day, hour, minute=0, seconds=0):
     return week_seconds(stamp)
 
 
+def floor_day(stamp=None):
+    """ Return `stamp` floored to the current day. If no `stamp` is specified,
+        the current time is used. This is similar to the
+        :meth:`~datetime.datetime.date` method, but returns a
+        :class:`~datetime.datetime` object, instead of a
+        :class:`~datetime.date` object.
+
+        :param datetime stamp: `datetime` object to floor (default: now)
+        :return: Floored `datetime`
+
+    """
+    stamp = stamp or datetime.datetime.now()
+    return datetime.datetime(stamp.year, stamp.month, stamp.day)
+

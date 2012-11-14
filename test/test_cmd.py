@@ -1,3 +1,5 @@
+import sys
+
 import mock
 
 import pytool
@@ -38,3 +40,10 @@ def test_pass_coverage():
 def test_stop(exit):
     pytool.cmd.Command().stop()
     exit.assert_called_with(0)
+
+
+@mock.patch('pytool.cmd.Command.start')
+def test_console_script(start):
+    TestCommand().console_script()
+    start.assert_called_with(sys.argv[1:])
+

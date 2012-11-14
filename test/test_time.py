@@ -167,3 +167,8 @@ def test_make_week_seconds():
     eq_(pytool.time.make_week_seconds(7, 0), 0)
     eq_(pytool.time.make_week_seconds(2, 1, 1, 1), 60*60*24*2 + 60*60 + 60 + 1)
 
+
+def test_floor_day():
+    eq_(pytool.time.floor_day(),
+            datetime(*datetime.now().date().timetuple()[:-3]))
+
