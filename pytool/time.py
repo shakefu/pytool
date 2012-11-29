@@ -188,3 +188,15 @@ def floor_day(stamp=None):
     stamp = stamp or datetime.datetime.now()
     return datetime.datetime(stamp.year, stamp.month, stamp.day)
 
+
+def floor_month(stamp=None):
+    """ Return `stamp` floored to the current month. If no `stamp` is specified,
+        the current time is used.
+
+        :param datetime stamp: `datetime` object to floor (default: now)
+        :return: Floored `datetime`
+
+    """
+    stamp = stamp or datetime.datetime.now()
+    return datetime.datetime(stamp.year, stamp.month, 1)
+

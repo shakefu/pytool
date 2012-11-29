@@ -172,3 +172,8 @@ def test_floor_day():
     eq_(pytool.time.floor_day(),
             datetime(*datetime.now().date().timetuple()[:-3]))
 
+
+def test_floor_month():
+    eq_(pytool.time.floor_month(),
+            datetime(*(datetime.now().date().timetuple()[:2] + (1,))))
+
