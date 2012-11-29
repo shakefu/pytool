@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Pytool's documentation!
-==================================
+Pytool |version|
+================
 
 Pytool is available on PyPI: `<http://pypi.python.org/pypi/pytool/>`_
 
