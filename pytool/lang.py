@@ -181,3 +181,94 @@ class UNSET(object):
     def __new__(cls):
         return cls
 
+
+class Namespace(object):
+    """
+    Namespace object used for creating arbitrary data spaces. This can be used
+    to create nested namespace objects. It can represent itself as a dictionary
+    of dot notation keys.
+
+    Example::
+
+        >>> from pytool.lang import Namespace
+        >>> # Namespaces automatically nest
+        >>> myns = Namespace()
+        >>> myns.hello = 'world'
+        >>> myns.example.value = True
+        >>> # Namespaces can be converted to dictionaries
+        >>> myns.as_dict()
+        {'hello': 'world', 'example.value': True}
+        >>> # Namespaces have container syntax
+        >>> 'hello' in myns
+        True
+        >>> 'example.value' in myns
+        True
+        >>> 'example.banana' in myns
+        False
+        >>> 'example' in myns
+        True
+        >>> # Namespaces are iterable
+        >>> for name, value in myns:
+        ...     print name, value
+        ...     
+        hello world
+        example.value True
+
+    Namespaces are useful!
+
+    """
+    def __init__(self):
+        pass
+
+    def __getattr__(self, name):
+        # Allow implicit nested namespaces by attribute access
+        new_space = Namespace()
+        setattr(self, name, new_space)
+        return new_space
+
+    def __iter__(self):
+        return self.iteritems()
+
+    def __contains__(self, name):
+        names = name.split('.')
+
+        obj = self
+        for name in names:
+            obj = getattr(obj, name)
+
+        if isinstance(obj, Namespace):
+            if obj.__dict__:
+                return True
+            else:
+                return False
+        else:
+            return True
+
+    def iteritems(self, base_name=None):
+        """ Return iterator which returns ``(key, value)`` tuples.
+
+            :param str base_name: Base namespace (optional)
+
+        """
+        for name, value in self.__dict__.items():
+            if base_name:
+                name = base_name + '.' + name
+
+            # Allow for nested namespaces
+            if isinstance(value, Namespace):
+                for subkey in value.iteritems(name):
+                    yield subkey
+            else:
+                yield name, value
+
+    def as_dict(self, base_name=None):
+        """ Return the current namespace as a dictionary.
+
+            :param str base_name: Base namespace (optional)
+
+        """
+        return dict(self.iteritems(base_name))
+
+    def __repr__(self):
+        return "<Namespace({})>".format(self.as_dict())
+

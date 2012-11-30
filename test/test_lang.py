@@ -86,3 +86,65 @@ def test_unset_instance():
     eq_(pytool.lang.UNSET(), pytool.lang.UNSET)
 
 
+def test_namespace_empty():
+    ns = pytool.lang.Namespace()
+    eq_(ns.as_dict(), {})
+
+
+def test_namespace_flat():
+    ns = pytool.lang.Namespace()
+    ns.foo = 'foo'
+    ns.bar = 'bar'
+    eq_(ns.as_dict(), {'foo': 'foo', 'bar': 'bar'})
+
+
+def test_namespace_singly_nested():
+    ns = pytool.lang.Namespace()
+    ns.foobar.foo = 'foo'
+    ns.foobar.bar = 'bar'
+    eq_(ns.as_dict(), {
+        'foobar.foo': 'foo',
+        'foobar.bar': 'bar',
+        })
+
+
+def test_namespace_deep():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar.you = 'hello'
+    eq_(ns.as_dict(), {'foo.bar.you': 'hello'})
+
+
+def test_namespace_base_name():
+    ns = pytool.lang.Namespace()
+    ns.foo = 'bar'
+    eq_(ns.as_dict('ns'), {'ns.foo': 'bar'})
+
+
+def test_namespace_iterable():
+    ns = pytool.lang.Namespace()
+    ns.foo = 1
+    ns.bar = 2
+    ns.you.bar = 3
+    dns = ns.as_dict()
+    names = set(('foo', 'bar', 'you.bar'))
+    values = set((1, 2, 3))
+    for name, value in ns:
+        ok_(name in names)
+        ok_(value in values)
+        eq_(value, dns[name])
+        names.remove(name)
+        values.remove(value)
+
+
+def test_namespace_in():
+    ns = pytool.lang.Namespace()
+    ns.foo = True
+    ns.hello.world.there = 'howdy'
+
+    ok_('foo' in ns)
+    ok_('hello.world' in ns)
+    ok_('hello.world.there' in ns)
+    ok_('world' in ns.hello)
+    ok_('bar' not in ns)
+    ok_('hello.banana' not in ns)
+
