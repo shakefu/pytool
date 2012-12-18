@@ -29,8 +29,13 @@ __all__ = [
         ]
 
 
-RELOAD_SIGNAL = signal.SIGUSR1
-STOP_SIGNAL = signal.SIGTERM
+try:
+    RELOAD_SIGNAL = signal.SIGUSR1
+    STOP_SIGNAL = signal.SIGTERM
+except AttributeError:
+    # These signal symbols don't exist on Windows
+    RELOAD_SIGNAL = 10
+    STOP_SIGNAL = 15
 
 
 class Command(object):
