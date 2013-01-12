@@ -17,7 +17,15 @@ Any comments, issues or requests should be submitted via Github:
    :maxdepth: 5
 
    pytool
+
+
+.. toctree::
+   :hidden:
+
    changes
+
+
+See the :doc:`changes` for a list of changes.
 
 
 Indices and tables
