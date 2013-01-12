@@ -3,6 +3,11 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+2.0.1
+-----
+
+- Update setup.py to include classifiers.
+
 2.0.0
 -----
 
