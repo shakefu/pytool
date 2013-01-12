@@ -130,7 +130,7 @@ def trim_time(stamp):
 def week_start(stamp):
     """ Return the start of the week containing *stamp*.
 
-        .. versionadded:: 2.0
+        .. versionchanged:: 2.0
            Preserves timezone information.
 
         :param datetime stamp: Timestamp
