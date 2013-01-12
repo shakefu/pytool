@@ -168,12 +168,30 @@ def test_make_week_seconds():
     eq_(pytool.time.make_week_seconds(2, 1, 1, 1), 60*60*24*2 + 60*60 + 60 + 1)
 
 
+def test_floor_minute():
+    stamp = pytool.time.utcnow()
+    eq_(pytool.time.floor_minute(stamp), datetime(stamp.year, stamp.month,
+        stamp.day, stamp.hour, stamp.minute, tzinfo=stamp.tzinfo))
+
+
 def test_floor_day():
-    eq_(pytool.time.floor_day(),
-            datetime(*datetime.now().date().timetuple()[:-3]))
+    stamp = pytool.time.utcnow()
+    eq_(pytool.time.floor_day(stamp),
+            datetime(*stamp.date().timetuple()[:-3],
+                tzinfo=pytool.time.UTC()))
+
+
+def test_floor_week():
+    stamp = pytool.time.utcnow()
+    start = stamp - timedelta(days=stamp.weekday())
+    eq_(pytool.time.floor_week(stamp),
+            datetime(start.year, start.month, start.day,
+                tzinfo=pytool.time.UTC()))
 
 
 def test_floor_month():
-    eq_(pytool.time.floor_month(),
-            datetime(*(datetime.now().date().timetuple()[:2] + (1,))))
+    stamp = pytool.time.utcnow()
+    eq_(pytool.time.floor_month(stamp),
+            datetime(*(stamp.date().timetuple()[:2] + (1,)),
+                tzinfo=pytool.time.UTC()))
 

@@ -114,36 +114,40 @@ def as_utc(stamp):
     return fromutctimestamp(toutctimestamp(stamp))
 
 
-def trim_time(timestamp):
+def trim_time(stamp):
     """ Trims the time portion off a timestamp, leaving the date intact.
-        Returns a datetime of the same date, set to 00:00:00 hours.
+        Returns a datetime of the same date, set to 00:00:00 hours. Preserves
+        timezone information.
 
-        :param datetime tiemstamp: Timestamp to trim
+        :param datetime stamp: Timestamp to trim
         :returns: Trimmed timestamp
 
     """
-    return datetime.datetime(*timestamp.date().timetuple()[:-3],
-            tzinfo=timestamp.tzinfo)
+    return datetime.datetime(*stamp.date().timetuple()[:-3],
+            tzinfo=stamp.tzinfo)
 
 
-def week_start(timestamp):
-    """ Return the start of the week containing *timestamp*.
+def week_start(stamp):
+    """ Return the start of the week containing *stamp*.
 
-        :param datetime timestamp: Timestamp
+        .. versionadded:: 2.0
+           Preserves timezone information.
 
-    """
-    timestamp = timestamp - datetime.timedelta(days=timestamp.weekday())
-    timestamp = datetime.datetime.fromordinal(timestamp.toordinal())
-    return timestamp
-
-
-def week_seconds(timestamp):
-    """ Return *timestamp* converted to seconds since 00:00 Monday.
-
-        :param datetime timestamp: Timestamp to convert
+        :param datetime stamp: Timestamp
 
     """
-    difference = timestamp - week_start(timestamp)
+    stamp = stamp - datetime.timedelta(days=stamp.weekday())
+    stamp = trim_time(stamp)
+    return stamp
+
+
+def week_seconds(stamp):
+    """ Return *stamp* converted to seconds since 00:00 Monday.
+
+        :param datetime stamp: Timestamp to convert
+
+    """
+    difference = stamp - week_start(stamp)
     return int(difference.total_seconds())
 
 
@@ -174,6 +178,20 @@ def make_week_seconds(day, hour, minute=0, seconds=0):
     return week_seconds(stamp)
 
 
+def floor_minute(stamp=None):
+    """ Return `stamp` floored to the current minute. If no `stamp` is
+        specified, the current time is used. Preserves timezone information.
+
+        .. versionadded:: 2.0
+
+        :param datetime stamp: `datetime` object to floor (default: now)
+
+    """
+    stamp = stamp - datetime.timedelta(seconds=stamp.second,
+            microseconds=stamp.microsecond)
+    return stamp
+
+
 def floor_day(stamp=None):
     """ Return `stamp` floored to the current day. If no `stamp` is specified,
         the current time is used. This is similar to the
@@ -181,22 +199,48 @@ def floor_day(stamp=None):
         :class:`~datetime.datetime` object, instead of a
         :class:`~datetime.date` object.
 
+        This is the same as :func:`~pytool.time.trim_time`.
+
+        .. versionchanged:: 2.0
+           Preserves timezone information if it exists, and uses
+           :func:`pytool.time.utcnow` instead of :meth:`datetime.datetime.now`
+           if `stamp` is not given.
+
         :param datetime stamp: `datetime` object to floor (default: now)
-        :return: Floored `datetime`
 
     """
-    stamp = stamp or datetime.datetime.now()
-    return datetime.datetime(stamp.year, stamp.month, stamp.day)
+    stamp = stamp or utcnow()
+    return trim_time(stamp)
+
+
+def floor_week(stamp=None):
+    """ Return `stamp` floored to the current week. If no `stamp` is specified,
+        the current time is used. Preserves timezone information.
+
+        This is the same as :func:`~pytool.time.week_start`
+
+        .. versionadded:: 2.0
+
+        :param datetime stamp: `datetime` object to floor (default now:)
+
+    """
+    stamp = stamp or utcnow()
+    return week_start(stamp)
 
 
 def floor_month(stamp=None):
     """ Return `stamp` floored to the current month. If no `stamp` is specified,
         the current time is used.
 
+        .. versionchanged:: 2.0
+           Preserves timezone information if it exists, and uses
+           :func:`pytool.time.utcnow` instead of :meth:`datetime.datetime.now`
+           if `stamp` is not given.
+
         :param datetime stamp: `datetime` object to floor (default: now)
-        :return: Floored `datetime`
 
     """
-    stamp = stamp or datetime.datetime.now()
-    return datetime.datetime(stamp.year, stamp.month, 1)
+    stamp = stamp or utcnow()
+    return datetime.datetime(stamp.year, stamp.month, 1, tzinfo=stamp.tzinfo)
+
 
