@@ -35,7 +35,7 @@ __all__ = [
 def as_json(obj):
     """ Returns an object JSON encoded properly.
 
-        Adds additional encoders for :class:`~datetime.datetiem` and
+        Adds additional encoders for :class:`~datetime.datetime` and
         :class:`bson.ObjectId`.
 
         :param object obj: An object to encode.
