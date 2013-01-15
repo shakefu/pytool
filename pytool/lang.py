@@ -3,6 +3,7 @@ This module contains items that are "missing" from the Python standard library,
 that do miscelleneous things.
 """
 import inspect
+import weakref
 import functools
 
 
@@ -114,6 +115,76 @@ def singleton(klass):
         if not cls._singleton:
             cls._singleton = klass(*args, **kwargs)
         return cls._singleton
+
+    # Add new method to singleton class dict
+    cls_dict['__new__'] = __new__
+
+    # Build and return new class
+    return type(cls_name, (object,), cls_dict)
+
+
+def hashed_singleton(klass):
+    """ Wraps a class to create a hashed singleton version of it. A hashed
+        singleton is like a singleton in that there will be only a single
+        instance of the class for each call signature.
+
+        The singleton is kept as a `weak reference
+        <http://docs.python.org/2/library/weakref.html>`_, so if your program
+        ceases to reference the hashed singleton, you may get a new instance if
+        the Python interpreter has garbage collected your original instance.
+
+        This will not work for classes that take arguments that are unhashable
+        (e.g. dicts, sets).
+
+        :param klass: Class to decorate
+
+        Example usage::
+
+            # Make a class directly behave as a hashed singleton
+            @hashed_singleton
+            class Test(object):
+                def __init__(self, *args, **kwargs):
+                    pass
+
+            # Make an imported class behave as a hashed singleton
+            Test = hashed_singleton(Test)
+
+            # The same arguments give you the same class instance back
+            test = Test('a', k='k')
+            test is Test('a', k='k') # True
+
+            # A different argument signature will give you a new instance
+            test is Test('b', k='k') # False
+            test is Test('a', k='j') # False
+
+            # Removing all references to a hashed singleton instance will allow
+            # it to be garbage collected like normal, because it's only kept
+            # as a weak reference
+            del test
+            test = Test('a', k='k') # If the Python interpreter has garbage
+                                    # collected, you will get a new instance
+
+
+    """
+    cls_dict = {'_singletons': weakref.WeakValueDictionary()}
+
+    # Mirror original class
+    cls_name = klass.__name__
+    for attr in functools.WRAPPER_ASSIGNMENTS:
+        cls_dict[attr] = getattr(klass, attr)
+
+    # Make new method that controls singleton behavior
+    def __new__(cls, *args, **kwargs):
+        hashable_kwargs = tuple(sorted(kwargs.iteritems()))
+        signature = (args, hashable_kwargs)
+
+        if signature not in cls._singletons:
+            obj = klass(*args, **kwargs)
+            cls._singletons[signature] = obj
+        else:
+            obj = cls._singletons[signature]
+
+        return obj
 
     # Add new method to singleton class dict
     cls_dict['__new__'] = __new__

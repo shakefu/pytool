@@ -1,3 +1,4 @@
+import gc
 import inspect
 from datetime import datetime, timedelta
 
@@ -5,6 +6,18 @@ import mock
 
 import pytool
 from .util import *
+
+
+@pytool.lang.hashed_singleton
+class HashedSingleton(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+
+@pytool.lang.singleton
+class Singleton(object):
+    def __init__(self, *args, **kwargs):
+        pass
 
 
 def test_get_name():
@@ -147,4 +160,67 @@ def test_namespace_in():
     ok_('world' in ns.hello)
     ok_('bar' not in ns)
     ok_('hello.banana' not in ns)
+
+
+def test_hashed_singleton_no_args():
+    t = HashedSingleton()
+    ok_(t is HashedSingleton())
+
+
+def test_hashed_singleton_arg():
+    t = HashedSingleton('t')
+    ok_(t is HashedSingleton('t'))
+    ok_(t is not HashedSingleton('n'))
+
+
+def test_hashed_singleton_args():
+    t = HashedSingleton('a', 'b')
+    ok_(t is not HashedSingleton('a', 'a'))
+    ok_(t is not HashedSingleton('b', 'a'))
+    ok_(t is not HashedSingleton('a', 'b', 'c'))
+    ok_(t is HashedSingleton('a', 'b'))
+
+
+def test_hashed_singleton_kwargs():
+    t = HashedSingleton(a='a', b='b')
+    ok_(t is HashedSingleton(a='a', b='b'))
+    ok_(t is HashedSingleton(b='b', a='a'))
+    ok_(t is not HashedSingleton(a='a', b='a'))
+    ok_(t is not HashedSingleton(a='a', b='b', c='c'))
+
+
+def test_hashed_singleton_args_kwargs():
+    t = HashedSingleton('a', 'b', a='a', b='b')
+    ok_(t is HashedSingleton('a', 'b', a='a', b='b'))
+
+
+def test_hashed_singleton_weakref():
+    t = HashedSingleton()
+    ok_(t is HashedSingleton())
+
+    # Grab the string representation which includes the object id
+    ts = str(t)
+
+    del t
+    # Need to force collection here, otherwise Python is lazy
+    gc.collect()
+
+    # This should be a new instance of the singleton
+    t2 = HashedSingleton()
+    ok_(ts != str(t2), "{} != {}".format(ts, str(t2)))
+
+
+def test_singleton_no_args():
+    s = Singleton()
+    ok_(s is Singleton())
+
+
+def test_singleton_args():
+    s = Singleton('arg')
+    ok_(s is Singleton('gra'))
+
+
+def test_singleton_kwarg():
+    s = Singleton(kwarg='kwarg')
+    ok_(s is Singleton(grawk='grawk'))
 
