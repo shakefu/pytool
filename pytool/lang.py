@@ -136,6 +136,8 @@ def hashed_singleton(klass):
         This will not work for classes that take arguments that are unhashable
         (e.g. dicts, sets).
 
+        .. versionadded:: 2.1
+
         :param klass: Class to decorate
 
         Example usage::

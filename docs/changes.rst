@@ -3,6 +3,16 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+2.2.0
+-----
+
+- Added :class:`pytool.proxy.DictProxy` and :class:`pytool.proxy.ListProxy`.
+
+2.1.0
+-----
+
+- Added :class:`pytool.lang.hashed_singleton`.
+
 2.0.1
 -----
 

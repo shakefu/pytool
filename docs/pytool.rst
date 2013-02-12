@@ -36,3 +36,10 @@ your life a little easier and your day a little better. Enjoy!
     :undoc-members:
     :show-inheritance:
 
+:mod:`pytool.proxy`: DictProxy and ListProxy classes
+----------------------------------------------------
+
+.. automodule:: pytool.proxy
+    :members:
+    :show-inheritance:
+
