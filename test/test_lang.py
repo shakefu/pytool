@@ -182,6 +182,23 @@ def test_namespace_reprs_accurately_when_empty():
     eq_(repr(ns), '<Namespace({})>')
 
 
+def test_namespace_instances_implement_descriptor_reads():
+    class Descriptor(object):
+        value = 'Descriptor Value'
+        def __get__(self, instance, owner):
+            return self.value
+
+    desc = Descriptor()
+    ns = pytool.lang.Namespace()
+    ns.desc = desc
+    eq_(ns.desc, 'Descriptor Value')
+    desc.value = 'New Value'
+    eq_(ns.desc, 'New Value')
+    ns.desc = 'Non Descriptor'
+    eq_(ns.desc, 'Non Descriptor')
+    eq_(desc.value, 'New Value')
+
+
 def test_hashed_singleton_no_args():
     t = HashedSingleton()
     ok_(t is HashedSingleton())

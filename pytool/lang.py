@@ -293,12 +293,28 @@ class Namespace(object):
         False
         >>> bool(myns)
         True
+        >>> # Namespaces allow the __get__ portion of the descriptor protocol
+        >>> # to work on instances (normally they would not)
+        >>> class MyDescriptor(object):
+        ...     def __get__(self, instance, owner):
+        ...         return 'Hello World'
+        ...     
+        >>> myns.descriptor = MyDescriptor()
+        >>> myns.descriptor
+        'Hello World'
 
     Namespaces are useful!
 
     """
     def __init__(self):
         pass
+
+    def __getattribute__(self, name):
+        # Implement descriptor protocol for reading
+        value = object.__getattribute__(self, name)
+        if not isinstance(value, Namespace) and hasattr(value, '__get__'):
+            value = value.__get__(self, self.__class__)
+        return value
 
     def __getattr__(self, name):
         # Allow implicit nested namespaces by attribute access
