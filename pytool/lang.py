@@ -349,7 +349,9 @@ class Namespace(object):
             :param str base_name: Base namespace (optional)
 
         """
-        for name, value in self.__dict__.items():
+        for name in self.__dict__.keys():
+            value = getattr(self, name)
+
             if base_name:
                 name = base_name + '.' + name
 

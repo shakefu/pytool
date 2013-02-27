@@ -194,6 +194,7 @@ def test_namespace_instances_implement_descriptor_reads():
     eq_(ns.desc, 'Descriptor Value')
     desc.value = 'New Value'
     eq_(ns.desc, 'New Value')
+    eq_(ns.as_dict(), {'desc': 'New Value'})
     ns.desc = 'Non Descriptor'
     eq_(ns.desc, 'Non Descriptor')
     eq_(desc.value, 'New Value')
