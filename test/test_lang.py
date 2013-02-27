@@ -162,6 +162,26 @@ def test_namespace_in():
     ok_('hello.banana' not in ns)
 
 
+def test_namespace_evaluates_to_false_when_empty():
+    ns = pytool.lang.Namespace()
+    eq_(bool(ns), False)
+    ok_(not ns)
+    eq_(bool(ns.attr), False)
+    ok_(not ns.attr)
+
+
+def test_namespace_evaluates_as_true_when_has_an_item():
+    ns = pytool.lang.Namespace()
+    ns.item = 1
+    eq_(bool(ns), True)
+    ok_(ns)
+
+
+def test_namespace_reprs_accurately_when_empty():
+    ns = pytool.lang.Namespace()
+    eq_(repr(ns), '<Namespace({})>')
+
+
 def test_hashed_singleton_no_args():
     t = HashedSingleton()
     ok_(t is HashedSingleton())
@@ -223,4 +243,3 @@ def test_singleton_args():
 def test_singleton_kwarg():
     s = Singleton(kwarg='kwarg')
     ok_(s is Singleton(grawk='grawk'))
-

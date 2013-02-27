@@ -3,6 +3,12 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+2.3.0
+-----
+
+- Make :class:`pytool.lang.Namespace` instances evaluate as ``False`` when
+  empty and cast as a ``bool()``.
+
 2.2.0
 -----
 

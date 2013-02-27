@@ -286,6 +286,13 @@ class Namespace(object):
         ...     
         hello world
         example.value True
+        >>> # Namespaces that are empty evaluate as False
+        >>> bool(Namespace())
+        False
+        >>> bool(myns.notset)
+        False
+        >>> bool(myns)
+        True
 
     Namespaces are useful!
 
@@ -316,6 +323,9 @@ class Namespace(object):
                 return False
         else:
             return True
+
+    def __nonzero__(self):
+        return bool(self.__dict__)
 
     def iteritems(self, base_name=None):
         """ Return iterator which returns ``(key, value)`` tuples.
