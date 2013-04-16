@@ -73,8 +73,6 @@ def as_json(obj):
             return obj.strftime('%a %b %d %Y %H:%M:%S %z')
         if isinstance(obj, bson.ObjectId):
             return str(obj)
-        if isinstance(obj, pytool.proxy.ListProxy):
-            return obj._data
         if not _simplejson:
             # If it's not simplejson, we do _asdict behavior handling ourselves
             _asdict = getattr(obj, '_asdict', None)
