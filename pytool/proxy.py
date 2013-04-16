@@ -5,33 +5,38 @@ import collections
 
 
 class ListProxy(collections.MutableSequence):
-    """ Proxies all methods for a list instance. This is useful when you want
-        to modify a list's behavior without copying the list.
+    """
+    Proxies all methods for a list instance. This is useful when you want to
+    modify a list's behavior without copying the list.
 
-        Methods which do not mutate a list, and instead return a new list will
-        return a `list` instance rather than a `ListProxy` instance.
+    Methods which do not mutate a list, and instead return a new list will
+    return a `list` instance rather than a `ListProxy` instance.
 
-        :param data: A list or list-like object (implements all the \
+    :param data: A list or list-like object (implements all the \
             :class:`collections.MutableSequence` methods)
 
-        .. versionadded:: 2.2
+    .. versionadded:: 2.2
 
-        Example::
+    :note: If you intend to use a subclass which modifies the apparent indices
+           or values of this class with :func:`pytool.json.as_json`, remember
+           to override :meth:`for_json` to produce the data you desire.
 
-            from pytool.proxy import ListProxy
+    Example::
 
-            class SquaredList(ListProxy):
-                def __setitem__(self, index, value):
-                    if isinstance(value, int):
-                        value *= value
-                    super(SquaredList, self).__setitem__(index, value)
+        from pytool.proxy import ListProxy
 
-            my_list = range(5)
-            my_proxy = SquaredList(my_list)
-            my_proxy[3] = 5
+        class SquaredList(ListProxy):
+            def __setitem__(self, index, value):
+                if isinstance(value, int):
+                    value *= value
+                super(SquaredList, self).__setitem__(index, value)
 
-            my_proxy[3] # 25
-            my_list[3] # 25
+        my_list = range(5)
+        my_proxy = SquaredList(my_list)
+        my_proxy[3] = 5
+
+        my_proxy[3] # 25
+        my_list[3] # 25
 
     """
     def __init__(self, data):
@@ -109,6 +114,8 @@ class ListProxy(collections.MutableSequence):
             self._data.extend(other._data)
         else:
             self._data.extend(other)
+    def for_json(self):
+        return self._data
 
 
 class DictProxy(collections.MutableMapping):
@@ -123,6 +130,10 @@ class DictProxy(collections.MutableMapping):
         :class:`collections.MutableMapping` methods)
 
     .. versionadded:: 2.2
+
+    :note: If you intend to use a subclass which modifies the apparent keys
+           or values of this class with :func:`pytool.json.as_json`, remember
+           to override :meth:`for_json` to produce the data you desire.
 
     Example::
 
@@ -209,3 +220,5 @@ class DictProxy(collections.MutableMapping):
         return key in self._data
     def __iter__(self):
         return iter(self._data)
+    def for_json(self):
+        return self._data
