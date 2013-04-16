@@ -37,7 +37,47 @@ __all__ = [
 ]
 
 
-def as_json(obj):
+class _JSONEncoder(json.JSONEncoder):
+    """ This subclasses JSONEncoder to implement the ``for_json()`` hook even
+        for types that are recognized by the default JSONEncoder (i.e. dict
+        subclasses).
+
+    """
+    def encode(self, obj):
+        """ Encode an object as a JSON string. """
+        # Look for the for_json() hook to help things along
+        for_json = getattr(obj, 'for_json', None)
+        if for_json and callable(for_json):
+            obj = for_json()
+        # Encode our object
+        return json.JSONEncoder.encode(self, obj)
+
+    def default(self, obj):
+        """ Handle encoding of an object which isn't JSON serializable by the
+        regular encoder. """
+        # Look for the for_json() hook before anything else
+        for_json = getattr(obj, 'for_json', None)
+        if for_json and callable(for_json):
+            return for_json()
+        # Datetime objects get encoded according to the ISO standard
+        if isinstance(obj, datetime):
+            return obj.strftime('%a %b %d %Y %H:%M:%S %z').strip()
+        # BSON ObjectId types get encoded as their hex string
+        if isinstance(obj, bson.ObjectId):
+            return str(obj)
+        # Attempt to encode objects which have an _asdict method if we're not
+        # using simplejson. We don't do this with simplejson, because their C
+        # speedups call _asdict directly so we don't have to.
+        if not _simplejson:
+            # If it's not simplejson, we do _asdict behavior handling ourselves
+            _asdict = getattr(obj, '_asdict', None)
+            if _asdict and callable(_asdict):
+                return _asdict()
+        # This will raise a TypeError, which is what we want at this point
+        return json.JSONEncoder.default(self, obj)
+
+
+def as_json(obj, **kwargs):
     """
     Returns an object JSON encoded properly.
 
@@ -54,6 +94,8 @@ def as_json(obj):
     :class:`bson.ObjectId`.
 
     :param object obj: An object to encode.
+    :param \*\*kwargs: Any optional keyword arguments to pass to the \
+                       JSONEncoder
     :returns: JSON encoded version of `obj`.
 
     .. versionadded:: 2.4
@@ -65,23 +107,7 @@ def as_json(obj):
        and the return value used for encoding instead.
 
     """
-    def encode(obj):
-        for_json = getattr(obj, 'for_json', None)
-        if for_json and callable(for_json):
-            return for_json()
-        if isinstance(obj, datetime):
-            return obj.strftime('%a %b %d %Y %H:%M:%S %z')
-        if isinstance(obj, bson.ObjectId):
-            return str(obj)
-        if not _simplejson:
-            # If it's not simplejson, we do _asdict behavior handling ourselves
-            _asdict = getattr(obj, '_asdict', None)
-            if _asdict and callable(_asdict):
-                return _asdict()
-        return json.JSONEncoder.default(encoder, obj)
-
-    encoder = json.JSONEncoder(default=encode)
-    return encoder.encode(obj)
+    return _JSONEncoder().encode(obj)
 
 
 def from_json(value):

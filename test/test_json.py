@@ -13,13 +13,13 @@ from .util import *
 def test_as_json_datetime():
     n = datetime.now()
     eq_(pytool.json.as_json(n),
-            '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z')))
+            '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
 
 
 def test_as_json_datetime_with_tz():
     n = pytool.time.utcnow()
     eq_(pytool.json.as_json(n),
-            '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z')))
+            '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
 
 
 def test_as_json_ObjectId():
