@@ -3,6 +3,14 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+2.4.1
+-----
+
+- Fix bug where ``for_json()`` hook was ignored on classes that subclass the
+  basic types.
+- Fix bug where :func:`pytool.json.as_json` would leave a trailing space on
+  timestamps if there is no timezone associated with them.
+
 2.4.0
 -----
 
