@@ -11,6 +11,9 @@ Here you'll find a record of the changes in each version of :mod:`pytool`.
 - Add ``__repr__()`` to :class:`pytool.time.UTC` to make it prettier.
 - Add support for ``_asdict()`` hook (implemented by :class:`namedtuple`) even
   when not using :mod:`simplejson`.
+- Fix :func:`pytool.time.is_dst` test.
+- Add ``for_json()`` hook to :class:`pytool.proxy.DictProxy` and
+  :class:`pytool.proxy.ListProxy`.
 
 
 2.3.1
