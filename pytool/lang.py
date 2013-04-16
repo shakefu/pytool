@@ -59,7 +59,7 @@ def get_name(frame):
 
 def classproperty(func):
     """
-    Makes a @classmethod-style property (since @property only works on
+    Makes a ``@classmethod`` style property (since ``@property`` only works on
     instances).
 
     ::
@@ -261,7 +261,9 @@ class Namespace(object):
     to create nested namespace objects. It can represent itself as a dictionary
     of dot notation keys.
 
-    Example::
+    .. rubric:: Basic usage:
+
+    ::
 
         >>> from pytool.lang import Namespace
         >>> # Namespaces automatically nest

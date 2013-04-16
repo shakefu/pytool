@@ -3,6 +3,16 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+2.4.0
+-----
+
+- Improve documentation.
+- Add ``for_json()`` hook in :func:`pyconfig.json.as_json`.
+- Add ``__repr__()`` to :class:`pytool.time.UTC` to make it prettier.
+- Add support for ``_asdict()`` hook (implemented by :class:`namedtuple`) even
+  when not using :mod:`simplejson`.
+
+
 2.3.1
 -----
 

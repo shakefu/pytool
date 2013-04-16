@@ -9,13 +9,12 @@ class ListProxy(collections.MutableSequence):
         to modify a list's behavior without copying the list.
 
         Methods which do not mutate a list, and instead return a new list will
-        return a `list` instance rather than a `ListProxy` instance, since
-        there is nothing to proxy to the new instance.
-
-        .. versionadded:: 2.2
+        return a `list` instance rather than a `ListProxy` instance.
 
         :param data: A list or list-like object (implements all the \
             :class:`collections.MutableSequence` methods)
+
+        .. versionadded:: 2.2
 
         Example::
 
@@ -113,30 +112,35 @@ class ListProxy(collections.MutableSequence):
 
 
 class DictProxy(collections.MutableMapping):
-    """ Proxies all methods for a dict instance. This is useful when you want
-        to modify a dict's behavior without copying the dict.
+    """
+    Proxies all methods for a dict instance.
 
-        .. versionadded:: 2.2
+    This is useful when you want to modify a dictionary's behavior through
+    subclassing without copying the dictionary or if you want to be able to
+    modify the original dictionary.
 
-        :param data: A dict or dict-like object (implements all the \
-            :class:`collections.MutableMapping` methods)
+    :param data: A dict or dict-like object (implements all the \
+        :class:`collections.MutableMapping` methods)
 
-        Example::
+    .. versionadded:: 2.2
 
-            from pytool.proxy import DictProxy
+    Example::
 
-            class SquaredDict(DictProxy):
-                def __setitem__(self, key, value):
-                    if isinstance(value, int):
-                        value *= value
-                    super(SquaredDict, self).__setitem__(key, value)
+        from pytool.proxy import DictProxy
 
-            my_dict = {}
-            my_proxy = SquaredDict(my_dict)
-            my_proxy['val'] = 5
+        class SquaredDict(DictProxy):
+            def __getitem__(self, key):
+                value = super(SquaredDict, self).__getitem__(key)
+                if isinstance(value, int):
+                    value *= value
+                return value
 
-            my_proxy['val'] # 25
-            my_dict['val'] # 25
+        my_dict = {}
+        my_proxy = SquaredDict(my_dict)
+        my_proxy['val'] = 5
+
+        my_proxy['val'] # 25
+        my_dict['val'] # 5
 
     """
     def __init__(self, data):

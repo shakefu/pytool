@@ -37,18 +37,26 @@ class UTC(datetime.tzinfo):
     def dst(self, stamp):
         return datetime.timedelta(0)
 
+    def __repr__(self):
+        return 'UTC()'
+
 
 def is_dst(stamp):
     """ Return ``True`` if `stamp` is daylight savings.
 
         :param datetime stamp: Datetime
+        :returns: ``True`` if `stamp` is daylight savings, otherwise ``False``.
 
     """
     return time.localtime(time.mktime(stamp.timetuple())).tm_isdst == 1
 
 
 def utcnow():
-    """ Return the current UTC time as a timezone-aware datetime. """
+    """ Return the current UTC time as a timezone-aware datetime.
+
+        :returns: The current UTC time
+
+    """
     return datetime.datetime.now(UTC())
 
 
@@ -56,6 +64,7 @@ def fromutctimestamp(stamp):
     """ Return a timezone-aware datetime object from a UTC unix timestamp.
 
         :param float stamp: Unix timestamp in UTC
+        :returns: UTC datetime object
 
         ::
 
@@ -80,6 +89,7 @@ def toutctimestamp(stamp):
         of the timestamp when converting.
 
         :param datetime stamp: Datetime to convert
+        :returns: Unix timestamp as a ``float``
 
         ::
 
@@ -102,6 +112,7 @@ def as_utc(stamp):
     """ Converts any datetime (naive or aware) to UTC time.
 
         :param datetime stamp: Datetime to convert
+        :returns: `stamp` as UTC time
 
         ::
 
@@ -115,7 +126,7 @@ def as_utc(stamp):
 
 
 def trim_time(stamp):
-    """ Trims the time portion off a timestamp, leaving the date intact.
+    """ Trims the time portion off of `stamp`, leaving the date intact.
         Returns a datetime of the same date, set to 00:00:00 hours. Preserves
         timezone information.
 
@@ -128,12 +139,13 @@ def trim_time(stamp):
 
 
 def week_start(stamp):
-    """ Return the start of the week containing *stamp*.
+    """ Return the start of the week containing `stamp`.
 
         .. versionchanged:: 2.0
            Preserves timezone information.
 
         :param datetime stamp: Timestamp
+        :returns: A datetime for 00:00 Monday of the given week
 
     """
     stamp = stamp - datetime.timedelta(days=stamp.weekday())
@@ -142,9 +154,10 @@ def week_start(stamp):
 
 
 def week_seconds(stamp):
-    """ Return *stamp* converted to seconds since 00:00 Monday.
+    """ Return `stamp` converted to seconds since 00:00 Monday.
 
         :param datetime stamp: Timestamp to convert
+        :returns: Seconds since 00:00 monday
 
     """
     difference = stamp - week_start(stamp)
@@ -152,9 +165,10 @@ def week_seconds(stamp):
 
 
 def week_seconds_to_datetime(seconds):
-    """ Return the datetime that is *seconds* from the start of this week.
+    """ Return the datetime that is `seconds` from the start of this week.
 
         :param int seconds: Seconds
+        :returns: Datetime for 00:00 Monday plus `seconds`
 
     """
     return (week_start(datetime.datetime.now())
@@ -162,13 +176,14 @@ def week_seconds_to_datetime(seconds):
 
 
 def make_week_seconds(day, hour, minute=0, seconds=0):
-    """ Return :func:`week_seconds` for the given *day* of the week, *hour*
-        and *minute*.
+    """ Return :func:`week_seconds` for the given `day` of the week, `hour`
+        and `minute`.
 
         :param int day: Zero-indexed day of the week
         :param int hour: Zero-indexed 24-hour
         :param int minute: Minute (default: ``0``)
         :param int seconds: Seconds (default: ``0``)
+        :returns: Seconds since 00:00 Monday
 
     """
     stamp = week_start(datetime.datetime.now())
@@ -185,6 +200,7 @@ def floor_minute(stamp=None):
         .. versionadded:: 2.0
 
         :param datetime stamp: `datetime` object to floor (default: now)
+        :returns: Datetime floored to the minute
 
     """
     stamp = stamp - datetime.timedelta(seconds=stamp.second,
@@ -207,6 +223,7 @@ def floor_day(stamp=None):
            if `stamp` is not given.
 
         :param datetime stamp: `datetime` object to floor (default: now)
+        :returns: Datetime floored to the day
 
     """
     stamp = stamp or utcnow()
@@ -214,14 +231,16 @@ def floor_day(stamp=None):
 
 
 def floor_week(stamp=None):
-    """ Return `stamp` floored to the current week. If no `stamp` is specified,
-        the current time is used. Preserves timezone information.
+    """ Return `stamp` floored to the current week, at 00:00 Monday. If no
+        `stamp` is specified, the current time is used. Preserves timezone
+        information.
 
         This is the same as :func:`~pytool.time.week_start`
 
         .. versionadded:: 2.0
 
         :param datetime stamp: `datetime` object to floor (default now:)
+        :returns: Datetime floored to the week
 
     """
     stamp = stamp or utcnow()
@@ -238,6 +257,7 @@ def floor_month(stamp=None):
            if `stamp` is not given.
 
         :param datetime stamp: `datetime` object to floor (default: now)
+        :returns: Datetime floored to the month
 
     """
     stamp = stamp or utcnow()

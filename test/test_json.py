@@ -53,4 +53,14 @@ def test_as_json_with_bad():
     pytool.json.as_json(obj)
 
 
+def test_asdict_encodes():
+    class Test(object):
+        def _asdict(self):
+            return {'_asdict': 1}
+
+    import sys
+    if 'simplejson' in sys.modules:
+        ok_(False, "This cannot be tested with Simplejson installed.")
+
+    eq_(pytool.json.as_json(Test()), '{"_asdict": 1}')
 
