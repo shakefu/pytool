@@ -126,11 +126,15 @@ def test_as_utc_naive():
         eq_(getattr(d, field), getattr(d2, field))
 
 
+# These daylight savings tests are a bit sloppy, but oh well
 def test_is_dst():
-    d = datetime.now()
-    d2 = d - timedelta(days=365/2, hours=12)
-    eq_(pytool.time.is_dst(d), not pytool.time.is_dst(d2))
-    eq_(not pytool.time.is_dst(d), pytool.time.is_dst(d2))
+    d = datetime(2000, 6, 1)
+    eq_(pytool.time.is_dst(d), True)
+
+
+def test_is_not_dst():
+    d = datetime(2000, 11, 30)
+    eq_(pytool.time.is_dst(d), False)
 
 
 def test_week_start():

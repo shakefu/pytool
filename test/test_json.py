@@ -64,3 +64,31 @@ def test_asdict_encodes():
 
     eq_(pytool.json.as_json(Test()), '{"_asdict": 1}')
 
+
+def test_for_json_hook_with_dict():
+    class Test(object):
+        def for_json(self):
+            return {'for_json': 1}
+
+    eq_(pytool.json.as_json(Test()), '{"for_json": 1}')
+
+
+def test_for_json_hook_with_list():
+    class Test(object):
+        def for_json(self):
+            return ['for_json']
+
+    eq_(pytool.json.as_json(Test()), '["for_json"]')
+
+
+def test_for_json_hook_nested():
+    class Test(object):
+        def for_json(self):
+            return {'for_json': 1}
+
+    class Test2(object):
+        def for_json(self):
+            return [Test()]
+
+    eq_(pytool.json.as_json(Test2()), '[{"for_json": 1}]')
+

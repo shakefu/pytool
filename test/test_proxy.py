@@ -118,6 +118,12 @@ def test_list_proxy_addition():
     eq_(l, p)
 
 
+def test_list_proxy_as_json():
+    l = pytool.proxy.ListProxy([])
+    l.append('foo')
+    eq_(pytool.json.as_json(l), '["foo"]')
+
+
 def test_list_proxy_multiplication():
     l = [1, 2]
     p = pytool.proxy.ListProxy(l)
@@ -260,4 +266,15 @@ def test_dict_proxy_pop():
     eq_(d, {})
     eq_(d, p)
 
+
+def test_dict_proxy_iter():
+    d = {'one': 1, 'two': 2}
+    p = pytool.proxy.DictProxy(d)
+    eq_(sorted(list(iter(p))), ['one', 'two'])
+
+
+def test_dict_proxy_as_json():
+    d = pytool.proxy.DictProxy({})
+    d['foo'] = 'bar'
+    eq_(pytool.json.as_json(d), '{"foo": "bar"}')
 
