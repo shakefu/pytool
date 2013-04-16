@@ -50,8 +50,11 @@ def as_json(obj):
     If an object implements both ``_asdict()`` and ``for_json()`` the latter is
     given preference.
 
-    Adds additional encoders for :class:`~datetime.datetime` and
+    Also adds additional encoders for :class:`~datetime.datetime` and
     :class:`bson.ObjectId`.
+
+    :param object obj: An object to encode.
+    :returns: JSON encoded version of `obj`.
 
     .. versionadded:: 2.4
        Objects which have an ``_asdict()`` method will have that method
@@ -60,9 +63,6 @@ def as_json(obj):
     .. versionadded:: 2.4
        Objects which have a ``for_json()`` method will have that method called
        and the return value used for encoding instead.
-
-    :param object obj: An object to encode.
-    :returns: JSON encoded version of *obj*.
 
     """
     def encode(obj):
