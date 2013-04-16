@@ -15,6 +15,11 @@ Here you'll find a record of the changes in each version of :mod:`pytool`.
 - Add ``for_json()`` hook to :class:`pytool.proxy.DictProxy` and
   :class:`pytool.proxy.ListProxy`.
 
+2.3.2
+-----
+
+- Fix descriptor protocol in iteritems.
+
 
 2.3.1
 -----
