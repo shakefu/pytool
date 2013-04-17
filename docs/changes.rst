@@ -3,6 +3,12 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.0.0
+-----
+
+- Changed to depend on simplejson (``>=3.2.0``) for the ``_asdict()`` and
+  ``for_json()`` hooks. This may break backwards compatability.
+
 2.4.1
 -----
 
