@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 import mock
+from nose import SkipTest
 try:
     import bson
 except ImportError:
@@ -58,10 +59,6 @@ def test_asdict_encodes():
         def _asdict(self):
             return {'_asdict': 1}
 
-    import sys
-    if 'simplejson' in sys.modules:
-        ok_(False, "This cannot be tested with Simplejson installed.")
-
     eq_(pytool.json.as_json(Test()), '{"_asdict": 1}')
 
 
@@ -91,4 +88,24 @@ def test_for_json_hook_nested():
             return [Test()]
 
     eq_(pytool.json.as_json(Test2()), '[{"for_json": 1}]')
+
+
+def test_for_json_hook_called_when_within_a_list_within_a_dict():
+    class Test(object):
+        def for_json(self):
+            return {'for_json': 1}
+
+    obj = {'list': [Test()]}
+    eq_(pytool.json.as_json(obj), '{"list": [{"for_json": 1}]}')
+
+
+def test_for_json_hook_called_when_dict_subclass_buried_in_objects():
+    class Test(dict):
+        def for_json(self):
+            return {'for_json': 1}
+
+    obj = {'list': [Test()]}
+    eq_(pytool.json.as_json(obj), '{"list": [{"for_json": 1}]}')
+
+
 

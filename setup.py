@@ -19,6 +19,7 @@ setup(
         long_description=readme(),
         url='http://github.com/shakefu/pytool',
         packages=find_packages(exclude=['test']),
+        install_requires=['simplejson >= 3.2.0'],
         test_suite='nose.collector',
         tests_require=[
             'nose',
