@@ -3,6 +3,11 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.0.1
+-----
+
+- Fix bug with setup.py which broke installs.
+
 3.0.0
 -----
 
