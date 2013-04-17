@@ -1,7 +1,12 @@
 import multiprocessing, logging # Fix atexit bug
 from setuptools import setup, find_packages
 
-import pytool
+
+exec("c=__import__('compiler');a='__version__';l=[];g=lambda:[n.expr.value for"
+        " n in l for o in n.nodes if o.name==a].pop();c.walk(c.parseFile('%s/_"
+        "_init__.py'),type('v',(object,),{'visitAssign':lambda s,n:l.append(n)"
+        "})());exec(a+'=g()');"%'pytool')
+
 
 def readme():
     try:
@@ -12,7 +17,7 @@ def readme():
 
 setup(
         name='pytool',
-        version=pytool.__version__,
+        version=__version__,
         author="Jacob Alheid",
         author_email="jake@about.me",
         description="A Collection of Python Tools",
