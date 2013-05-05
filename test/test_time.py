@@ -129,6 +129,8 @@ def test_as_utc_naive():
 # These daylight savings tests are a bit sloppy, but oh well
 def test_is_dst():
     d = datetime(2000, 6, 1)
+    import time
+    print time.tzname
     eq_(pytool.time.is_dst(d), True)
 
 
