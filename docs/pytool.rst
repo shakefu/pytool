@@ -91,6 +91,12 @@ your life a little easier and your day a little better. Enjoy!
 .. contents:: Time and Date related helpers
    :local:
 
+:class:`Timer`
+--------------
+
+.. autoclass:: Timer
+   :members:
+
 :class:`UTC`
 ------------
 

@@ -13,6 +13,42 @@ import datetime
 from pytool.lang import singleton
 
 
+class Timer(object):
+    """
+    This is a simple timer class.
+
+    ::
+
+        timer = pytool.time.Timer()
+        for i in (1, 2, 3):
+            sleep(i)
+            print timer.mark(), "elapsed since last mark or start"
+        print timer.elapsed, "total elapsed"
+
+    """
+    def __init__(self):
+        self._start = utcnow()
+        self._last = self._start
+
+    def mark(self):
+        """
+        Return a :class:`~datetime.datetime.timedelta` of the time elapsed
+        since the last mark or start.
+
+        """
+        mark, self._last = self._last, utcnow()
+        return self._last - mark
+
+    @property
+    def elapsed(self):
+        """
+        Return a :class:`~datetime.datetime.timedelta` of the time elapsed
+        since the start.
+
+        """
+        return utcnow() - self._start
+
+
 @singleton
 class UTC(datetime.tzinfo):
     """ UTC timezone. This is necessary since Python doesn't include any

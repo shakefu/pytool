@@ -199,3 +199,31 @@ def test_floor_month():
             datetime(*(stamp.date().timetuple()[:2] + (1,)),
                 tzinfo=pytool.time.UTC()))
 
+
+def test_timer_init_works():
+    t = pytool.time.Timer()
+
+
+def test_timer_elapsed_works():
+    with mock.patch('pytool.time.utcnow') as utcnow:
+        utcnow.return_value = datetime(2010, 1, 1, 0, 0, 0)
+        t = pytool.time.Timer()
+    with mock.patch('pytool.time.utcnow') as utcnow:
+        utcnow.return_value = datetime(2010, 1, 1, 0, 1, 0)
+        eq_(t.elapsed, timedelta(seconds=60))
+    with mock.patch('pytool.time.utcnow') as utcnow:
+        utcnow.return_value = datetime(2010, 1, 1, 1, 0, 0)
+        eq_(t.elapsed, timedelta(seconds=60*60))
+
+
+def test_timer_mark_works():
+    with mock.patch('pytool.time.utcnow') as utcnow:
+        utcnow.return_value = datetime(2010, 1, 1, 0, 0, 0)
+        t = pytool.time.Timer()
+    with mock.patch('pytool.time.utcnow') as utcnow:
+        utcnow.return_value = datetime(2010, 1, 1, 0, 1, 0)
+        eq_(t.mark(), timedelta(seconds=60))
+    with mock.patch('pytool.time.utcnow') as utcnow:
+        utcnow.return_value = datetime(2010, 1, 1, 0, 3, 0)
+        eq_(t.mark(), timedelta(seconds=2*60))
+
