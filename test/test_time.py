@@ -1,13 +1,9 @@
 import time
-import inspect
 import calendar
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import mock
-try:
-    import bson
-except ImportError:
-    bson = None
+from nose import SkipTest
 
 import pytool
 from .util import *
@@ -128,13 +124,15 @@ def test_as_utc_naive():
 
 # These daylight savings tests are a bit sloppy, but oh well
 def test_is_dst():
+    if 'UTC' in time.tzname:
+        raise SkipTest("Test doesn't work if server timezone is UTC")
     d = datetime(2000, 6, 1)
-    import time
-    print time.tzname
     eq_(pytool.time.is_dst(d), True)
 
 
 def test_is_not_dst():
+    if 'UTC' in time.tzname:
+        raise SkipTest("Test doesn't work if server timezone is UTC")
     d = datetime(2000, 11, 30)
     eq_(pytool.time.is_dst(d), False)
 
@@ -203,7 +201,7 @@ def test_floor_month():
 
 
 def test_timer_init_works():
-    t = pytool.time.Timer()
+    pytool.time.Timer()
 
 
 def test_timer_elapsed_works():

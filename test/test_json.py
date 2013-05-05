@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import mock
 from nose import SkipTest
@@ -24,9 +24,10 @@ def test_as_json_datetime_with_tz():
 
 
 def test_as_json_ObjectId():
-    if bson:
-        b = bson.ObjectId()
-        eq_(pytool.json.as_json(b), '"{}"'.format(b))
+    if not bson:
+        raise SkipTest("missing bson module")
+    b = bson.ObjectId()
+    eq_(pytool.json.as_json(b), '"{}"'.format(b))
 
 
 @raises(TypeError)

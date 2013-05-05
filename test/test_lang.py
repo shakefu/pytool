@@ -1,8 +1,5 @@
 import gc
 import inspect
-from datetime import datetime, timedelta
-
-import mock
 
 import pytool
 from .util import *

@@ -4,7 +4,7 @@ from .util import *
 
 def test_list_proxy_instantiates_ok():
     a_list = []
-    a_proxy = pytool.proxy.ListProxy(a_list)
+    pytool.proxy.ListProxy(a_list)
 
 
 def test_list_proxy_proxies_repr():

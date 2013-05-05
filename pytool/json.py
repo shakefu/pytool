@@ -19,8 +19,6 @@ except ImportError:
     bson = type('bson', (object,),
             {'ObjectId': type('ObjectId', (object,), {})})
 
-import pytool
-
 
 __all__ = [
         'as_json',
