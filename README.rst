@@ -9,6 +9,8 @@ Pytool's source is hosted on Github: `<http://github.com/shakefu/pytool>`_
 Any comments, issues or requests should be submitted via Github:
 `<https://github.com/shakefu/pytool/issues>`_
 
+.. image:: https://api.travis-ci.org/shakefu/pytool.png
+
 Documentation
 -------------
 
