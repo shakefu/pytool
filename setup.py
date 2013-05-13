@@ -25,9 +25,6 @@ setup(
         long_description=readme(),
         url='http://github.com/shakefu/pytool',
         packages=find_packages(exclude=['test']),
-        # Remove this dependency_links after 3.2.0 makes it onto PyPI
-        dependency_links=['http://github.com/shakefu/simplejson/tarball/master'
-            '#egg=simplejson-3.2.0'],
         install_requires=['simplejson >= 3.2.0'],
         test_suite='nose.collector',
         tests_require=[
