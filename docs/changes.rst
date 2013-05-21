@@ -3,6 +3,16 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.1.1
+-----
+
+- Depend on canonical version of simplejson again instead of github fork.
+
+3.1.0
+-----
+
+- Add :class:`pytool.time.Timer` for easy timing of things.
+
 3.0.1
 -----
 
