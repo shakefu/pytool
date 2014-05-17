@@ -10,7 +10,11 @@ into JSON automatically.
 """
 from datetime import datetime
 
-import simplejson as json
+try:
+    import simplejson as json
+except:
+    import json
+
 # Conditionally handle bson import so we don't have to depend on pymongo
 try:
     import bson
