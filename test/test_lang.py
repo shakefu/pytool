@@ -43,7 +43,7 @@ def test_get_name_class_property():
             this_name = pytool.lang.get_name(frame)
             del frame
             return this_name
-    eq_(Test().test, 'Test.test')
+    eq_(Test().test, 'test.test_lang.Test.test')
 
 
 def test_classproperty():
