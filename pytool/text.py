@@ -4,7 +4,7 @@ This module contains text related things that make life easier.
 import textwrap
 
 
-def wrap(text, width=70):
+def wrap(text, width=70, indent=''):
     """
     Return `text` wrapped to `width` while trimming leading indentation and
     preserving paragraphs.
@@ -15,8 +15,10 @@ def wrap(text, width=70):
 
     :param text: Text to wrap
     :param width: Width to wrap text at (default: 70)
+    :param indent: String to indent text with (default: '')
     :type text: str
     :type width: int
+    :type indent: str
 
     ::
 
@@ -40,6 +42,8 @@ def wrap(text, width=70):
         >>>
 
     """
+    initial_indent = indent  # Preserve this for later, since we reuse `indent`
+                             # as a variable
     # De-indent the text and remove any leading newlines
     text = textwrap.dedent(text).lstrip('\n')
     # Split the text into lines
@@ -52,8 +56,8 @@ def wrap(text, width=70):
     c = 0  # The current paragraph index
     line = lines[0]  # The current line we're parsing
     last_indent = len(line) - len(line.lstrip())  # Last line indent
-    paragraphs = [line]  # List of paragraphs, primed with the first
-                         # wrapped line fragment
+    paragraphs = [line + ' ']  # List of paragraphs, primed with the first
+                               # wrapped line fragment
     for i in xrange(1, len(lines)):
         # Strip trailing spaces, which may just be random whitespace
         line = lines[i].rstrip()
@@ -84,10 +88,11 @@ def wrap(text, width=70):
         # Get the paragraph as a single line
         line = paragraphs[i]
         # Calculate the indentation
-        indent = len(line) - len(line.lstrip())
-        indent = indent * ' '
+        sub_indent = len(line) - len(line.lstrip())
+        sub_indent = initial_indent + (sub_indent * ' ')
         # Wrap the line into a paragraph
-        wrapper = textwrap.TextWrapper(subsequent_indent=indent, width=70)
+        wrapper = textwrap.TextWrapper(initial_indent=initial_indent,
+                subsequent_indent=sub_indent, width=width)
         line = wrapper.fill(line)
         # Remove trailing whitespace
         paragraphs[i] = line.rstrip()

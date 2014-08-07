@@ -166,7 +166,7 @@ class Command(object):
         if not self.parser:
             return
 
-        description = pytool.text.wrap(description)
+        description = pytool.text.wrap(description, indent='    ')
         # Update the parser object with the new description
         self.parser.description = description
         # And use the raw class so it doesn't strip our formatting

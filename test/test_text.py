@@ -29,7 +29,7 @@ def test_wrap():
                     """
     text = pytool.text.wrap(text)
     eq_(text, """\
-This is a description and it is long and spans multiplelines. Hooray.
+This is a description and it is long and spans multiple lines. Hooray.
     It should be indented here and this long line should work out well
     when rewrapped.
 This should be unindented and also work well and should be a long line
@@ -45,4 +45,15 @@ Here's some more whitespace:
         Even multiple indents should work out well, which I really
         hope they do.
 """)
+
+
+def test_wrap_preserves_first_line_whitespace():
+    text = """
+                This tool is used for managing all the splits in dev, test and
+                production.
+        """
+
+    eq_(pytool.text.wrap(text), "This tool is used for managing all the "
+        "splits in dev, test and\nproduction.\n")
+
 
