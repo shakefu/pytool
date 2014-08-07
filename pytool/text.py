@@ -9,6 +9,10 @@ def wrap(text, width=70):
     Return `text` wrapped to `width` while stripping leading indentation and
     preserving paragraphs.
 
+    This function is handy for turning indented inline strings into unindented
+    strings that preserve paragraphs, whitespace, and any indentation beyond
+    the baseline.
+
     :param text: Text to wrap
     :param width: Width to wrap text at (default: 70)
     :type text: str
@@ -18,16 +22,19 @@ def wrap(text, width=70):
 
         >>> import pytool
         >>> text = '''
-                All this is indented by 8
+                All this is indented by 8, but will be 0.
                         This is indented by 16, and a really long long long
-                        line which wraps at a random character width.
+                        line which is hard wrapped at a random character width,
+                        but will be wrapped appropriately at 70 chars
+                        afterwards.
 
                 This is indented by 8 again.
             '''
         >>> print pytool.text.wrap(text)
-        All this is indented by 8
+        All this is indented by 8, but will be 0.
                 This is indented by 16, and a really long long long line which
-                wraps at a random character width.
+                is hard wrapped at a random character width, but will be
+                wrapped appropriately at 70 chars afterwards.
 
         This is indented by 8 again.
         >>>
