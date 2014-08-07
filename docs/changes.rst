@@ -3,6 +3,15 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.2.0
+-----
+
+- Adds :mod:`pytool.text` and :func:`pytool.text.wrap` which helps wrap text
+  and remove or add indentation, and does so in a paragraph and whitespace
+  aware fashion.
+- Adds :meth:`pytool.cmd.Command.describe` to make it easier to add verbose
+  descriptions to your command's ``--help``.
+
 3.1.1
 -----
 
