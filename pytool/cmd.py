@@ -8,6 +8,7 @@ import sys
 import signal
 import argparse
 
+import pytool.text
 try:
     import pyconfig
 except ImportError:
@@ -139,6 +140,37 @@ class Command(object):
             process. In other words, this is where the magic happens.
         """
         raise NotImplementedError("'run' is not implemented")
+
+    def describe(self, description):
+        """
+        Describe the command in more detail. This will be displayed in addition
+        to the argument help.
+
+        This automatically strips leading indentation but does not strip all
+        formatting like the ``ArgumentParser(description='')`` keyword.
+
+        **Example**::
+
+            class MyCommand(Command):
+                def set_opts(self):
+                    self.describe(\"\"\"
+                        This is an example command. To use the example command,
+                        run it.\"\"\")
+
+                def run(self):
+                    pass
+
+
+        """
+        # This has to be called from within set_opts(), when the parser exists
+        if not self.parser:
+            return
+
+        description = pytool.text.wrap(description)
+        # Update the parser object with the new description
+        self.parser.description = description
+        # And use the raw class so it doesn't strip our formatting
+        self.parser.formatter_class = argparse.RawDescriptionHelpFormatter
 
     @classmethod
     def console_script(cls):

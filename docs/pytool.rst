@@ -81,6 +81,21 @@ your life a little easier and your day a little better. Enjoy!
 
 .. autofunction:: singleton
 
+:mod:`pytool.text`: Text helpers
+================================
+
+.. currentmodule:: pytool.text
+
+.. automodule:: pytool.text
+
+.. contents:: Text helpers
+   :local:
+
+:func:`wrap`
+------------
+
+.. autofunction:: wrap
+
 :mod:`pytool.time`: Time and Date related helpers
 =================================================
 

@@ -3,7 +3,7 @@ import sys
 import mock
 
 import pytool
-from .util import *
+from .util import eq_, raises
 
 
 class TestCommand(pytool.cmd.Command):
@@ -46,4 +46,5 @@ def test_stop(exit):
 def test_console_script(start):
     TestCommand().console_script()
     start.assert_called_with(sys.argv[1:])
+
 
