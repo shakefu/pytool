@@ -6,7 +6,7 @@ import textwrap
 
 def wrap(text, width=70):
     """
-    Return `text` wrapped to `width` while stripping leading indentation and
+    Return `text` wrapped to `width` while trimming leading indentation and
     preserving paragraphs.
 
     This function is handy for turning indented inline strings into unindented
