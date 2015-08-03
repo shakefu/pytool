@@ -6,7 +6,7 @@ import mock
 from nose import SkipTest
 
 import pytool
-from .util import *
+from .util import eq_
 
 
 def test_utc_singleton():
@@ -227,3 +227,32 @@ def test_timer_mark_works():
         utcnow.return_value = datetime(2010, 1, 1, 0, 3, 0)
         eq_(t.mark(), timedelta(seconds=2*60))
 
+
+def test_ago_regular():
+    unix = 14386000000
+    stamp = pytool.time.fromutctimestamp(unix)
+    # Previous stamp minus 1 day, 1 hour, 1 minute and 1 second
+    ago = unix - (24*60*60) - (60*60) - 60 - 1
+    ago = pytool.time.fromutctimestamp(ago)
+
+    eq_(pytool.time.ago(stamp, days=1, hours=1, minutes=1, seconds=1), ago)
+
+
+def test_ago_shorter():
+    unix = 14386000000
+    stamp = pytool.time.fromutctimestamp(unix)
+    # Previous stamp minus 1 day, 1 hour, 1 minute and 1 second
+    ago = unix - (24*60*60) - (60*60) - 60 - 1
+    ago = pytool.time.fromutctimestamp(ago)
+
+    eq_(pytool.time.ago(stamp, days=1, hrs=1, mins=1, secs=1), ago)
+
+
+def test_ago_shorthand():
+    unix = 14386000000
+    stamp = pytool.time.fromutctimestamp(unix)
+    # Previous stamp minus 1 day, 1 hour, 1 minute and 1 second
+    ago = unix - (24*60*60) - (60*60) - 60 - 1
+    ago = pytool.time.fromutctimestamp(ago)
+
+    eq_(pytool.time.ago(stamp, d=1, h=1, m=1, s=1), ago)

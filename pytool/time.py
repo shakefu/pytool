@@ -300,3 +300,63 @@ def floor_month(stamp=None):
     return datetime.datetime(stamp.year, stamp.month, 1, tzinfo=stamp.tzinfo)
 
 
+def ago(stamp=None, **kwargs):
+    """ Return the current time as UTC minutes the specified timeframe.
+
+        This is a helper for simplifying the common pattern of
+        `pytool.time.utcnow() - datetime.timedelta(mintues=15)`.
+
+        :param stamp: An optional timestamp instead of `utcnow()`
+        :param days: Days previous
+        :param hours: Hours previous
+        :param minutes: Minutes previous
+        :param seconds: Days previous
+        :returns: UTC timestamp
+
+        If you like brevity in your arguments, you can use the shorter
+        versions, `hrs=`, `mins=` and `secs=`.
+
+        Or if you really want a short signature, you can use `d=`, `h=`, `m=`,
+        `s=`.
+
+        ::
+
+            import pytool
+
+            yesterday = pytool.time.ago(days=1)
+
+            a_little_while_ago = pytool.time.ago(minutes=1)
+
+            a_little_before = pytool.time.ago(my_date, hours=1)
+
+            # Shorter arguments
+            shorter = pytool.time.ago(hrs=1, mins=1, secs=1)
+
+            # Shorthand argument names
+            short = pytool.time.ago(d=1, h=1, m=1, s=1)
+
+    """
+    _map = {
+            'days': 'days',
+            'd': 'days',
+            'hours': 'hours',
+            'hrs': 'hours',
+            'h': 'hours',
+            'minutes': 'minutes',
+            'mins': 'minutes',
+            'm': 'minutes',
+            'seconds': 'seconds',
+            'secs': 'seconds',
+            's': 'seconds',
+            }
+
+    args = {}
+
+    for key in kwargs:
+        args[_map[key]] = kwargs[key]
+
+    stamp = stamp or utcnow()
+    stamp -= datetime.timedelta(**args)
+
+    return stamp
+
