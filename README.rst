@@ -10,10 +10,11 @@ Any comments, issues or requests should be submitted via Github:
 `<https://github.com/shakefu/pytool/issues>`_
 
 .. image:: https://api.travis-ci.org/shakefu/pytool.png
+   :target: https://travis-ci.org/shakefu/pytool
 
 Documentation
 -------------
 
-See the `complete documentation <http://pytool.readthedocs.org/en/latest/>`_
-for more information.
+See the `complete documentation <http://pytool.readthedocs.org/en/latest/>`_ on
+Read The Docs for more information.
 

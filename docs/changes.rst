@@ -3,6 +3,14 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.3.0
+-----
+
+- Adds :func:`pytool.time.ago`, which is a convenient helper for getting times
+  relative to a timestamp or the current time.
+
+*Released August 3, 2015.*
+
 3.2.0
 -----
 

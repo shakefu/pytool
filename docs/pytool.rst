@@ -188,6 +188,12 @@ your life a little easier and your day a little better. Enjoy!
 
 .. autofunction:: week_start
 
+:func:`ago`
+-----------
+
+.. autofunction:: ago
+
+
 :mod:`pytool.proxy`: DictProxy and ListProxy classes
 ====================================================
 
