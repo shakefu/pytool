@@ -1,5 +1,7 @@
+import six
+
 import pytool
-from .util import *
+from .util import eq_, ok_, SkipTest
 
 
 def test_list_proxy_instantiates_ok():
@@ -168,6 +170,8 @@ def test_dict_proxy_repr():
 
 
 def test_dict_proxy_compare():
+    if six.PY3:
+        raise SkipTest("Python 2")
     d = {'one': 1, 'two': 2}
     p = pytool.proxy.DictProxy(d)
     eq_(cmp(p, d), cmp(d, d))

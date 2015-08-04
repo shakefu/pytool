@@ -1,4 +1,3 @@
-import multiprocessing, logging # Fix atexit bug
 from setuptools import setup, find_packages
 
 
@@ -28,7 +27,7 @@ setup(
         long_description=readme(),
         url='http://github.com/shakefu/pytool',
         packages=find_packages(exclude=['test']),
-        install_requires=['simplejson >= 3.2.0'],
+        install_requires=['simplejson >= 3.2.0', 'six'],
         test_suite='nose.collector',
         tests_require=[
             'nose',

@@ -6,6 +6,8 @@ import inspect
 import weakref
 import functools
 
+import six
+
 
 def get_name(frame):
     """ Gets the name of the passed frame.
@@ -47,7 +49,7 @@ def get_name(frame):
             pass
 
     if module:
-        if not isinstance(module, basestring):
+        if not isinstance(module, six.string_types):
             module = module.__name__
         if name != '<module>':
             return "%s.%s" % (module, name)
@@ -179,7 +181,7 @@ def hashed_singleton(klass):
 
     # Make new method that controls singleton behavior
     def __new__(cls, *args, **kwargs):
-        hashable_kwargs = tuple(sorted(kwargs.iteritems()))
+        hashable_kwargs = tuple(sorted(six.iteritems(kwargs)))
         signature = (args, hashable_kwargs)
 
         if signature not in cls._singletons:
@@ -221,6 +223,7 @@ class _UNSETMeta(type):
         return 'UNSET'
 
 
+@six.add_metaclass(_UNSETMeta)
 class UNSET(object):
     """ Special class that evaluates to ``bool(False)``, but can be distinctly
         identified as seperate from ``None`` or ``False``. This class can and
@@ -251,8 +254,6 @@ class UNSET(object):
             UNSET
 
     """
-    __metaclass__ = _UNSETMeta
-
     def __new__(cls):
         return cls
 
@@ -327,7 +328,7 @@ class Namespace(object):
         return new_space
 
     def __iter__(self):
-        return self.iteritems()
+        return six.iteritems(self)
 
     def __contains__(self, name):
         names = name.split('.')
