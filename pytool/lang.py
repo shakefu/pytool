@@ -203,6 +203,10 @@ class _UNSETMeta(type):
     def __nonzero__(cls):
         return False
 
+    def __bool__(cls):
+        # Python 3
+        return False
+
     def __len__(cls):
         return 0
 
@@ -218,6 +222,9 @@ class _UNSETMeta(type):
 
     def next(cls):
         raise StopIteration()
+
+    # Python 3
+    __next__ = next
 
     def __repr__(cls):
         return 'UNSET'
@@ -346,6 +353,10 @@ class Namespace(object):
             return True
 
     def __nonzero__(self):
+        return bool(self.__dict__)
+
+    def __bool__(self):
+        # For Python 3
         return bool(self.__dict__)
 
     def iteritems(self, base_name=None):

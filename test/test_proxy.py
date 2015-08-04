@@ -35,6 +35,8 @@ def test_list_proxy_proxies_comparisons():
 
 
 def test_list_proxy_comparison_operator():
+    if six.PY3:
+        raise SkipTest('Python 2')
     l = [1, 2]
     a = [1, 2]
     b = [3, 4]
