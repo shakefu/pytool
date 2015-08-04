@@ -1,12 +1,10 @@
-.. pytool documentation master file, created by
-   sphinx-quickstart on Tue Nov 13 09:17:33 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Pytool |version|
 ================
 
 Pytool is available on PyPI: `<http://pypi.python.org/pypi/pytool/>`_
+
+Pytool is compatible with Python 2 (tested against 2.7) or Python 3.3 and
+higher. *Compatibility added Auguest 4, 2015.*
 
 Pytool's source is hosted on Github: `<http://github.com/shakefu/pytool>`_
 

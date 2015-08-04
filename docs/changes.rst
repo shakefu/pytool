@@ -3,6 +3,14 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.4.0
+-----
+
+- Adds **Python 3** compatibility to Pytool! Hooray! Please submit an issue if
+  you find any bugs in Python 3.
+
+*Released August 4, 2015.*
+
 3.3.0
 -----
 
