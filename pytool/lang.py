@@ -335,7 +335,7 @@ class Namespace(object):
         return new_space
 
     def __iter__(self):
-        return six.iteritems(self)
+        return self.iteritems()
 
     def __contains__(self, name):
         names = name.split('.')
