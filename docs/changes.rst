@@ -12,6 +12,8 @@ Here you'll find a record of the changes in each version of :mod:`pytool`.
   <https://github.com/shakefu/pytool/pull/3>`_. Thanks to `abendig
   <https://github.com/abendig>`_ for the contribution.
 
+*Released August 4, 2015.*
+
 3.4.0
 -----
 
