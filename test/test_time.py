@@ -153,13 +153,13 @@ def test_week_seconds_start():
 
 def test_week_seconds():
     start = pytool.time.week_start(datetime.now())
-    for i in xrange(7):
+    for i in range(7):
         eq_(pytool.time.week_seconds(start + timedelta(days=i)),
                 timedelta(days=i).total_seconds())
 
 
 def test_week_seconds_to_datetime():
-    for i in xrange(7):
+    for i in range(7):
         eq_(pytool.time.week_start(datetime.now()) + timedelta(days=i),
                 pytool.time.week_seconds_to_datetime(
                     timedelta(days=i).total_seconds()))

@@ -4,6 +4,13 @@ This module contains text related things that make life easier.
 import textwrap
 
 
+# Handle Python 3 without using 2to3
+try:
+    xrange
+except:
+    xrange = range
+
+
 def wrap(text, width=70, indent=''):
     """
     Return `text` wrapped to `width` while trimming leading indentation and

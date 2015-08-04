@@ -46,7 +46,7 @@ def test_list_proxy_comparison_operator():
 def test_list_proxy_contains_operator():
     l = [1, 2]
     p = pytool.proxy.ListProxy(l)
-    for i in xrange(4):
+    for i in range(4):
         eq_(i in l, i in p)
 
 
@@ -80,7 +80,7 @@ def test_list_proxy_slicing():
     eq_(l[1:3], [5, 10])
     p[1:3] = p
     eq_(p, l)
-    p[1:3] = xrange(5)
+    p[1:3] = range(5)
     eq_(p, l)
     eq_(p[1:5], [0, 1, 2, 3])
     del p[1:]
@@ -97,13 +97,13 @@ def test_list_proxy_addition():
     n = p + [3, 4]
     eq_(n, [1, 2, 3, 4])
     ok_(isinstance(n, list))
-    n = p + xrange(2)
+    n = p + range(2)
     eq_(n, [1, 2, 0, 1])
     ok_(isinstance(n, list))
     n = [3, 4] + p
     eq_(n, [3, 4, 1, 2])
     ok_(isinstance(n, list))
-    n = xrange(2) + p
+    n = range(2) + p
     eq_(n, [0, 1, 1, 2])
     ok_(isinstance(n, list))
     n = p.__radd__(p)
@@ -111,7 +111,7 @@ def test_list_proxy_addition():
     ok_(isinstance(n, list))
     p += [3, 4]
     eq_(p, [1, 2, 3, 4])
-    p += xrange(2)
+    p += range(2)
     eq_(p, [1, 2, 3, 4, 0, 1])
     p += p
     eq_(p, [1, 2, 3, 4, 0, 1, 1, 2, 3, 4, 0, 1])
