@@ -74,7 +74,7 @@ def test_list_proxy_set_get_and_delete_items():
 
 
 def test_list_proxy_slicing():
-    l = range(5)
+    l = [i for i in range(5)]
     p = pytool.proxy.ListProxy(l)
     s = p[1:3]
     eq_(s, [1, 2])
