@@ -108,7 +108,8 @@ def singleton(klass):
     # Mirror original class
     cls_name = klass.__name__
     for attr in functools.WRAPPER_ASSIGNMENTS:
-        cls_dict[attr] = getattr(klass, attr)
+        if hasattr(klass, attr):
+            cls_dict[attr] = getattr(klass, attr)
 
     # Make new method that controls singleton behavior
     def __new__(cls, *args, **kwargs):
