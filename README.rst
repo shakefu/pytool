@@ -27,7 +27,7 @@ Pytool is available on PyPI for your installation ease.
 
 .. code-block:: bash
 
-$ pip install pytool
+   $ pip install pytool
 
 Usage
 =====
