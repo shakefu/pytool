@@ -2,13 +2,6 @@ import multiprocessing, logging # Fix atexit bug
 from setuptools import setup, find_packages
 
 
-__version__ = '0.0.0-dev'  # Fake version for pyflakes
-exec("c=__import__('compiler');a='__version__';l=[];g=lambda:[n.expr.value for"
-        " n in l for o in n.nodes if o.name==a].pop();c.walk(c.parseFile('%s/_"
-        "_init__.py'),type('v',(object,),{'visitAssign':lambda s,n:l.append(n)"
-        "})());exec(a+'=g()');"%'pytool')
-
-
 def readme():
     try:
         return open('README.rst').read()
@@ -16,9 +9,19 @@ def readme():
         pass
     return ''
 
+
+def version():
+    try:
+        import re
+        return re.search("^__version__ = '(.*)'",
+                open('pytool/__init__.py').read(), re.M).group(1)
+    except:
+        raise RuntimeError("Could not get version")
+
+
 setup(
         name='pytool',
-        version=__version__,
+        version=version(),
         author="Jacob Alheid",
         author_email="jake@about.me",
         description="A Collection of Python Tools",
@@ -37,6 +40,9 @@ setup(
             'License :: OSI Approved :: Apache Software License',
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3.2',
+            'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
             'Topic :: Software Development :: Libraries',
             'Topic :: Utilities',
             ]
