@@ -11,6 +11,13 @@ Pytool's source is hosted on Github: `<http://github.com/shakefu/pytool>`_
 Any comments, issues or requests should be submitted via Github:
 `<https://github.com/shakefu/pytool/issues>`_
 
+Contributors
+------------
+
+* `shakefu <https://github.com/shakefu>`_ (creator, maintainer)
+* `abendig <https://github.com/abendig>`_
+
+
 .. toctree::
    :maxdepth: 5
 
