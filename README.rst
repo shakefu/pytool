@@ -43,4 +43,9 @@ examples of how they might be used.
 See the `complete documentation <http://pytool.readthedocs.org/en/latest/>`_ on
 Read The Docs for more information.
 
+Contributors
+============
+
+* `shakefu <https://github.com/shakefu>`_ (creator, maintainer)
+* `abendig <https://github.com/abendig>`_
 

@@ -1,7 +1,16 @@
 Changelog
 =========
 
+.. module:: pytool
+
 Here you'll find a record of the changes in each version of :mod:`pytool`.
+
+3.4.1
+-----
+
+- Merges the tests and fix from `PR #3
+  <https://github.com/shakefu/pytool/pull/3>`_. Thanks to `abendig
+  <https://github.com/abendig>`_ for the contribution.
 
 3.4.0
 -----
