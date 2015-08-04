@@ -7,7 +7,9 @@ Here you'll find a record of the changes in each version of :mod:`pytool`.
 -----
 
 - Adds **Python 3** compatibility to Pytool! Hooray! Please submit an issue if
-  you find any bugs in Python 3.
+  you find any bugs in Python 3. Due to the dependency on `simplejson`, only
+  Python 3.3 and later is supported.
+
 
 *Released August 4, 2015.*
 
