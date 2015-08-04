@@ -35,6 +35,29 @@ def test_get_name_class():
     Test().test()
 
 
+def test_get_name_class_method():
+    class Test(object):
+        @classmethod
+        def test(cls):
+            frame = inspect.currentframe()
+            eq_(pytool.lang.get_name(frame),
+                    'test.test_lang.Test.test')
+            del frame
+
+    Test.test()
+
+
+def test_get_name_class_property():
+    class Test(object):
+        @property
+        def test(self):
+            frame = inspect.currentframe()
+            this_name = pytool.lang.get_name(frame)
+            del frame
+            return this_name
+    eq_(Test().test, 'test.test_lang.Test.test')
+
+
 def test_classproperty():
     class Test(object):
         value = 'Test'

@@ -33,10 +33,12 @@ def get_name(frame):
             maybe_cls = frame.f_locals[varname]
 
             # Get the actual method, if it exists on the class
-            maybe_func = getattr(maybe_cls, frame.f_code.co_name)
-
+            if isinstance(maybe_cls, type):
+                maybe_func = maybe_cls.__dict__[frame.f_code.co_name]
+            else:
+                maybe_func = maybe_cls.__class__.__dict__[frame.f_code.co_name]
             # If we have self, or a classmethod, we need the class name
-            if (varname == 'self' or maybe_func.im_self == maybe_cls):
+            if (varname in ('self', 'cls') or maybe_func.im_self == maybe_cls):
                 cls_name = (getattr(maybe_cls, '__name__', None)
                         or getattr(getattr(maybe_cls, '__class__', None),
                             '__name__', None))
@@ -248,7 +250,7 @@ class UNSET(object):
             >>> # Is good for checking default values
             >>> if {}.get('example', UNSET) is UNSET:
             ...     print "Key is missing."
-            ...     
+            ...
             Key is missing.
             >>> # Has no length
             >>> len(UNSET)
@@ -295,7 +297,7 @@ class Namespace(object):
         >>> # Namespaces are iterable
         >>> for name, value in myns:
         ...     print name, value
-        ...     
+        ...
         hello world
         example.value True
         >>> # Namespaces that are empty evaluate as False
@@ -310,7 +312,7 @@ class Namespace(object):
         >>> class MyDescriptor(object):
         ...     def __get__(self, instance, owner):
         ...         return 'Hello World'
-        ...     
+        ...
         >>> myns.descriptor = MyDescriptor()
         >>> myns.descriptor
         'Hello World'
