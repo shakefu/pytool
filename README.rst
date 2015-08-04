@@ -15,6 +15,10 @@ Any comments, issues or requests should be submitted via Github:
 .. image:: https://api.travis-ci.org/shakefu/pytool.png
    :target: https://travis-ci.org/shakefu/pytool
 
+.. image:: https://coveralls.io/repos/shakefu/pytool/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/shakefu/pytool?branch=master
+
+
 Documentation
 -------------
 
