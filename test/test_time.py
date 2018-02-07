@@ -111,6 +111,16 @@ def test_as_utc():
     eq_(d, pytool.time.as_utc(d))
 
 
+def test_as_utc_multi():
+    t = pytool.time.utcnow()
+    d = pytool.time.as_utc(t)
+    eq_(d, pytool.time.as_utc(t))
+    d = pytool.time.as_utc(d)
+    eq_(d, pytool.time.as_utc(t))
+    d = pytool.time.as_utc(d)
+    eq_(d, pytool.time.as_utc(t))
+
+
 def test_as_utc_naive():
     d = datetime.now()
     d2 = d + timedelta(seconds=time.altzone if pytool.time.is_dst(d)
