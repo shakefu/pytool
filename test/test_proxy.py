@@ -1,7 +1,7 @@
 import six
 
 import pytool
-from .util import eq_, ok_, SkipTest
+from .util import eq_, ok_, raises, SkipTest
 
 
 def test_list_proxy_instantiates_ok():
@@ -305,4 +305,10 @@ def test_dict_proxy_as_json():
     d = pytool.proxy.DictProxy({})
     d['foo'] = 'bar'
     eq_(pytool.json.as_json(d), '{"foo": "bar"}')
+
+
+@raises(KeyError)
+def test_dict_proxy_raises_key_error():
+    d = pytool.proxy.DictProxy({})
+    d['foo']
 
