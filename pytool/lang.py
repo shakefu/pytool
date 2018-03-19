@@ -155,6 +155,8 @@ def hashed_singleton(klass):
         This will not work for classes that take arguments that are unhashable
         (e.g. dicts, sets).
 
+        :param klass: Class to decorate
+
         .. versionadded:: 2.1
 
         .. versionchanged:: 3.4.2
@@ -162,8 +164,6 @@ def hashed_singleton(klass):
             `@hashed_singleton` wrapped classes now preserve their
             `@staticmethod` functions on the class type as well as the
             instance.
-
-        :param klass: Class to decorate
 
         Example usage::
 
