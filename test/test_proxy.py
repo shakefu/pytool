@@ -47,7 +47,7 @@ def test_list_proxy_comparison_operator():
     eq_(cmp(p, a), p.__cmp__(a))
 
 
-def test_list_proxy_comparison_operator():
+def test_list_proxy_comparison_operator_again():
     l = [1, 2]
     a = [1, 2]
     b = [3, 4]
@@ -55,6 +55,8 @@ def test_list_proxy_comparison_operator():
     eq_(l, a)
     eq_(p, a)
     eq_(p, l)
+    eq_(p, p)
+    ok_(p == p)
     ok_(not p == b)
     ok_(not p != a)
     ok_(p < b)
@@ -192,6 +194,13 @@ def test_dict_proxy_compare():
     eq_(cmp(p, d), cmp(d, d))
     eq_(p.__cmp__(d), cmp(d, d))
     eq_(p.__cmp__(p), cmp(p, p))
+
+
+def test_dict_proxy_compare_again():
+    d = {'one': 1, 'two': 2}
+    p = pytool.proxy.DictProxy(d)
+    eq_(d, p)
+    eq_(p, p)
 
 
 def test_dict_proxy_get_set_del_item():
