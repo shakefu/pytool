@@ -1,7 +1,7 @@
 import six
 
 import pytool
-from .util import eq_, ok_, SkipTest
+from .util import eq_, ok_, raises, SkipTest
 
 
 def test_list_proxy_instantiates_ok():
@@ -45,6 +45,21 @@ def test_list_proxy_comparison_operator():
     eq_(cmp(l, b), cmp(p, b))
     eq_(cmp(l, 'foo'), cmp(p, 'foo'))
     eq_(cmp(p, a), p.__cmp__(a))
+
+
+def test_list_proxy_comparison_operator_again():
+    l = [1, 2]
+    a = [1, 2]
+    b = [3, 4]
+    p = pytool.proxy.ListProxy(l)
+    eq_(l, a)
+    eq_(p, a)
+    eq_(p, l)
+    eq_(p, p)
+    ok_(p == p)
+    ok_(not p == b)
+    ok_(not p != a)
+    ok_(p < b)
 
 
 def test_list_proxy_contains_operator():
@@ -181,6 +196,13 @@ def test_dict_proxy_compare():
     eq_(p.__cmp__(p), cmp(p, p))
 
 
+def test_dict_proxy_compare_again():
+    d = {'one': 1, 'two': 2}
+    p = pytool.proxy.DictProxy(d)
+    eq_(d, p)
+    eq_(p, p)
+
+
 def test_dict_proxy_get_set_del_item():
     d = {'one': 1}
     p = pytool.proxy.DictProxy(d)
@@ -283,4 +305,10 @@ def test_dict_proxy_as_json():
     d = pytool.proxy.DictProxy({})
     d['foo'] = 'bar'
     eq_(pytool.json.as_json(d), '{"foo": "bar"}')
+
+
+@raises(KeyError)
+def test_dict_proxy_raises_key_error():
+    d = pytool.proxy.DictProxy({})
+    d['foo']
 

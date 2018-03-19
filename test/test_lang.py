@@ -10,11 +10,19 @@ class HashedSingleton(object):
     def __init__(self, *args, **kwargs):
         pass
 
+    @staticmethod
+    def static():
+        return 'static'
+
 
 @pytool.lang.singleton
 class Singleton(object):
     def __init__(self, *args, **kwargs):
         pass
+
+    @staticmethod
+    def static():
+        return 'static'
 
 
 def test_get_name():
@@ -268,6 +276,15 @@ def test_hashed_singleton_weakref():
     ok_(ts != str(t2), "{} != {}".format(ts, str(t2)))
 
 
+def test_hashed_singleton_preserves_staticmethods():
+    ok_(HashedSingleton.static)
+    eq_(HashedSingleton.static(), 'static')
+
+    t = HashedSingleton()
+    ok_(t.static)
+    eq_(t.static(), 'static')
+
+
 def test_singleton_no_args():
     s = Singleton()
     ok_(s is Singleton())
@@ -281,3 +298,11 @@ def test_singleton_args():
 def test_singleton_kwarg():
     s = Singleton(kwarg='kwarg')
     ok_(s is Singleton(grawk='grawk'))
+
+def test_singleton_preserves_staticmethods():
+    ok_(Singleton.static)
+    eq_(Singleton.static(), 'static')
+
+    t = Singleton()
+    ok_(t.static)
+    eq_(t.static(), 'static')
