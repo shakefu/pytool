@@ -100,6 +100,11 @@ def singleton(klass):
 
         :param klass: Class to decorate
 
+        .. versionchanged:: 3.4.2
+
+            `@singleton` wrapped classes now preserve their `@staticmethod`
+            functions on the class type as well as the instance.
+
         Example usage::
 
             # Make a class directly behave as a singleton
@@ -151,6 +156,12 @@ def hashed_singleton(klass):
         (e.g. dicts, sets).
 
         .. versionadded:: 2.1
+
+        .. versionchanged:: 3.4.2
+
+            `@hashed_singleton` wrapped classes now preserve their
+            `@staticmethod` functions on the class type as well as the
+            instance.
 
         :param klass: Class to decorate
 
