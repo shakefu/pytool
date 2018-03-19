@@ -47,6 +47,19 @@ def test_list_proxy_comparison_operator():
     eq_(cmp(p, a), p.__cmp__(a))
 
 
+def test_list_proxy_comparison_operator():
+    l = [1, 2]
+    a = [1, 2]
+    b = [3, 4]
+    p = pytool.proxy.ListProxy(l)
+    eq_(l, a)
+    eq_(p, a)
+    eq_(p, l)
+    ok_(not p == b)
+    ok_(not p != a)
+    ok_(p < b)
+
+
 def test_list_proxy_contains_operator():
     l = [1, 2]
     p = pytool.proxy.ListProxy(l)
