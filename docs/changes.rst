@@ -5,6 +5,14 @@ Changelog
 
 Here you'll find a record of the changes in each version of :mod:`pytool`.
 
+3.4.2
+-----
+
+- Preserves `@staticmethod` functions on :func:`pytool.lang.Singleton` and
+  :func:`pytool.lang.HashedSingleton` decorated classes.
+
+*Released March 19, 2018.*
+
 3.4.1
 -----
 
