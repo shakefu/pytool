@@ -119,6 +119,11 @@ def singleton(klass):
         if hasattr(klass, attr):
             cls_dict[attr] = getattr(klass, attr)
 
+    # Preserve static methods on the wrapped class type
+    for attr in klass.__dict__:
+        if isinstance(klass.__dict__[attr], staticmethod):
+            cls_dict[attr] = klass.__dict__[attr]
+
     # Make new method that controls singleton behavior
     def __new__(cls, *args, **kwargs):
         if not cls._singleton:
@@ -184,6 +189,11 @@ def hashed_singleton(klass):
     for attr in functools.WRAPPER_ASSIGNMENTS:
         if hasattr(klass, attr):
             cls_dict[attr] = getattr(klass, attr)
+
+    # Preserve static methods on the wrapped class type
+    for attr in klass.__dict__:
+        if isinstance(klass.__dict__[attr], staticmethod):
+            cls_dict[attr] = klass.__dict__[attr]
 
     # Make new method that controls singleton behavior
     def __new__(cls, *args, **kwargs):
