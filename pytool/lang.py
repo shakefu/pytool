@@ -346,6 +346,10 @@ class Namespace(object):
         >>> myns.descriptor = MyDescriptor()
         >>> myns.descriptor
         'Hello World'
+        >>> # Namespaces can be created from dictionaries
+        >>> newns = Namespace({'foo': {'bar': 1}})
+        >>> newns.foo.bar
+        1
 
     Namespaces are useful!
 
@@ -424,7 +428,10 @@ class Namespace(object):
         return dict(self.iteritems(base_name))
 
     def from_dict(self, obj):
-        """ Populate this from the given *obj* dictionary.
+        """ Populate this Namespace from the given *obj* dictionary.
+
+            :param dict obj: Dictionary object to merge into this Namespace
+
         """
         def _coerce_value(value):
             """ Helps coerce values to Namespaces recursively. """
