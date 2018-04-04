@@ -2,11 +2,16 @@
 This module contains items that are "missing" from the Python standard library,
 that do miscelleneous things.
 """
+import re
 import inspect
 import weakref
 import functools
 
 import six
+from six.moves import range
+
+
+VALID_NAME = re.compile('^[a-zA-Z0-9_]+$')
 
 
 def get_name(frame):
@@ -345,8 +350,13 @@ class Namespace(object):
     Namespaces are useful!
 
     """
-    def __init__(self):
-        pass
+    def __init__(self, obj=None):
+        if obj is not None:
+            assert isinstance(obj, dict), \
+                   "Bad constructor value: '{!r}'".format(obj)
+
+            # Populate the namespace from the give dictionary
+            self.from_dict(obj)
 
     def __getattribute__(self, name):
         # Implement descriptor protocol for reading
@@ -412,6 +422,24 @@ class Namespace(object):
 
         """
         return dict(self.iteritems(base_name))
+
+    def from_dict(self, obj):
+        """ Populate this from the given *obj* dictionary.
+        """
+        def _coerce_value(value):
+            """ Helps coerce values to Namespaces recursively. """
+            if isinstance(value, dict):
+                return Namespace(value)
+            elif isinstance(value, list):
+                for i in range(len(value)):
+                    value[i] = _coerce_value(value[i])
+            return value
+
+        for key, value in obj.items():
+            assert VALID_NAME.match(key), "Invalid name: {!r}".format(key)
+            value = _coerce_value(value)
+            setattr(self, key, value)
+
 
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
