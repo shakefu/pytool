@@ -353,6 +353,10 @@ class Namespace(object):
 
     Namespaces are useful!
 
+    .. versionadded:: 3.5.0
+
+        Added the ability to create Namespace instances from dictionaries.
+
     """
     def __init__(self, obj=None):
         if obj is not None:
@@ -431,6 +435,8 @@ class Namespace(object):
         """ Populate this Namespace from the given *obj* dictionary.
 
             :param dict obj: Dictionary object to merge into this Namespace
+
+            .. versionadded:: 3.5.0
 
         """
         def _coerce_value(value):

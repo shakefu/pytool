@@ -14,7 +14,7 @@
     limitations under the License.
 
 """
-__version__ = '3.4.2'
+__version__ = '3.5.0'
 
 
 from pytool import (
