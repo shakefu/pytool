@@ -2,7 +2,7 @@ import gc
 import inspect
 
 import pytool
-from .util import eq_, ok_
+from .util import eq_, ok_, raises
 
 
 @pytool.lang.hashed_singleton
@@ -226,6 +226,73 @@ def test_namespace_instances_implement_descriptor_reads():
     ns.desc = 'Non Descriptor'
     eq_(ns.desc, 'Non Descriptor')
     eq_(desc.value, 'New Value')
+
+
+def test_namespace_can_map_a_dict():
+    obj = {'value': 1}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.value, 1)
+
+
+def test_namespace_can_map_a_nested_dict():
+    obj = {'top': {'value': 2}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.top.value, 2)
+
+
+def test_namespace_can_map_a_nested_list():
+    obj = {'listed': [{'value': 1}, {'value': 2}, 3]}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.listed[0].value, 1)
+    eq_(ns.listed[1].value, 2)
+    eq_(ns.listed[2], 3)
+
+
+def test_namespace_can_map_a_nested_list_with_nested_dicts_complex():
+    obj = {'top': {'nested': [{'obj': {'value': 1}}]}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.top.nested[0].obj.value, 1)
+
+
+@raises(AssertionError)
+def test_namespace_doesnt_accept_bad_key_names():
+    obj = {'key-name': 1}
+    ns = pytool.lang.Namespace(obj)
+
+
+@raises(AssertionError)
+def test_namespace_doesnt_accept_lists():
+    obj = ['foo']
+    ns = pytool.lang.Namespace(obj)
+
+
+@raises(AssertionError)
+def test_namespace_doesnt_accept_ints():
+    obj = 1
+    ns = pytool.lang.Namespace(obj)
+
+
+@raises(AssertionError)
+def test_namespace_doesnt_accept_strings():
+    obj = 'foo'
+    ns = pytool.lang.Namespace(obj)
+
+
+@raises(AssertionError)
+def test_namespace_doesnt_accept_namespaces():
+    obj = pytool.lang.Namespace()
+    ns = pytool.lang.Namespace(obj)
+
+
+def test_namespaces_allow_merging_multiple_dicts():
+    obj = {'foo': 1}
+    obj2 = {'bar': 2}
+    ns = pytool.lang.Namespace()
+    ns.from_dict(obj)
+    ns.from_dict(obj2)
+
+    eq_(ns.foo, 1)
+    eq_(ns.bar, 2)
 
 
 def test_hashed_singleton_no_args():
