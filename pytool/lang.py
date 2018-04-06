@@ -11,7 +11,18 @@ import six
 from six.moves import range
 
 
-VALID_NAME = re.compile('^[a-zA-Z0-9_]+$')
+__all__ = [
+        'get_name',
+        'classproperty',
+        'singleton',
+        'hashed_singleton',
+        'UNSET',
+        'Namespace',
+        'unflatten',
+        ]
+
+
+VALID_NAME = re.compile('^[a-zA-Z0-9_.]+$')
 
 
 def get_name(frame):
@@ -360,9 +371,6 @@ class Namespace(object):
     """
     def __init__(self, obj=None):
         if obj is not None:
-            assert isinstance(obj, dict), \
-                   "Bad constructor value: '{!r}'".format(obj)
-
             # Populate the namespace from the give dictionary
             self.from_dict(obj)
 
@@ -439,6 +447,11 @@ class Namespace(object):
             .. versionadded:: 3.5.0
 
         """
+        obj = unflatten(obj)
+
+        assert isinstance(obj, dict), \
+               "Bad Namespace value: '{!r}'".format(obj)
+
         def _coerce_value(value):
             """ Helps coerce values to Namespaces recursively. """
             if isinstance(value, dict):
@@ -457,3 +470,154 @@ class Namespace(object):
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
 
+
+def _split_keys(obj):
+    """
+    Return a generator that yields 2-tuples of lists representing dot-notation
+    keys split on the dots, and their values in *obj*.
+
+    Example:
+
+        {'foo.bar': 0, 'foo.spam': 1, 'parrot': 2}
+
+        ... yields ...
+
+        (['foo', 'bar'], 0)
+        (['foo', 'spam'], 1)
+        (['parrot'], 2)
+
+    """
+    assert isinstance(obj, dict)
+
+    for key, value in obj.items():
+        if not isinstance(key, str):
+            yield [key], value
+        else:
+            yield key.split('.'), value
+
+
+def _unflatten(obj):
+    """
+    Return *obj* having dot-notation keys unflattened.
+
+    :param obj: Arbitrary object (preferably a dict) to unflatten
+
+    """
+    # Check if we have something other than a dict
+    if not isinstance(obj, dict):
+        # If it's a list, we return after _unflattening the list items
+        if isinstance(obj, list):
+            return [_unflatten(v) for v in obj]
+        # If it's anything else we just return the value
+        return obj
+
+    # Create the new unflattened dict... could mutate but that'd get messy
+    expanded = {}
+
+    # Iterate over our object's keys, looking for dot notation
+    for key, value in _split_keys(obj):
+        # If there's a single item, then it's a simple key and we recurse
+        if len(key) == 1:
+            key = key[0]
+            expanded[key] = _unflatten(value)
+            continue
+
+        # Set the top level dict so we can walk down into it
+        current = expanded
+
+        # Get our ending index for the split key, so we know when to assign a
+        # value instead of iterating again
+        end = len(key) - 1
+
+        # Iterate over the key parts, walking down the dict tree
+        for i in range(len(key)):
+            # Get the part of the key
+            part = key[i]
+
+            # If the part is not in the current walk level ...
+            if part not in current:
+                # We check if we're at the end, and recursively assign a value
+                if i == end:
+                    current[part] = _unflatten(value)
+                    break
+
+                # Or create a new walk level and continue
+                current[part] = {}
+
+            # If we get here, something went very wrong
+            if i == end:
+                raise ValueError("Value already assigned")
+
+            # Continue walking down the key parts
+            current = current[part]
+
+    return expanded
+
+
+def _join_lists(obj):
+    """
+    Return *obj* with list-like dictionary objects converted to actual lists.
+
+    :param obj: Arbitrary object
+
+    Example:
+
+        {'0': 'apple', '1': 'pear', '2': 'orange'}
+
+        ... returns ...
+
+        ['apple', 'pear', 'orange']
+
+    """
+    # If it's not a dict, it's definitely not a dict-list
+    if not isinstance(obj, dict):
+        # If it's a list-list then we want to recurse into it
+        if isinstance(obj, list):
+            return [_join_lists(v) for v in obj]
+        # Otherwise just get out
+        return obj
+
+    # If there's not a '0' key it's not a possible list
+    if '0' not in obj and 0 not in obj:
+        # Recurse into it
+        for key, value in obj.items():
+            obj[key] = _join_lists(value)
+
+        return obj
+
+    # Make sure the all the keys parse into integers, otherwise it's not a list
+    try:
+        items = [(int(k), v) for k, v in obj.items()]
+    except ValueError:
+        return obj
+
+    # Sort the integer keys to get the original list order
+    items = sorted(items)
+
+    # Check all the keys to ensure there's no missing indexes
+    i = 0
+    for key, value in items:
+        # If the index key is out of sequence we abandon
+        if key != i:
+            return obj
+
+        # Replace the item with its value
+        items[i] = value
+
+        # Increment to check the next one
+        i += 1
+
+    return items
+
+
+def unflatten(obj):
+    """
+    Return *obj* with dot-notation keys unflattened into nested dictionaries,
+    as well as list-like dictionaries converted into list instances.
+
+    :param obj: An arbitrary object, preferably a dict
+
+    """
+    obj = _unflatten(obj)
+    obj = _join_lists(obj)
+    return obj
