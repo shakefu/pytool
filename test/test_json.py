@@ -8,19 +8,19 @@ except ImportError:
     bson = None
 
 import pytool
-from .util import *
+from .util import eq_, raises
 
 
 def test_as_json_datetime():
     n = datetime.now()
     eq_(pytool.json.as_json(n),
-            '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
+        '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
 
 
 def test_as_json_datetime_with_tz():
     n = pytool.time.utcnow()
     eq_(pytool.json.as_json(n),
-            '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
+        '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
 
 
 def test_as_json_ObjectId():
@@ -32,7 +32,7 @@ def test_as_json_ObjectId():
 
 @raises(TypeError)
 def test_as_json_bad():
-    d = {'test': 1, 'two':type()}
+    d = {'test': 1, 'two': type()}
     pytool.json.as_json(d)
 
 
@@ -107,6 +107,3 @@ def test_for_json_hook_called_when_dict_subclass_buried_in_objects():
 
     obj = {'list': [Test()]}
     eq_(pytool.json.as_json(obj), '{"list": [{"for_json": 1}]}')
-
-
-

@@ -46,5 +46,3 @@ def test_stop(exit):
 def test_console_script(start):
     TestCommand().console_script()
     start.assert_called_with(sys.argv[1:])
-
-
