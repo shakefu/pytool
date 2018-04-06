@@ -53,18 +53,19 @@ def get_name(frame):
                 if isinstance(maybe_cls, type):
                     maybe_func = maybe_cls.__dict__[frame.f_code.co_name]
                 else:
-                    maybe_func = maybe_cls.__class__.__dict__[frame.f_code.co_name]
-            except:
+                    maybe_func = maybe_cls.__class__\
+                        .__dict__[frame.f_code.co_name]
+            except: # noqa
                 maybe_func = getattr(maybe_cls, frame.f_code.co_name)
 
             # If we have self, or a classmethod, we need the class name
             if (varname in ('self', 'cls') or maybe_func.im_self == maybe_cls):
                 cls_name = (getattr(maybe_cls, '__name__', None)
-                        or getattr(getattr(maybe_cls, '__class__', None),
-                            '__name__', None))
+                            or getattr(getattr(maybe_cls, '__class__', None),
+                                       '__name__', None))
 
                 if cls_name:
-                    name =  "%s.%s" % (cls_name, name)
+                    name = "%s.%s" % (cls_name, name)
                     module = maybe_cls.__module__
         except (KeyError, AttributeError):
             # Probably not a class method, so fuck it
@@ -105,9 +106,9 @@ def classproperty(func):
         return func(owner)
 
     return type(func.__name__, (object,), {
-        '__get__':__get__,
-        '__module__':func.__module__,
-        '__doc__':func.__doc__,
+        '__get__': __get__,
+        '__module__': func.__module__,
+        '__doc__': func.__doc__,
         })()
 
 
@@ -291,7 +292,7 @@ class UNSET(object):
             >>> # Is good for checking default values
             >>> if {}.get('example', UNSET) is UNSET:
             ...     print "Key is missing."
-            ...     
+            ...
             Key is missing.
             >>> # Has no length
             >>> len(UNSET)
@@ -338,7 +339,7 @@ class Namespace(object):
         >>> # Namespaces are iterable
         >>> for name, value in myns:
         ...     print name, value
-        ...     
+        ...
         hello world
         example.value True
         >>> # Namespaces that are empty evaluate as False
@@ -353,7 +354,7 @@ class Namespace(object):
         >>> class MyDescriptor(object):
         ...     def __get__(self, instance, owner):
         ...         return 'Hello World'
-        ...     
+        ...
         >>> myns.descriptor = MyDescriptor()
         >>> myns.descriptor
         'Hello World'
@@ -450,7 +451,7 @@ class Namespace(object):
         obj = unflatten(obj)
 
         assert isinstance(obj, dict), \
-               "Bad Namespace value: '{!r}'".format(obj)
+            "Bad Namespace value: '{!r}'".format(obj)
 
         def _coerce_value(value):
             """ Helps coerce values to Namespaces recursively. """
@@ -465,7 +466,6 @@ class Namespace(object):
             assert VALID_NAME.match(key), "Invalid name: {!r}".format(key)
             value = _coerce_value(value)
             setattr(self, key, value)
-
 
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
