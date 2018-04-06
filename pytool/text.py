@@ -3,12 +3,7 @@ This module contains text related things that make life easier.
 """
 import textwrap
 
-
-# Handle Python 3 without using 2to3
-try:
-    xrange
-except:
-    xrange = range
+from six.moves import range
 
 
 def wrap(text, width=70, indent=''):
@@ -65,7 +60,7 @@ def wrap(text, width=70, indent=''):
     last_indent = len(line) - len(line.lstrip())  # Last line indent
     paragraphs = [line + ' ']  # List of paragraphs, primed with the first
                                # wrapped line fragment
-    for i in xrange(1, len(lines)):
+    for i in range(1, len(lines)):
         # Strip trailing spaces, which may just be random whitespace
         line = lines[i].rstrip()
         # If the line is empty, it's a blank line, so we treat it specially
@@ -91,7 +86,7 @@ def wrap(text, width=70, indent=''):
         paragraphs[c] += line.lstrip() + ' '
 
     # Iterate over the paragraphs rewrapping them at 70 chrs 
-    for i in xrange(len(paragraphs)):
+    for i in range(len(paragraphs)):
         # Get the paragraph as a single line
         line = paragraphs[i]
         # Calculate the indentation
