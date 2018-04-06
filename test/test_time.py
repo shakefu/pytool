@@ -28,7 +28,6 @@ def test_utcnow(datetime):
 def test_trim_time():
     now = datetime.now()
     stamp = pytool.time.trim_time(now)
-
     eq_(stamp.year, now.year)
     eq_(stamp.month, now.month)
     eq_(stamp.day, now.day)
@@ -73,13 +72,15 @@ def test_toutctimestamp():
     d = datetime.now()
     u = pytool.time.utcnow()
     decimal = (1.0 * d.microsecond / 10**6)
-    eq_(pytool.time.toutctimestamp(d), calendar.timegm(u.utctimetuple()) + decimal)
+    eq_(pytool.time.toutctimestamp(d), calendar.timegm(u.utctimetuple()) +
+        decimal)
 
 
 def test_toutctimestamp_utctz():
     d = pytool.time.utcnow()
     decimal = (1.0 * d.microsecond / 10**6)
-    eq_(pytool.time.toutctimestamp(d), calendar.timegm(d.utctimetuple()) + decimal)
+    eq_(pytool.time.toutctimestamp(d), calendar.timegm(d.utctimetuple()) +
+        decimal)
 
 
 def test_toutctimestamp_summer():
@@ -124,11 +125,11 @@ def test_as_utc_multi():
 def test_as_utc_naive():
     d = datetime.now()
     d2 = d + timedelta(seconds=time.altzone if pytool.time.is_dst(d)
-            else time.timezone)
+                       else time.timezone)
     d = pytool.time.as_utc(d)
     # Can't compare naive and aware datetimes, so we do it manually
     for field in ('year', 'month', 'day', 'hour', 'minute', 'second',
-            'microsecond'):
+                  'microsecond'):
         eq_(getattr(d, field), getattr(d2, field))
 
 
@@ -165,14 +166,14 @@ def test_week_seconds():
     start = pytool.time.week_start(datetime.now())
     for i in range(7):
         eq_(pytool.time.week_seconds(start + timedelta(days=i)),
-                timedelta(days=i).total_seconds())
+            timedelta(days=i).total_seconds())
 
 
 def test_week_seconds_to_datetime():
     for i in range(7):
         eq_(pytool.time.week_start(datetime.now()) + timedelta(days=i),
-                pytool.time.week_seconds_to_datetime(
-                    timedelta(days=i).total_seconds()))
+            pytool.time.week_seconds_to_datetime(
+                timedelta(days=i).total_seconds()))
 
 
 def test_make_week_seconds():
@@ -191,23 +192,23 @@ def test_floor_minute():
 def test_floor_day():
     stamp = pytool.time.utcnow()
     eq_(pytool.time.floor_day(stamp),
-            datetime(*stamp.date().timetuple()[:-3],
-                tzinfo=pytool.time.UTC()))
+        datetime(*stamp.date().timetuple()[:-3],
+                 tzinfo=pytool.time.UTC()))
 
 
 def test_floor_week():
     stamp = pytool.time.utcnow()
     start = stamp - timedelta(days=stamp.weekday())
     eq_(pytool.time.floor_week(stamp),
-            datetime(start.year, start.month, start.day,
-                tzinfo=pytool.time.UTC()))
+        datetime(start.year, start.month, start.day,
+                 tzinfo=pytool.time.UTC()))
 
 
 def test_floor_month():
     stamp = pytool.time.utcnow()
     eq_(pytool.time.floor_month(stamp),
-            datetime(*(stamp.date().timetuple()[:2] + (1,)),
-                tzinfo=pytool.time.UTC()))
+        datetime(*(stamp.date().timetuple()[:2] + (1,)),
+                 tzinfo=pytool.time.UTC()))
 
 
 def test_timer_init_works():
