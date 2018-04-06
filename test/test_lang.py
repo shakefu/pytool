@@ -28,7 +28,7 @@ class Singleton(object):
 def test_get_name():
     frame = inspect.currentframe()
     eq_(pytool.lang.get_name(frame),
-            'test.test_lang.test_get_name')
+        'test.test_lang.test_get_name')
     del frame
 
 
@@ -37,7 +37,7 @@ def test_get_name_class():
         def test(self):
             frame = inspect.currentframe()
             eq_(pytool.lang.get_name(frame),
-                    'test.test_lang.Test.test')
+                'test.test_lang.Test.test')
             del frame
 
     Test().test()
@@ -49,7 +49,7 @@ def test_get_name_class_method():
         def test(cls):
             frame = inspect.currentframe()
             eq_(pytool.lang.get_name(frame),
-                    'test.test_lang.Test.test')
+                'test.test_lang.Test.test')
             del frame
 
     Test.test()
@@ -69,6 +69,7 @@ def test_get_name_class_property():
 def test_classproperty():
     class Test(object):
         value = 'Test'
+
         @pytool.lang.classproperty
         def test(cls):
             return cls.value
@@ -213,6 +214,7 @@ def test_namespace_reprs_accurately_when_empty():
 def test_namespace_instances_implement_descriptor_reads():
     class Descriptor(object):
         value = 'Descriptor Value'
+
         def __get__(self, instance, owner):
             return self.value
 
@@ -257,31 +259,31 @@ def test_namespace_can_map_a_nested_list_with_nested_dicts_complex():
 @raises(AssertionError)
 def test_namespace_doesnt_accept_bad_key_names():
     obj = {'key-name': 1}
-    ns = pytool.lang.Namespace(obj)
+    pytool.lang.Namespace(obj)
 
 
 @raises(AssertionError)
 def test_namespace_doesnt_accept_lists():
     obj = ['foo']
-    ns = pytool.lang.Namespace(obj)
+    pytool.lang.Namespace(obj)
 
 
 @raises(AssertionError)
 def test_namespace_doesnt_accept_ints():
     obj = 1
-    ns = pytool.lang.Namespace(obj)
+    pytool.lang.Namespace(obj)
 
 
 @raises(AssertionError)
 def test_namespace_doesnt_accept_strings():
     obj = 'foo'
-    ns = pytool.lang.Namespace(obj)
+    pytool.lang.Namespace(obj)
 
 
 @raises(AssertionError)
 def test_namespace_doesnt_accept_namespaces():
     obj = pytool.lang.Namespace()
-    ns = pytool.lang.Namespace(obj)
+    pytool.lang.Namespace(obj)
 
 
 def test_namespaces_allow_merging_multiple_dicts():
@@ -316,7 +318,7 @@ def test_namespaces_coerce_lists_and_recurse():
 @raises(AssertionError)
 def test_namespaces_reject_top_level_lists():
     obj = {'0': 'zero', '1': 'one', '2': 'two'}
-    ns = pytool.lang.Namespace(obj)
+    pytool.lang.Namespace(obj)
 
 
 def test_hashed_singleton_no_args():
@@ -390,6 +392,7 @@ def test_singleton_kwarg():
     s = Singleton(kwarg='kwarg')
     ok_(s is Singleton(grawk='grawk'))
 
+
 def test_singleton_preserves_staticmethods():
     ok_(Singleton.static)
     eq_(Singleton.static(), 'static')
@@ -421,10 +424,14 @@ def test_unflatten():
             }
         }
 
-    expected = {'more': [{'down': {'first': 1}}, {'down': {'second': 2}}, 3],
-            'bad': {'0': 0, '1': 1, 'two': 2}, 'dot': {'first': 1, 'second':
-                2}, 'nest': {'sub': 1}, 'good': ['zero', 'one', 'two',
-                    'three'], 'arr': [3, 4, 5]}
+    expected = {
+        'more': [{'down': {'first': 1}}, {'down': {'second': 2}}, 3],
+        'bad': {'0': 0, '1': 1, 'two': 2},
+        'dot': {'first': 1, 'second': 2},
+        'nest': {'sub': 1},
+        'good': ['zero', 'one', 'two', 'three'],
+        'arr': [3, 4, 5]
+        }
 
     result = pytool.lang.unflatten(obj)
 
