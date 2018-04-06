@@ -307,6 +307,12 @@ def test_namespaces_coerce_lists():
     eq_(ns.alpha, ['zero', 'one', 'two'])
 
 
+def test_namespaces_coerce_lists_and_recurse():
+    obj = {'alpha': {'0': 'zero', '1': 'one', '2': {'foo.bar': 2}}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.alpha[2].foo.bar, 2)
+
+
 @raises(AssertionError)
 def test_namespaces_reject_top_level_lists():
     obj = {'0': 'zero', '1': 'one', '2': 'two'}
