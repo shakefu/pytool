@@ -362,12 +362,24 @@ class Namespace(object):
         >>> newns = Namespace({'foo': {'bar': 1}})
         >>> newns.foo.bar
         1
+        >>> # Namespaces will expand dot-notation dictionaries
+        >>> dotns = Namespace({'foo.bar': 2})
+        >>> dotns.foo.bar
+        2
+        >>> # Namespaces will coerce list-like dictionaries into lists
+        >>> listns = Namespace({'listish': {'0': 'zero', '1': 'one'}})
+        >>> listns.listish
+        ['zero', 'one']
 
     Namespaces are useful!
 
     .. versionadded:: 3.5.0
 
         Added the ability to create Namespace instances from dictionaries.
+
+    .. versionadded:: 3.6.0
+
+        Added the ability to handle dot-notation keys and list-like dicts.
 
     """
     def __init__(self, obj=None):
