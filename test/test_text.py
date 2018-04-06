@@ -4,9 +4,11 @@ Tests for pytool.text.
 import pytool
 from .util import eq_
 
+
 def test_wrap_empty():
     text = ''
     eq_(pytool.text.wrap(text), '')
+
 
 def test_wrap():
     text = """
@@ -55,5 +57,3 @@ def test_wrap_preserves_first_line_whitespace():
 
     eq_(pytool.text.wrap(text), "This tool is used for managing all the "
         "splits in dev, test and\nproduction.\n")
-
-
