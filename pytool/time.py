@@ -5,12 +5,13 @@ This module contains time related things that make life easier.
 # a module import itself. This is a work around to import the non-relative
 # module.
 import importlib
-time = importlib.import_module('time')
-
 import calendar
 import datetime
 
 from pytool.lang import singleton
+
+# Importing the system module
+time = importlib.import_module('time')
 
 
 class Timer(object):
@@ -171,7 +172,7 @@ def trim_time(stamp):
 
     """
     return datetime.datetime(*stamp.date().timetuple()[:-3],
-            tzinfo=stamp.tzinfo)
+                             tzinfo=stamp.tzinfo)
 
 
 def week_start(stamp):
@@ -225,7 +226,7 @@ def make_week_seconds(day, hour, minute=0, seconds=0):
     stamp = week_start(datetime.datetime.now())
     stamp += datetime.timedelta(days=day)
     stamp = datetime.datetime.combine(stamp.date(),
-            datetime.time(hour, minute, seconds))
+                                      datetime.time(hour, minute, seconds))
     return week_seconds(stamp)
 
 
@@ -240,7 +241,7 @@ def floor_minute(stamp=None):
 
     """
     stamp = stamp - datetime.timedelta(seconds=stamp.second,
-            microseconds=stamp.microsecond)
+                                       microseconds=stamp.microsecond)
     return stamp
 
 
@@ -359,4 +360,3 @@ def ago(stamp=None, **kwargs):
     stamp -= datetime.timedelta(**args)
 
     return stamp
-

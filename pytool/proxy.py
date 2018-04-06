@@ -4,6 +4,10 @@ This module contains implmentations of proxy-list and proxy-dictionary objects.
 import collections
 
 
+def cmp(a, b):
+    return (a > b) - (a < b)
+
+
 class ListProxy(collections.MutableSequence):
     """
     Proxies all methods for a list instance. This is useful when you want to
@@ -162,7 +166,7 @@ class DictProxy(collections.MutableMapping):
             return cmp(self._data, other._data)
         else:
             return cmp(self._data, other)
-    __hash__ = None # Avoid Py3k warning
+    __hash__ = None  # Avoid Py3k warning
     def __len__(self): return len(self._data)
     def __getitem__(self, key):
         if key in self._data:

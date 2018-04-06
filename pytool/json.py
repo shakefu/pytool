@@ -17,7 +17,7 @@ try:
 except ImportError:
     # Make a mock bson module (as a class object)
     bson = type('bson', (object,),
-            {'ObjectId': type('ObjectId', (object,), {})})
+                {'ObjectId': type('ObjectId', (object,), {})})
 
 
 __all__ = [
@@ -85,5 +85,3 @@ def from_json(value):
 
     """
     return json.loads(value)
-
-

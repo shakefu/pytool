@@ -194,5 +194,3 @@ class Command(object):
         """ Reloads the command. """
         if pyconfig:
             pyconfig.reload()
-
-
