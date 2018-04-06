@@ -81,6 +81,11 @@ your life a little easier and your day a little better. Enjoy!
 
 .. autofunction:: singleton
 
+:func:`unflatten`
+-----------------
+
+.. autofunction:: unflatten
+
 :mod:`pytool.text`: Text helpers
 ================================
 
