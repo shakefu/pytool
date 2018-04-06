@@ -295,6 +295,24 @@ def test_namespaces_allow_merging_multiple_dicts():
     eq_(ns.bar, 2)
 
 
+def test_namespaces_work_with_dot_notation():
+    obj = {'foo.bar': 1}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.foo.bar, 1)
+
+
+def test_namespaces_coerce_lists():
+    obj = {'alpha': {'0': 'zero', '1': 'one', '2': 'two'}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.alpha, ['zero', 'one', 'two'])
+
+
+@raises(AssertionError)
+def test_namespaces_reject_top_level_lists():
+    obj = {'0': 'zero', '1': 'one', '2': 'two'}
+    ns = pytool.lang.Namespace(obj)
+
+
 def test_hashed_singleton_no_args():
     t = HashedSingleton()
     ok_(t is HashedSingleton())
@@ -373,3 +391,35 @@ def test_singleton_preserves_staticmethods():
     t = Singleton()
     ok_(t.static)
     eq_(t.static(), 'static')
+
+
+def test_unflatten():
+    obj = {
+        'nest': {
+            'sub': 1
+            },
+        'dot.first': 1,
+        'dot.second': 2,
+        'arr.0': 3,
+        'arr.1': 4,
+        'arr.2': 5,
+        'more': [{'down.first': 1}, {'down.second': 2}, 3],
+        'bad.0': 0,
+        'bad.1': 1,
+        'bad.two': 2,
+        'good': {
+            0: 'zero',
+            1: 'one',
+            '2': 'two',
+            '3': 'three',
+            }
+        }
+
+    expected = {'more': [{'down': {'first': 1}}, {'down': {'second': 2}}, 3],
+            'bad': {'0': 0, '1': 1, 'two': 2}, 'dot': {'first': 1, 'second':
+                2}, 'nest': {'sub': 1}, 'good': ['zero', 'one', 'two',
+                    'three'], 'arr': [3, 4, 5]}
+
+    result = pytool.lang.unflatten(obj)
+
+    eq_(result, expected)
