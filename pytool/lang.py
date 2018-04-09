@@ -55,14 +55,14 @@ def get_name(frame):
                 else:
                     maybe_func = maybe_cls.__class__\
                         .__dict__[frame.f_code.co_name]
-            except: # noqa
+            except:  # noqa
                 maybe_func = getattr(maybe_cls, frame.f_code.co_name)
 
             # If we have self, or a classmethod, we need the class name
             if (varname in ('self', 'cls') or maybe_func.im_self == maybe_cls):
-                cls_name = (getattr(maybe_cls, '__name__', None)
-                            or getattr(getattr(maybe_cls, '__class__', None),
-                                       '__name__', None))
+                cls_name = (getattr(maybe_cls, '__name__', None) or
+                            getattr(getattr(maybe_cls, '__class__', None),
+                                    '__name__', None))
 
                 if cls_name:
                     name = "%s.%s" % (cls_name, name)
@@ -481,6 +481,9 @@ class Namespace(object):
 
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
+
+    def copy(self):
+        return Namespace(self.as_dict())
 
 
 def _split_keys(obj):
