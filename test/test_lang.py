@@ -436,3 +436,25 @@ def test_unflatten():
     result = pytool.lang.unflatten(obj)
 
     eq_(result, expected)
+
+
+def test_copy():
+    a = pytool.lang.Namespace()
+    a.foo = 'one'
+    a.bar = [1, 2, 3]
+    b = a.copy()
+    b.foo = 'two'
+    a.bar[0] = 10
+
+    eq_(a.foo, 'one')
+    eq_(b.bar, [1, 2, 3])
+
+
+def test_copy_deeper():
+    a = pytool.lang.Namespace()
+    a.foo = [[1, 2], [3, 4]]
+    b = a.copy()
+    b.foo[0][0] = 100
+
+    eq_(a.foo, [[1, 2], [3, 4]])
+    eq_(b.foo, [[100, 2], [3, 4]])

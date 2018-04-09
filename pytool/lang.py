@@ -55,14 +55,14 @@ def get_name(frame):
                 else:
                     maybe_func = maybe_cls.__class__\
                         .__dict__[frame.f_code.co_name]
-            except: # noqa
+            except:  # noqa
                 maybe_func = getattr(maybe_cls, frame.f_code.co_name)
 
             # If we have self, or a classmethod, we need the class name
             if (varname in ('self', 'cls') or maybe_func.im_self == maybe_cls):
-                cls_name = (getattr(maybe_cls, '__name__', None)
-                            or getattr(getattr(maybe_cls, '__class__', None),
-                                       '__name__', None))
+                cls_name = (getattr(maybe_cls, '__name__', None) or
+                            getattr(getattr(maybe_cls, '__class__', None),
+                                    '__name__', None))
 
                 if cls_name:
                     name = "%s.%s" % (cls_name, name)
@@ -370,6 +370,14 @@ class Namespace(object):
         >>> listns = Namespace({'listish': {'0': 'zero', '1': 'one'}})
         >>> listns.listish
         ['zero', 'one']
+        >>> # Namespaces can be deepcopied
+        >>> a = Namespace({'foo': [[1, 2], 3]}
+        >>> b = a.copy()
+        >>> b.foo[0][0] = 9
+        >>> a.foo
+        [[1, 2], 3]
+        >>> b.foo
+        [[9, 2], 3]
 
     Namespaces are useful!
 
@@ -381,6 +389,9 @@ class Namespace(object):
 
         Added the ability to handle dot-notation keys and list-like dicts.
 
+    .. versionadded:: 3.7.0
+
+        Added deepcopy capability to Namespaces.
     """
     def __init__(self, obj=None):
         if obj is not None:
@@ -481,6 +492,13 @@ class Namespace(object):
 
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
+
+    def copy(self):
+        """
+        Return a copy of a Namespace by writing it to a dict and then writing
+        back to a Namespace.
+        """
+        return Namespace(self.as_dict())
 
 
 def _split_keys(obj):
