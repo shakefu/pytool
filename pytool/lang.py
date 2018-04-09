@@ -392,6 +392,7 @@ class Namespace(object):
     .. versionadded:: 3.7.0
 
         Added deepcopy capability to Namespaces.
+
     """
     def __init__(self, obj=None):
         if obj is not None:
@@ -494,9 +495,9 @@ class Namespace(object):
         return "<Namespace({})>".format(self.as_dict())
 
     def copy(self):
-        """
-        Return a copy of a Namespace by writing it to a dict and then writing
-        back to a Namespace.
+        """ Return a copy of a Namespace by writing it to a dict and then
+            writing back to a Namespace.
+
         """
         return Namespace(self.as_dict())
 
