@@ -370,6 +370,14 @@ class Namespace(object):
         >>> listns = Namespace({'listish': {'0': 'zero', '1': 'one'}})
         >>> listns.listish
         ['zero', 'one']
+        >>> # Namespaces can be deepcopied
+        >>> a = Namespace({'foo': [[1, 2], 3]}
+        >>> b = a.copy()
+        >>> b.foo[0][0] = 9
+        >>> a.foo
+        [[1, 2], 3]
+        >>> b.foo
+        [[9, 2], 3]
 
     Namespaces are useful!
 
@@ -380,7 +388,10 @@ class Namespace(object):
     .. versionadded:: 3.6.0
 
         Added the ability to handle dot-notation keys and list-like dicts.
+    
+    .. versionadded:: 3.7.0
 
+        Added deepcopy capability to Namespaces.
     """
     def __init__(self, obj=None):
         if obj is not None:
@@ -483,6 +494,9 @@ class Namespace(object):
         return "<Namespace({})>".format(self.as_dict())
 
     def copy(self):
+        """
+        Return a copy of a Namespace by writing it to a dict and then writing
+        back to a Namespace."""
         return Namespace(self.as_dict())
 
 
