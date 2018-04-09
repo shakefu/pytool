@@ -388,7 +388,7 @@ class Namespace(object):
     .. versionadded:: 3.6.0
 
         Added the ability to handle dot-notation keys and list-like dicts.
-    
+
     .. versionadded:: 3.7.0
 
         Added deepcopy capability to Namespaces.
@@ -496,7 +496,8 @@ class Namespace(object):
     def copy(self):
         """
         Return a copy of a Namespace by writing it to a dict and then writing
-        back to a Namespace."""
+        back to a Namespace.
+        """
         return Namespace(self.as_dict())
 
 
