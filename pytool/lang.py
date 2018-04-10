@@ -3,6 +3,7 @@ This module contains items that are "missing" from the Python standard library,
 that do miscelleneous things.
 """
 import re
+import copy
 import inspect
 import weakref
 import functools
@@ -462,7 +463,17 @@ class Namespace(object):
             :param str base_name: Base namespace (optional)
 
         """
-        return dict(self.iteritems(base_name))
+        space = dict(self.iteritems(base_name))
+        for key, value in list(space.items()):
+            if isinstance(value, list):
+                # We have to copy the list before mutating its items to avoid
+                # altering the original namespace
+                value = copy.copy(value)
+                space[key] = value
+                for i in range(len(value)):
+                    if isinstance(value[i], Namespace):
+                        value[i] = value[i].as_dict()
+        return space
 
     def from_dict(self, obj):
         """ Populate this Namespace from the given *obj* dictionary.
@@ -482,6 +493,9 @@ class Namespace(object):
             if isinstance(value, dict):
                 return Namespace(value)
             elif isinstance(value, list):
+                # We have to copy the list so we can modify in place without
+                # breaking things
+                value = copy.copy(value)
                 for i in range(len(value)):
                     value[i] = _coerce_value(value[i])
             return value
@@ -494,12 +508,18 @@ class Namespace(object):
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
 
-    def copy(self):
+    def copy(self, *args, **kwargs):
         """ Return a copy of a Namespace by writing it to a dict and then
             writing back to a Namespace.
 
+            Arguments to this method are ignored.
+
         """
         return Namespace(self.as_dict())
+
+    # Aliases for the stdlib copy module
+    __copy__ = copy
+    __deepcopy__ = copy
 
 
 def _split_keys(obj):

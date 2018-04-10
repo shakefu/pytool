@@ -1,4 +1,5 @@
 import gc
+import copy
 import inspect
 
 import pytool
@@ -162,6 +163,14 @@ def test_namespace_base_name():
     eq_(ns.as_dict('ns'), {'ns.foo': 'bar'})
 
 
+def test_namespace_with_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar = 1
+    eq_(ns.as_dict('ns'), {'ns.foo': [{'bar': 1}]})
+
+
 def test_namespace_iterable():
     ns = pytool.lang.Namespace()
     ns.foo = 1
@@ -295,6 +304,14 @@ def test_namespaces_allow_merging_multiple_dicts():
 
     eq_(ns.foo, 1)
     eq_(ns.bar, 2)
+
+
+def test_namespaces_will_convert_dicts_in_lists():
+    obj = {'foo': [{'bar': 1}]}
+    ns = pytool.lang.Namespace()
+    ns.from_dict(obj)
+
+    eq_(ns.foo[0].bar, 1)
 
 
 def test_namespaces_work_with_dot_notation():
@@ -438,7 +455,7 @@ def test_unflatten():
     eq_(result, expected)
 
 
-def test_copy():
+def test_namespace_copy():
     a = pytool.lang.Namespace()
     a.foo = 'one'
     a.bar = [1, 2, 3]
@@ -450,7 +467,7 @@ def test_copy():
     eq_(b.bar, [1, 2, 3])
 
 
-def test_copy_deeper():
+def test_namespace_copy_deeper():
     a = pytool.lang.Namespace()
     a.foo = [[1, 2], [3, 4]]
     b = a.copy()
@@ -458,3 +475,54 @@ def test_copy_deeper():
 
     eq_(a.foo, [[1, 2], [3, 4]])
     eq_(b.foo, [[100, 2], [3, 4]])
+
+
+def test_namespace_copy_mut():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar = 1
+    ns2 = ns.copy()
+    ns2.foo.bar = 2
+
+    eq_(ns.foo.bar, 1)
+
+
+def test_namespace_copy_mut_deep():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar.baz = 1
+    ns2 = ns.copy()
+    ns2.foo.bar.baz = 2
+
+    eq_(ns.foo.bar.baz, 1)
+
+
+def test_namespace_copy_mut_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar.baz = 1
+
+    ns2 = ns.copy()
+    ns2.foo[0].bar.baz = 2
+
+    eq_(ns.foo[0].bar.baz, 1)
+
+
+def test_namespace_copy_api_deep():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar.baz = 1
+    ns2 = copy.copy(ns)
+    ns2.foo.bar.baz = 2
+
+    eq_(ns.foo.bar.baz, 1)
+
+
+def test_namespace_copy_api_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar.baz = 1
+
+    ns2 = copy.deepcopy(ns)
+    ns2.foo[0].bar.baz = 2
+
+    eq_(ns.foo[0].bar.baz, 1)
