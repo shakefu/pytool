@@ -508,12 +508,18 @@ class Namespace(object):
     def __repr__(self):
         return "<Namespace({})>".format(self.as_dict())
 
-    def copy(self):
+    def copy(self, *args, **kwargs):
         """ Return a copy of a Namespace by writing it to a dict and then
             writing back to a Namespace.
 
+            Arguments to this method are ignored.
+
         """
         return Namespace(self.as_dict())
+
+    # Aliases for the stdlib copy module
+    __copy__ = copy
+    __deepcopy__ = copy
 
 
 def _split_keys(obj):

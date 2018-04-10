@@ -501,11 +501,28 @@ def test_namespace_copy_mut_list():
     ns.foo.append(pytool.lang.Namespace())
     ns.foo[0].bar.baz = 1
 
+    ns2 = ns.copy()
+    ns2.foo[0].bar.baz = 2
+
     eq_(ns.foo[0].bar.baz, 1)
 
-    eq_(ns.as_dict(), {'foo': [{'bar.baz': 1}]})
 
-    ns2 = ns.copy()
+def test_namespace_copy_api_deep():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar.baz = 1
+    ns2 = copy.copy(ns)
+    ns2.foo.bar.baz = 2
+
+    eq_(ns.foo.bar.baz, 1)
+
+
+def test_namespace_copy_api_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar.baz = 1
+
+    ns2 = copy.deepcopy(ns)
     ns2.foo[0].bar.baz = 2
 
     eq_(ns.foo[0].bar.baz, 1)
