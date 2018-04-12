@@ -338,6 +338,24 @@ def test_namespaces_reject_top_level_lists():
     pytool.lang.Namespace(obj)
 
 
+def test_namespaces_allow_key_access():
+    obj = {'foo': 1, 'bar': 2}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns['foo'], 1)
+
+
+def test_namespaces_allow_key_access_for_reserved_words():
+    obj = {'foo': 1, 'bar': 2, 'in': 3}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns['in'], 3)
+
+
+def test_namespaces_allow_key_access_for_nested_reserved_words():
+    obj = {'foo': {'in': {'bar': 1}}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.foo['in'].bar, 1)
+
+
 def test_hashed_singleton_no_args():
     t = HashedSingleton()
     ok_(t is HashedSingleton())
