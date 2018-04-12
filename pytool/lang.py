@@ -407,6 +407,9 @@ class Namespace(object):
             value = value.__get__(self, self.__class__)
         return value
 
+    # Allow for dict-like key access
+    __getitem__ = __getattribute__
+
     def __getattr__(self, name):
         # Allow implicit nested namespaces by attribute access
         new_space = Namespace()
