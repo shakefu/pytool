@@ -379,6 +379,10 @@ class Namespace(object):
         [[1, 2], 3]
         >>> b.foo
         [[9, 2], 3]
+        >>> # You can access keys using dict-like syntax, which is useful
+        >>> myns.foo.bar = True
+        >>> myns['foo'].bar
+        True
 
     Namespaces are useful!
 
@@ -393,6 +397,10 @@ class Namespace(object):
     .. versionadded:: 3.7.0
 
         Added deepcopy capability to Namespaces.
+
+    .. versionadded:: 3.8.0
+
+        Added dict-like access capability to Namespaces.
 
     """
     def __init__(self, obj=None):
