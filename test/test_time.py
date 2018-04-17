@@ -1,4 +1,5 @@
 import time
+import pickle
 import calendar
 from datetime import datetime, timedelta
 
@@ -17,6 +18,12 @@ def test_utc_methods():
     eq_(pytool.time.UTC().utcoffset(datetime.now()), timedelta(0))
     eq_(pytool.time.UTC().tzname(datetime.now()), 'UTC')
     eq_(pytool.time.UTC().dst(datetime.now()), timedelta(0))
+
+
+def test_utc_pickle():
+    pickled = pickle.dumps(pytool.time.UTC())
+    utc = pickle.loads(pickled)
+    eq_(utc, pytool.time.UTC())
 
 
 @mock.patch('datetime.datetime')
