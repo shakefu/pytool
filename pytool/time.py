@@ -77,6 +77,10 @@ class UTC(datetime.tzinfo):
     def __repr__(self):
         return 'UTC()'
 
+    def __reduce__(self):
+        # This method makes the UTC object pickleable
+        return UTC, ()
+
 
 def is_dst(stamp):
     """ Return ``True`` if `stamp` is daylight savings.

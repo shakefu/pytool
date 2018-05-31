@@ -1,4 +1,5 @@
 import gc
+import copy
 import inspect
 
 import pytool
@@ -162,6 +163,14 @@ def test_namespace_base_name():
     eq_(ns.as_dict('ns'), {'ns.foo': 'bar'})
 
 
+def test_namespace_with_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar = 1
+    eq_(ns.as_dict('ns'), {'ns.foo': [{'bar': 1}]})
+
+
 def test_namespace_iterable():
     ns = pytool.lang.Namespace()
     ns.foo = 1
@@ -297,6 +306,14 @@ def test_namespaces_allow_merging_multiple_dicts():
     eq_(ns.bar, 2)
 
 
+def test_namespaces_will_convert_dicts_in_lists():
+    obj = {'foo': [{'bar': 1}]}
+    ns = pytool.lang.Namespace()
+    ns.from_dict(obj)
+
+    eq_(ns.foo[0].bar, 1)
+
+
 def test_namespaces_work_with_dot_notation():
     obj = {'foo.bar': 1}
     ns = pytool.lang.Namespace(obj)
@@ -319,6 +336,24 @@ def test_namespaces_coerce_lists_and_recurse():
 def test_namespaces_reject_top_level_lists():
     obj = {'0': 'zero', '1': 'one', '2': 'two'}
     pytool.lang.Namespace(obj)
+
+
+def test_namespaces_allow_key_access():
+    obj = {'foo': 1, 'bar': 2}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns['foo'], 1)
+
+
+def test_namespaces_allow_key_access_for_reserved_words():
+    obj = {'foo': 1, 'bar': 2, 'in': 3}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns['in'], 3)
+
+
+def test_namespaces_allow_key_access_for_nested_reserved_words():
+    obj = {'foo': {'in': {'bar': 1}}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.foo['in'].bar, 1)
 
 
 def test_hashed_singleton_no_args():
@@ -438,7 +473,7 @@ def test_unflatten():
     eq_(result, expected)
 
 
-def test_copy():
+def test_namespace_copy():
     a = pytool.lang.Namespace()
     a.foo = 'one'
     a.bar = [1, 2, 3]
@@ -450,7 +485,7 @@ def test_copy():
     eq_(b.bar, [1, 2, 3])
 
 
-def test_copy_deeper():
+def test_namespace_copy_deeper():
     a = pytool.lang.Namespace()
     a.foo = [[1, 2], [3, 4]]
     b = a.copy()
@@ -458,3 +493,54 @@ def test_copy_deeper():
 
     eq_(a.foo, [[1, 2], [3, 4]])
     eq_(b.foo, [[100, 2], [3, 4]])
+
+
+def test_namespace_copy_mut():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar = 1
+    ns2 = ns.copy()
+    ns2.foo.bar = 2
+
+    eq_(ns.foo.bar, 1)
+
+
+def test_namespace_copy_mut_deep():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar.baz = 1
+    ns2 = ns.copy()
+    ns2.foo.bar.baz = 2
+
+    eq_(ns.foo.bar.baz, 1)
+
+
+def test_namespace_copy_mut_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar.baz = 1
+
+    ns2 = ns.copy()
+    ns2.foo[0].bar.baz = 2
+
+    eq_(ns.foo[0].bar.baz, 1)
+
+
+def test_namespace_copy_api_deep():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar.baz = 1
+    ns2 = copy.copy(ns)
+    ns2.foo.bar.baz = 2
+
+    eq_(ns.foo.bar.baz, 1)
+
+
+def test_namespace_copy_api_list():
+    ns = pytool.lang.Namespace()
+    ns.foo = []
+    ns.foo.append(pytool.lang.Namespace())
+    ns.foo[0].bar.baz = 1
+
+    ns2 = copy.deepcopy(ns)
+    ns2.foo[0].bar.baz = 2
+
+    eq_(ns.foo[0].bar.baz, 1)

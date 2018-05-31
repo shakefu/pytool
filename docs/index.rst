@@ -15,6 +15,7 @@ Contributors
 ------------
 
 * `shakefu <https://github.com/shakefu>`_ (creator, maintainer)
+* `dshen109 <https://github.com/dshen109>`_
 * `abendig <https://github.com/abendig>`_
 
 
