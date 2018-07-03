@@ -47,5 +47,6 @@ Contributors
 ============
 
 * `shakefu <https://github.com/shakefu>`_ (creator, maintainer)
+* `dshen09 <https://github.com/dshen09>`_ (contributor)
 * `abendig <https://github.com/abendig>`_
 
