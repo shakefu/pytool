@@ -383,6 +383,23 @@ class Namespace(object):
         >>> myns.foo.bar = True
         >>> myns['foo'].bar
         True
+        >>> # Dict-like access lets you traverse namespaces
+        >>> myns['foo.bar']
+        True
+        >>> # Dict-like access lets you traverse lists as well
+        >>> listns['listish.0']
+        'zero'
+        >>> listns['listish.1']
+        'one'
+        >>> # Dict-like access lets you traverse nested lists and namespaces
+        >>> nested = Namespace()
+        >>> nested.values = []
+        >>> nested.values.append(Namespace({'foo': 'bar'}))
+        >>> nested['values.0.foo']
+        'bar'
+        >>> # You can also call the traversal method if you need
+        >>> nested.traversal(['values', 0, 'foo'])
+        'bar'
 
     Namespaces are useful!
 
@@ -419,8 +436,14 @@ class Namespace(object):
             value = value.__get__(self, self.__class__)
         return value
 
-    # Allow for dict-like key access
-    __getitem__ = __getattribute__
+    # Allow for dict-like key access and traversal
+    def __getitem__(self, item):
+        if isinstance(item, six.string_types) and '.' in item:
+            return self.traverse(item.split('.'))
+        try:
+            return self.__getattribute__(item)
+        except AttributeError:
+            return self.__getattr__(item)
 
     def __getattr__(self, name):
         # Allow implicit nested namespaces by attribute access
@@ -561,10 +584,19 @@ class Namespace(object):
 
             "jane"
         """
-        struct = self
-        for k in path:
-            struct = struct[k]
-        return struct
+        ns = self
+        for key in path:
+            try:
+                ns = ns[key]
+            except TypeError as err:
+                # This can happen if key is a str, but ns is a list
+                try:
+                    # Try type coercion to help list indexing
+                    ns = ns[int(key)]
+                except ValueError:
+                    # Raise the original error, not the coertion error
+                    raise err
+        return ns
 
 
 def _split_keys(obj):
