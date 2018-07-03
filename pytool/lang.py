@@ -383,6 +383,23 @@ class Namespace(object):
         >>> myns.foo.bar = True
         >>> myns['foo'].bar
         True
+        >>> # Dict-like access lets you traverse namespaces
+        >>> myns['foo.bar']
+        True
+        >>> # Dict-like access lets you traverse lists as well
+        >>> listns['listish.0']
+        'zero'
+        >>> listns['listish.1']
+        'one'
+        >>> # Dict-like access lets you traverse nested lists and namespaces
+        >>> nested = Namespace()
+        >>> nested.values = []
+        >>> nested.values.append(Namespace({'foo': 'bar'}))
+        >>> nested['values.0.foo']
+        'bar'
+        >>> # You can also call the traversal method if you need
+        >>> nested.traversal(['values', 0, 'foo'])
+        'bar'
 
     Namespaces are useful!
 
