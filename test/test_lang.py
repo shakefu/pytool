@@ -572,10 +572,46 @@ def test_namespace_traverse_dict():
     eq_(val, "blue")
 
 
-@raises(AttributeError)
-def test_namespace_traverse_failure():
+def test_namespace_traverse_failure_creates_more_namespaces():
     ns = pytool.lang.Namespace()
 
     ns.traverse(["foo"])
 
     eq_(ns.as_dict(), {})
+
+
+def test_namespace_simple_key_access_traversal():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar = 'blue'
+
+    eq_(ns['foo.bar'], 'blue')
+
+
+def test_namespace_list_key_access_traversal():
+    ns = pytool.lang.Namespace()
+    ns.foo = ['you', 'blue']
+
+    eq_(ns['foo.0'], 'you')
+    eq_(ns['foo.1'], 'blue')
+
+
+    ns.nested = []
+    ns2 = pytool.lang.Namespace()
+    ns2.foo.bar = 'you'
+    ns.nested.append(ns2)
+
+    eq_(ns['nested.0.foo.bar'], 'you')
+
+
+@raises(IndexError)
+def test_namespace_traversal_bad_list_index():
+    ns = pytool.lang.Namespace()
+    ns.foo = [1, 2]
+
+    ns['foo.2']
+
+
+def test_namespace_traversal_bad_key_index_creates_more_namespaces():
+    ns = pytool.lang.Namespace()
+    ns.one.two.three = 1
+    eq_(ns['one.three'].as_dict(), {})
