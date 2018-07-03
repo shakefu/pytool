@@ -615,3 +615,11 @@ def test_namespace_traversal_bad_key_index_creates_more_namespaces():
     ns = pytool.lang.Namespace()
     ns.one.two.three = 1
     eq_(ns['one.three'].as_dict(), {})
+
+
+@raises(TypeError)
+def test_namespace_traversal_str_key_list_raises_typeerror():
+    ns = pytool.lang.Namespace()
+    ns.foo = [1, 2]
+
+    ns['foo.1e9']
