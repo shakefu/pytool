@@ -420,7 +420,11 @@ class Namespace(object):
         return value
 
     # Allow for dict-like key access
-    __getitem__ = __getattribute__
+    # __getitem__ = __getattribute__
+    def __getitem__(self, item):
+        if isinstance(item, six.string_types) and '.' in item:
+            return ns.traverse(item.split('.'))
+        return self.__getattribute__(item)
 
     def __getattr__(self, name):
         # Allow implicit nested namespaces by attribute access
