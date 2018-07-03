@@ -3,6 +3,9 @@ Changelog
 
 .. module:: pytool
 
+All releases
+""""""""""""
+
 Release are now tracked `on
 GitHub <https://github.com/shakefu/pytool/releases`_. Please visit there to see
 changes from `3.4.2` and later.
