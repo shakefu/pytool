@@ -532,6 +532,39 @@ class Namespace(object):
     __copy__ = copy
     __deepcopy__ = copy
 
+    def traverse(self, path):
+        """ Traverse the Namespace and any nested elements by following the
+            elements in an iterable *path* and return the item found at the end
+            of *path*.
+
+            Traversal is achieved using the __getitem__ method, allowing for
+            traversal of nested structures such as arrays and dictionaries.
+
+            AttributeError is raised if one of the attributes in *path* does
+            not exist at the expected depth.
+
+            :param iterable path: An iterable whose elements specify the keys
+                to path over.
+
+        Example:
+
+            ns = Namespace({"foo":
+                            [Namespace({"name": "john"}),
+                             Namespace({"name": "jane"})]})
+            ns.traverse(["foo", 1, "name"])
+
+            ... returns ...
+
+            "jane"
+        """
+        if copy:
+            struct = self.copy()
+        else:
+            struct = self
+        for k in path:
+            struct = struct[k]
+        return struct
+
 
 def _split_keys(obj):
     """
