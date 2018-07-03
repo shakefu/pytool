@@ -544,3 +544,38 @@ def test_namespace_copy_api_list():
     ns2.foo[0].bar.baz = 2
 
     eq_(ns.foo[0].bar.baz, 1)
+
+
+def test_namespace_traverse():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar = "foobar"
+    val = ns.traverse(["foo", "bar"])
+
+    eq_(val, "foobar")
+
+
+def test_namespace_traverse_list():
+    ns = pytool.lang.Namespace({"foo":
+                                [pytool.lang.Namespace({"name": "john"}),
+                                 pytool.lang.Namespace({"name": "jane"})]})
+    name = ns.traverse(["foo", 0, "name"])
+
+    eq_(name, "john")
+
+
+def test_namespace_traverse_dict():
+    ns = pytool.lang.Namespace()
+    ns.foo = {"first": pytool.lang.Namespace({"color": "red"}),
+              "second": pytool.lang.Namespace({"color": "blue"})}
+    val = ns.traverse(["foo", "second", "color"])
+
+    eq_(val, "blue")
+
+
+@raises(AttributeError)
+def test_namespace_traverse_failure():
+    ns = pytool.lang.Namespace()
+
+    ns.traverse(["foo"])
+
+    eq_(ns.as_dict(), {})
