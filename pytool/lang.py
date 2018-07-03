@@ -419,12 +419,14 @@ class Namespace(object):
             value = value.__get__(self, self.__class__)
         return value
 
-    # Allow for dict-like key access
-    # __getitem__ = __getattribute__
+    # Allow for dict-like key access and traversal
     def __getitem__(self, item):
         if isinstance(item, six.string_types) and '.' in item:
-            return ns.traverse(item.split('.'))
-        return self.__getattribute__(item)
+            return self.traverse(item.split('.'))
+        try:
+            return self.__getattribute__(item)
+        except AttributeError:
+            return self.__getattr__(item)
 
     def __getattr__(self, name):
         # Allow implicit nested namespaces by attribute access
@@ -565,10 +567,19 @@ class Namespace(object):
 
             "jane"
         """
-        struct = self
-        for k in path:
-            struct = struct[k]
-        return struct
+        ns = self
+        for key in path:
+            try:
+                ns = ns[key]
+            except TypeError as err:
+                # This can happen if key is a str, but ns is a list
+                try:
+                    # Try type coercion to help list indexing
+                    ns = ns[int(key)]
+                except ValueError:
+                    # Raise the original error, not the coertion error
+                    raise err
+        return ns
 
 
 def _split_keys(obj):
