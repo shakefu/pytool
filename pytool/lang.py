@@ -402,6 +402,10 @@ class Namespace(object):
 
         Added dict-like access capability to Namespaces.
 
+    .. versionadded:: 3.9.0
+
+        Added traversal by key/index arrays for nested Namespaces and lists
+
     """
     def __init__(self, obj=None):
         if obj is not None:
