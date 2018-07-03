@@ -557,10 +557,7 @@ class Namespace(object):
 
             "jane"
         """
-        if copy:
-            struct = self.copy()
-        else:
-            struct = self
+        struct = self
         for k in path:
             struct = struct[k]
         return struct
