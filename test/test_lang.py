@@ -579,3 +579,25 @@ def test_namespace_traverse_failure():
     ns.traverse(["foo"])
 
     eq_(ns.as_dict(), {})
+
+
+def test_namespace_items():
+    ns = pytool.lang.Namespace()
+    ns.foo = "bar"
+    ns.fooby = "foobar"
+
+    generator = ns.items()
+
+    eq_(next(generator), ("foo", "bar"))
+    eq_(next(generator), ("fooby", "foobar"))
+
+
+def test_namespace_items_nested():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar = "foobar"
+    ns.fooby = "foobar"
+
+    generator = ns.items()
+
+    eq_(next(generator), ("foo.bar", "foobar"))
+    eq_(next(generator), ("fooby", "foobar"))
