@@ -630,18 +630,16 @@ def test_namespace_items():
     ns.foo = "bar"
     ns.fooby = "foobar"
 
-    generator = ns.items()
+    ns_items = {k: v for k, v in ns.items()}
 
-    eq_(next(generator), ("foo", "bar"))
-    eq_(next(generator), ("fooby", "foobar"))
+    eq_(ns_items, {"foo": "bar", "fooby": "foobar"})
 
 
 def test_namespace_items_nested():
     ns = pytool.lang.Namespace()
     ns.foo.bar = "foobar"
-    ns.fooby = "foobar"
+    ns.fooby = "foobaz"
 
-    generator = ns.items()
+    ns_items = {k: v for k, v in ns.items()}
 
-    eq_(next(generator), ("foo.bar", "foobar"))
-    eq_(next(generator), ("fooby", "foobar"))
+    eq_(ns_items, {"foo.bar": "foobar", "fooby": "foobaz"})
