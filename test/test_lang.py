@@ -594,7 +594,6 @@ def test_namespace_list_key_access_traversal():
     eq_(ns['foo.0'], 'you')
     eq_(ns['foo.1'], 'blue')
 
-
     ns.nested = []
     ns2 = pytool.lang.Namespace()
     ns2.foo.bar = 'you'
@@ -623,3 +622,23 @@ def test_namespace_traversal_str_key_list_raises_typeerror():
     ns.foo = [1, 2]
 
     ns['foo.1e9']
+
+
+def test_namespace_items():
+    ns = pytool.lang.Namespace()
+    ns.foo = "bar"
+    ns.fooby = "foobar"
+
+    ns_items = {k: v for k, v in ns.items()}
+
+    eq_(ns_items, {"foo": "bar", "fooby": "foobar"})
+
+
+def test_namespace_items_nested():
+    ns = pytool.lang.Namespace()
+    ns.foo.bar = "foobar"
+    ns.fooby = "foobaz"
+
+    ns_items = {k: v for k, v in ns.items()}
+
+    eq_(ns_items, {"foo.bar": "foobar", "fooby": "foobaz"})

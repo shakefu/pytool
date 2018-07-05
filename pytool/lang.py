@@ -477,7 +477,7 @@ class Namespace(object):
         return bool(self.__dict__)
 
     def iteritems(self, base_name=None):
-        """ Return iterator which returns ``(key, value)`` tuples.
+        """ Return generator which returns ``(key, value)`` tuples.
 
             :param str base_name: Base namespace (optional)
 
@@ -494,6 +494,16 @@ class Namespace(object):
                     yield subkey
             else:
                 yield name, value
+
+    def items(self, base_name=None):
+        """ Return generator which returns ``(key, value)`` tuples.
+
+            Analagous to dict.items() behavior in Python3
+
+            :param str base_name: Base namespace (optional)
+
+        """
+        return self.iteritems(base_name)
 
     def as_dict(self, base_name=None):
         """ Return the current namespace as a dictionary.
