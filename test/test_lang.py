@@ -594,7 +594,6 @@ def test_namespace_list_key_access_traversal():
     eq_(ns['foo.0'], 'you')
     eq_(ns['foo.1'], 'blue')
 
-
     ns.nested = []
     ns2 = pytool.lang.Namespace()
     ns2.foo.bar = 'you'
