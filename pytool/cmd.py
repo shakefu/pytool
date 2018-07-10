@@ -186,11 +186,24 @@ class Command(object):
         signal_handler(STOP_SIGNAL, self.stop)
         self.run()
 
-    def stop(self):
-        """ Exits the currently running process. """
+    def stop(self, *args, **kwargs):
+        """
+        Exits the currently running process with status `0`.
+
+        Override this in your subclass if you wish to implement different
+        SIGINT or SIGTERM handling for your process.
+
+        """
         sys.exit(0)
 
     def reload(self):
-        """ Reloads the command. """
+        """
+        Reloads `pyconfig <https://pypi.org/project/pyconfig/>`_ if it is
+        available.
+
+        Override this in your subclass if you wish to implement different
+        reloading behavior.
+
+        """
         if pyconfig:
             pyconfig.reload()
