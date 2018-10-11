@@ -65,6 +65,11 @@ class UTC(datetime.tzinfo):
             utc_now = datetime.now(UTC())
 
     """
+    @property
+    def _utcoffset(self):
+        """ Helps make this work with pytz. """
+        return datetime.timedelta(0)
+
     def utcoffset(self, stamp):
         return datetime.timedelta(0)
 
