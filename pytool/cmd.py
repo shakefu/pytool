@@ -6,7 +6,12 @@ line utilities.
 
 import sys
 import signal
-import argparse
+
+# Handle the optional configargparse lib
+try:
+    import configargparse as argparse
+except:
+    import argparse
 
 import pytool.text
 try:
