@@ -2,38 +2,37 @@ matrix:
   include:
   - os: linux
     dist: trusty
-    sudo: false
+    # sudo: false
     python: '2.7'
   - os: linux
     dist: trusty
-    sudo: false
+    # sudo: false
     python: '3.5'
   - os: linux
     dist: trusty
-    sudo: false
+    # sudo: false
     python: '3.6'
   - os: linux
     dist: xenial
-    sudo: required
-    # services:
-    #   - docker
+    # sudo: required
     python: '3.7'
-    # env: BUILD_SDIST=true
   - os: linux
-    sudo: false
+    # sudo: false
     python: pypy
   - os: linux
-    sudo: false
+    # sudo: false
     python: pypy3
+  - os: linux
+    dist: trusty
+    # sudo: false
+    env: EXTRAS=configargparse
+    python: '2.7'
+  - os: linux
+    dist: xenial
+    # sudo: required
+    env: EXTRAS=configargparse
+    python: '3.7'
 language: python
-# python:
-#   - "2.7"
-#   - "3.5"
-#   - "3.6"
-#   - "3.7"
-env:
-  - EXTRAS=
-  - EXTRAS=configargparse
 install:
   - pip install .
   - pip install coveralls coverage nose mock $EXTRAS
