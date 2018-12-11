@@ -1,9 +1,10 @@
+import os
 import sys
 
 import mock
 
 import pytool
-from .util import eq_, raises
+from .util import eq_, raises, SkipTest
 
 
 class TestCommand(pytool.cmd.Command):
@@ -46,3 +47,34 @@ def test_stop(exit):
 def test_console_script(start):
     TestCommand().console_script()
     start.assert_called_with(sys.argv[1:])
+
+
+class test_configargparse():
+    def setup(self):
+        if not pytool.cmd.HAS_CAP:
+            raise SkipTest
+
+        class Cmd(pytool.cmd.Command):
+            def parser_opts(self):
+                return dict(auto_env_var_prefix='test_')
+
+            def set_opts(self):
+                self.opt('--test', action='store_true',
+                         help='This is my test option.')
+                self.opt('--config', '-c', is_config_file=True)
+
+            def run(self):
+                pass
+
+        self.Cmd = Cmd
+
+    @mock.patch.dict(os.environ, {'TEST_TEST': 'true'})
+    def test_env_var(self):
+        cmd = self.Cmd()
+        cmd.start([])
+        eq_(cmd.args.test, True)
+
+    def test_conf_file(self):
+        cmd = self.Cmd()
+        cmd.start(['-c', 'test/test_conf.yml'])
+        eq_(cmd.args.test, True)
