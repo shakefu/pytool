@@ -52,6 +52,18 @@ class Command(object):
     class is designed to be used with the ``console_scripts`` entry point to
     create Python-based commands for your packages.
 
+    .. versionadded:: 3.11.0
+
+        If the `configargparse <https://github.com/bw2/ConfigArgParse>`_
+        library is installed, Pytool will automatically use that as a drop-in
+        replacement for the stdlib `argparse
+        <https://docs.python.org/3/howto/argparse.html>`_ module that is used
+        by default.
+
+        You should use :meth:`parser_opts` to give additional configuration
+        arguments if you want to enable `configargparse` features like
+        automatically using environment variables.
+
     **Hello world example**::
 
         # hello.py
