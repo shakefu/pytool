@@ -10,8 +10,10 @@ import signal
 # Handle the optional configargparse lib
 try:
     import configargparse as argparse
+    HAS_CAP = True
 except:
     import argparse
+    HAS_CAP = False
 
 import pytool.text
 try:
@@ -113,9 +115,26 @@ class Command(object):
 
     """
     def __init__(self):
-        self.parser = argparse.ArgumentParser(add_help=False)
+        self.parser = argparse.ArgumentParser(add_help=False,
+                                              **self.parser_opts())
         self.set_opts()
         self.opt('--help', action='help', help='display this help and exit')
+
+    def parser_opts(self):
+        """ Subclasses should override this method to return a dictionary of
+            additional arguments to the parser instance.
+
+            **Example**::
+
+                class MyCommand(Command):
+                    def parser_opts(self):
+                        return dict(
+                                description="Manual description for cmd.",
+                                auto_env_var_help=True,
+                                auto_env_var_prefix=True,
+                                )
+        """
+        return dict()
 
     def set_opts(self):
         """ Subclasses should override this method to configure the command
