@@ -7,8 +7,11 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
+env:
+  - EXTRAS=
+  - EXTRAS=configargparse
 install:
   - pip install .
-  - pip install coveralls coverage
+  - pip install coveralls coverage nose mock $EXTRAS
 script: coverage run --source=pytool setup.py test
 after_success: coveralls
