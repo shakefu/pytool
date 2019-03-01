@@ -5,7 +5,7 @@ Pytool Package
 life easier or fill in gaps in the Python Standard Library.
 
 Pytool is compatible with Python 2 (tested against 2.7) or Python 3.3 and
-higher. *Compatibility added Auguest 4, 2015.*
+higher. *Compatibility added August 4, 2015.*
 
 Pytool's source is hosted on Github: `<http://github.com/shakefu/pytool>`_
 
