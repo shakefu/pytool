@@ -1,7 +1,10 @@
 import os
 import sys
 
+import six
 import mock
+
+from nose import SkipTest
 
 import pytool
 from .util import eq_, raises, SkipTest
@@ -53,6 +56,8 @@ def test_pass_coverage():
 
 
 def test_subcommand_no_args():
+    if six.PY2 and not pytool.cmd.HAS_CAP:
+        raise SkipTest
     cmd = TestSubcommand()
     cmd.start([])
     eq_(cmd.args.test, False)

@@ -217,6 +217,9 @@ class Command(object):
         Any additional positional or keyword arguments will be passed to the
         ``ArgumentParser`` instance created.
 
+        .. note:: This requires Python 3 or the configargparse library to work
+           correctly.
+
         **Example**::
 
             class MyCommand(Command):
@@ -242,12 +245,15 @@ class Command(object):
 
         if not self.subparsers:
             self.subparsers = self.parser.add_subparsers(dest='command')
+
         parser = self.subparsers.add_parser(name, *args, **kwargs)
         parser.set_defaults(func=run_func)
+
         # Shenanigans so we can reuse self.opt()
         opt, self.opt = self.opt, parser.add_argument
         func()
         self.opt = opt
+
         # Give it back for any further fiddling
         return parser
 
