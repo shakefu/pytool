@@ -240,7 +240,7 @@ class Command(object):
         :param function func: Function to add
 
         """
-        if six.PY2 and not configargparse:
+        if six.PY2 and not HAS_CAP:
             raise RuntimeError("Python 3 or configargparse library required.")
 
         if not self.subparsers:
