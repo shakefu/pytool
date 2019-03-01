@@ -250,7 +250,8 @@ class Command(object):
         parser.set_defaults(func=run_func)
 
         # Shenanigans so we can reuse self.opt()
-        opt, self.opt = self.opt, parser.add_argument
+        opt = self.opt
+        self.opt = parser.add_argument
         func()
         self.opt = opt
 
