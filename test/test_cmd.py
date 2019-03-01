@@ -63,6 +63,8 @@ def test_subcommand_no_args():
 
 
 def test_subcommand_with_arg():
+    if six.PY2:
+        raise SkipTest
     cmd = TestSubcommand()
     cmd.start(['--test'])
     eq_(cmd.args.test, True)
