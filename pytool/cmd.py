@@ -129,6 +129,7 @@ class Command(object):
     def __init__(self):
         self.parser = argparse.ArgumentParser(add_help=False,
                                               **self.parser_opts())
+        self.subparsers = None
         self.set_opts()
         self.opt('--help', action='help', help='display this help and exit')
 
@@ -208,6 +209,45 @@ class Command(object):
         # And use the raw class so it doesn't strip our formatting
         self.parser.formatter_class = argparse.RawDescriptionHelpFormatter
 
+    def subcommand(self, name, func, run_func, *args, **kwargs):
+        """
+        Add a subcommand `name` with setup `func` and main `run_func` to the
+        argument parser.
+
+        Any additional positional or keyword arguments will be passed to the
+        ``ArgumentParser`` instance created.
+
+        **Example**::
+
+            class MyCommand(Command):
+                def set_opts(self):
+                    self.subcommand('thing', self.thing, self.run_thing)
+
+                def thing(self):
+                    # Set thing specific options
+                    self.opt('--thing', 't', help="Thing to do")
+
+                def run_thing(self):
+                    # This runs if the thing subcommand is invoked
+                    pass
+
+                def run(self):
+                    # This runs if there is no subcommand
+
+        :param function func: Function to add
+
+        """
+        if not self.subparsers:
+            self.subparsers = self.parser.add_subparsers(dest='command')
+        parser = self.subparsers.add_parser(name, *args, **kwargs)
+        parser.set_defaults(func=run_func)
+        # Shenanigans so we can reuse self.opt()
+        opt, self.opt = self.opt, parser.add_argument
+        func()
+        self.opt = opt
+        # Give it back for any further fiddling
+        return parser
+
     @classmethod
     def console_script(cls):
         """ Method used to start the command when launched from a distutils
@@ -220,6 +260,9 @@ class Command(object):
         self.args = self.parser.parse_args(args)
         signal_handler(RELOAD_SIGNAL, self.reload)
         signal_handler(STOP_SIGNAL, self.stop)
+        print(self.args)
+        if self.subparsers and self.args.command:
+            return self.args.func()
         self.run()
 
     def stop(self, *args, **kwargs):

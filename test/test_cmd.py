@@ -15,6 +15,21 @@ class TestCommand(pytool.cmd.Command):
         pass
 
 
+class TestSubcommand(pytool.cmd.Command):
+    def set_opts(self):
+        self.opt('--test', action='store_true')
+        self.subcommand('action', self.action, self.run_action)
+
+    def action(self):
+        self.opt('--act', action='store_true')
+
+    def run_action(self):
+        pass
+
+    def run(self):
+        pass
+
+
 def test_command_no_args():
     cmd = TestCommand()
     cmd.start([])
@@ -35,6 +50,36 @@ def test_not_implemented():
 def test_pass_coverage():
     # This is a noop
     pytool.cmd.Command().set_opts()
+
+
+def test_subcommand_no_args():
+    cmd = TestSubcommand()
+    cmd.start([])
+    eq_(cmd.args.test, False)
+    eq_(cmd.args.command, None)
+
+
+def test_subcommand_with_arg():
+    cmd = TestSubcommand()
+    cmd.start(['--test'])
+    eq_(cmd.args.test, False)
+    eq_(cmd.args.command, None)
+
+
+def test_subcommand_with_arg():
+    cmd = TestSubcommand()
+    cmd.start(['action'])
+    eq_(cmd.args.test, False)
+    eq_(cmd.args.command, 'action')
+    eq_(cmd.args.act, False)
+
+
+def test_subcommand_with_args():
+    cmd = TestSubcommand()
+    cmd.start(['--test', 'action', '--act'])
+    eq_(cmd.args.test, True)
+    eq_(cmd.args.command, 'action')
+    eq_(cmd.args.act, True)
 
 
 @mock.patch('sys.exit')
