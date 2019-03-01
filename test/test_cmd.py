@@ -65,7 +65,7 @@ def test_subcommand_no_args():
 def test_subcommand_with_arg():
     cmd = TestSubcommand()
     cmd.start(['--test'])
-    eq_(cmd.args.test, False)
+    eq_(cmd.args.test, True)
     eq_(cmd.args.command, None)
 
 
