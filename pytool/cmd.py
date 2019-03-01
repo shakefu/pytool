@@ -270,7 +270,6 @@ class Command(object):
         self.args = self.parser.parse_args(args)
         signal_handler(RELOAD_SIGNAL, self.reload)
         signal_handler(STOP_SIGNAL, self.stop)
-        print(self.args)
         if self.subparsers and self.args.command:
             return self.args.func()
         self.run()
