@@ -3,7 +3,6 @@ This module contains helpers related to writing scripts and creating command
 line utilities.
 
 """
-import six
 import sys
 import signal
 
@@ -11,7 +10,7 @@ import signal
 try:
     import configargparse as argparse
     HAS_CAP = True
-except:
+except ImportError:
     import argparse
     HAS_CAP = False
 
@@ -217,9 +216,6 @@ class Command(object):
         Any additional positional or keyword arguments will be passed to the
         ``ArgumentParser`` instance created.
 
-        .. note:: This requires Python 3 or the configargparse library to work
-           correctly.
-
         **Example**::
 
             class MyCommand(Command):
@@ -240,9 +236,6 @@ class Command(object):
         :param function func: Function to add
 
         """
-        if six.PY2 and not HAS_CAP:
-            raise RuntimeError("Python 3 or configargparse library required.")
-
         if not self.subparsers:
             self.subparsers = self.parser.add_subparsers(dest='command')
 
