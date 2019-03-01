@@ -216,6 +216,8 @@ class Command(object):
         Any additional positional or keyword arguments will be passed to the
         ``ArgumentParser`` instance created.
 
+        .. versionadded:: 3.12.0
+
         **Example**::
 
             class MyCommand(Command):
