@@ -44,8 +44,8 @@ def wrap(text, width=70, indent=''):
         >>>
 
     """
-    initial_indent = indent  # Preserve this for later, since we reuse `indent`
-                             # as a variable
+    # Preserve this for later, since we reuse `indent` as a variable
+    initial_indent = indent
     # De-indent the text and remove any leading newlines
     text = textwrap.dedent(text).lstrip('\n')
     # Split the text into lines
@@ -58,8 +58,8 @@ def wrap(text, width=70, indent=''):
     c = 0  # The current paragraph index
     line = lines[0]  # The current line we're parsing
     last_indent = len(line) - len(line.lstrip())  # Last line indent
-    paragraphs = [line + ' ']  # List of paragraphs, primed with the first
-                               # wrapped line fragment
+    # List of paragraphs, primed with the first wrapped line fragment
+    paragraphs = [line + ' ']
     for i in range(1, len(lines)):
         # Strip trailing spaces, which may just be random whitespace
         line = lines[i].rstrip()
@@ -85,7 +85,7 @@ def wrap(text, width=70, indent=''):
         # same paragraph, and we just add it to the current paragraph
         paragraphs[c] += line.lstrip() + ' '
 
-    # Iterate over the paragraphs rewrapping them at 70 chrs 
+    # Iterate over the paragraphs rewrapping them at 70 chrs
     for i in range(len(paragraphs)):
         # Get the paragraph as a single line
         line = paragraphs[i]
@@ -94,7 +94,8 @@ def wrap(text, width=70, indent=''):
         sub_indent = initial_indent + (sub_indent * ' ')
         # Wrap the line into a paragraph
         wrapper = textwrap.TextWrapper(initial_indent=initial_indent,
-                subsequent_indent=sub_indent, width=width)
+                                       subsequent_indent=sub_indent,
+                                       width=width)
         line = wrapper.fill(line)
         # Remove trailing whitespace
         paragraphs[i] = line.rstrip()
@@ -102,4 +103,3 @@ def wrap(text, width=70, indent=''):
     # Join all the wrapped paragraphs into a single string
     text = '\n'.join(paragraphs)
     return text
-

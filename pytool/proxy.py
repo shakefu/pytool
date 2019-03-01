@@ -1,6 +1,7 @@
 """
 This module contains implmentations of proxy-list and proxy-dictionary objects.
 """
+# flake8: noqa
 import collections
 
 
