@@ -3,7 +3,7 @@ This module contains helpers related to writing scripts and creating command
 line utilities.
 
 """
-
+import six
 import sys
 import signal
 
@@ -237,6 +237,9 @@ class Command(object):
         :param function func: Function to add
 
         """
+        if six.PY2 and not configargparse:
+            raise RuntimeError("Python 3 or configargparse library required.")
+
         if not self.subparsers:
             self.subparsers = self.parser.add_subparsers(dest='command')
         parser = self.subparsers.add_parser(name, *args, **kwargs)
