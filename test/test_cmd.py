@@ -19,7 +19,7 @@ class TestCommand(pytool.cmd.Command):
 class TestSubcommand(pytool.cmd.Command):
     def set_opts(self):
         self.opt('--test', action='store_true')
-        self.subcommand('action', self.action, self.run_action, required=False)
+        self.subcommand('action', self.action, self.run_action)
 
     def action(self):
         self.opt('--act', action='store_true')
