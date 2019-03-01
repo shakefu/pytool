@@ -65,6 +65,8 @@ def test_subcommand_no_args():
 
 
 def test_subcommand_with_arg():
+    if six.PY2 and not pytool.cmd.HAS_CAP:
+        raise SkipTest
     cmd = TestSubcommand()
     cmd.start(['--test'])
     eq_(cmd.args.test, False)
@@ -72,6 +74,8 @@ def test_subcommand_with_arg():
 
 
 def test_subcommand_with_arg():
+    if six.PY2 and not pytool.cmd.HAS_CAP:
+        raise SkipTest
     cmd = TestSubcommand()
     cmd.start(['action'])
     eq_(cmd.args.test, False)
@@ -80,6 +84,8 @@ def test_subcommand_with_arg():
 
 
 def test_subcommand_with_args():
+    if six.PY2 and not pytool.cmd.HAS_CAP:
+        raise SkipTest
     cmd = TestSubcommand()
     cmd.start(['--test', 'action', '--act'])
     eq_(cmd.args.test, True)
