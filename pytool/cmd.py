@@ -6,6 +6,8 @@ line utilities.
 import sys
 import signal
 
+from pytool.lang import UNSET
+
 # Handle the optional configargparse lib
 try:
     import configargparse as argparse
@@ -202,7 +204,7 @@ class Command(object):
         if not self.parser:
             return
 
-        description = pytool.text.wrap(description, indent='    ')
+        description = pytool.text.wrap(description)
         # Update the parser object with the new description
         self.parser.description = description
         # And use the raw class so it doesn't strip our formatting
@@ -239,7 +241,22 @@ class Command(object):
 
         """
         if not self.subparsers:
-            self.subparsers = self.parser.add_subparsers(dest='command')
+            self.subparsers = self.parser.add_subparsers(title='subcommands',
+                                                         dest='command')
+
+        # Provide good wrapping
+        if 'description' in kwargs:
+            kwargs['description'] = pytool.text.wrap(kwargs['description'])
+
+        # Propagate environment variable prefix settings
+        prefix = getattr(self.parser, '_auto_env_var_prefix', UNSET)
+        if prefix is not UNSET:
+            kwargs['auto_env_var_prefix'] = prefix
+
+        # Propagate environment variable help settings
+        add_help = getattr(self.parser, '_add_env_var_help', UNSET)
+        if add_help is not UNSET:
+            kwargs['add_env_var_help'] = add_help
 
         parser = self.subparsers.add_parser(name, *args, **kwargs)
         parser.set_defaults(func=run_func)
