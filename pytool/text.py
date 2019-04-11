@@ -1,12 +1,32 @@
 """
 This module contains text related things that make life easier.
 """
+import os
+import shutil
 import textwrap
 
+import six
 from six.moves import range
 
 
-def wrap(text, width=70, indent=''):
+def columns(default=79):
+    """
+    Return the number of text columns for the current console or TTY.
+
+    On certain systems it may be necessary to set the ``COLUMNS`` environment
+    variable if you want this method to work correctly.
+
+    Uses `default` (79) if no value can be found.
+
+    """
+    if six.PY34:
+        width, _ = shutil.get_terminal_size()
+        return width - 1
+
+    return os.environ.get('COLUMNS', default)
+
+
+def wrap(text, width=None, indent=''):
     """
     Return `text` wrapped to `width` while trimming leading indentation and
     preserving paragraphs.
@@ -15,8 +35,12 @@ def wrap(text, width=70, indent=''):
     strings that preserve paragraphs, whitespace, and any indentation beyond
     the baseline.
 
+    The default wrap width is the number of columns available in the current
+    console or TTY. If the columns can't be found, then the default wrap width
+    is ``79``.
+
     :param text: Text to wrap
-    :param width: Width to wrap text at (default: 70)
+    :param width: Width to wrap text at (default: text column width)
     :param indent: String to indent text with (default: '')
     :type text: str
     :type width: int
@@ -44,6 +68,7 @@ def wrap(text, width=70, indent=''):
         >>>
 
     """
+    width = width or columns()
     # Preserve this for later, since we reuse `indent` as a variable
     initial_indent = indent
     # De-indent the text and remove any leading newlines
