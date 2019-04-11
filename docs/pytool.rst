@@ -4,6 +4,9 @@ pytool: Python helper package
 This package contains a lot of helpful little methods and functions to make
 your life a little easier and your day a little better. Enjoy!
 
+If you would like to see something added here, feel free to open up a `GitHub
+issue <https://github.com/shakefu/pytool/issues>`_.
+
 .. contents::
 
 :mod:`pytool.cmd`: Command helpers
