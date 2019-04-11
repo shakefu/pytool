@@ -7,7 +7,7 @@ life easier or fill in gaps in the Python Standard Library.
 Pytool is compatible with Python 2 (tested against 2.7) or Python 3.3 and
 higher. *Compatibility added August 4, 2015.*
 
-Pytool's source is hosted on Github: `<http://github.com/shakefu/pytool>`_
+Pytool's source is hosted on Github: `<https://github.com/shakefu/pytool>`_
 
 Any comments, issues or requests should be submitted via Github:
 `<https://github.com/shakefu/pytool/issues>`_
@@ -22,7 +22,8 @@ Any comments, issues or requests should be submitted via Github:
 Documentation
 -------------
 
-Read the `complete documentation <http://pytool.readthedocs.org/en/latest/>`_!
+Read the `complete documentation <https://pytool.readthedocs.org/en/latest/>`_
+on `Read the Docs <https://readthedocs.org>`_!
 
 Installation
 """"""""""""
@@ -40,8 +41,8 @@ Pytool is a collection of common and useful functions designed to help your
 code be easier to read, write and maintain. The API is well documented with
 examples of how they might be used.
 
-See the `complete documentation <http://pytool.readthedocs.org/en/latest/>`_ on
-Read The Docs for more information.
+See the `complete documentation <https://pytool.readthedocs.org/en/latest/>`_
+on Read The Docs for more information.
 
 Contributors
 ============
