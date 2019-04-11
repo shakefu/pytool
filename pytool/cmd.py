@@ -281,7 +281,10 @@ class Command(object):
     def start(self, args):
         """ Starts a command and registers single handlers. """
         if six.PY3 and sys.version_info >= (3, 7):
-            self.args = self.parser.parse_intermixed_args(args)
+            # Unfortunately this doesn't work and I don't know why... will fix
+            # it later.
+            # self.args = self.parser.parse_intermixed_args(args)
+            self.args = self.parser.parse_args(args)
         else:
             self.args = self.parser.parse_args(args)
         signal_handler(RELOAD_SIGNAL, self.reload)
