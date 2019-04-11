@@ -6,6 +6,7 @@ line utilities.
 import sys
 import signal
 
+import six
 from pytool.lang import UNSET
 
 # Handle the optional configargparse lib
@@ -279,7 +280,10 @@ class Command(object):
 
     def start(self, args):
         """ Starts a command and registers single handlers. """
-        self.args = self.parser.parse_intermixed_args(args)
+        if six.PY3 and sys.version_info >= (3, 7):
+            self.args = self.parser.parse_intermixed_args(args)
+        else:
+            self.args = self.parser.parse_args(args)
         signal_handler(RELOAD_SIGNAL, self.reload)
         signal_handler(STOP_SIGNAL, self.stop)
         if self.subparsers and self.args.command:
