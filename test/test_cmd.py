@@ -18,7 +18,9 @@ class TestCommand(pytool.cmd.Command):
 
 class TestSubcommand(pytool.cmd.Command):
     def parser_opts(self):
-        return dict(auto_env_var_prefix='test_')
+        if pytool.cmd.HAS_CAP:
+            return dict(auto_env_var_prefix='test_')
+        return dict()
 
     def set_opts(self):
         self.opt('--test', action='store_true')
