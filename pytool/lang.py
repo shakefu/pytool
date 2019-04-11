@@ -459,15 +459,20 @@ class Namespace(object):
 
         obj = self
         for name in names:
+            # Easy check for membership without triggering __getattr__ and
+            # creating new empty Namespace attributes in the checked object
+            if isinstance(obj, Namespace) and name not in obj.__dict__:
+                return False
+
+            # Otherwise try to continue down the tree in a normal way
             obj = getattr(obj, name)
 
+        # Check the Namespace object for emptiness
         if isinstance(obj, Namespace):
-            if obj.__dict__:
-                return True
-            else:
-                return False
-        else:
-            return True
+            return bool(obj.__dict__)
+
+        # Otherwise we found what we wanted
+        return True
 
     def __nonzero__(self):
         return bool(self.__dict__)

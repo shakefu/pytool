@@ -200,6 +200,17 @@ def test_namespace_in():
     ok_('hello.banana' not in ns)
 
 
+def test_namespace_contains_does_not_create_new_fields():
+    ns = pytool.lang.Namespace()
+    ns.a = 'a'
+    ok_('a' in ns)
+    ok_('b' not in ns.__dict__)
+    ok_('b' not in ns)
+    # Make sure we didn't create an empty entry with the contains check
+    ok_('b' not in ns.__dict__)
+    eq_(ns.as_dict(), {'a': 'a'})
+
+
 def test_namespace_evaluates_to_false_when_empty():
     ns = pytool.lang.Namespace()
     eq_(bool(ns), False)
