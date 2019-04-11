@@ -29,7 +29,7 @@ def test_wrap():
                             Even multiple indents should work out well, which I
                             really hope they do.
                     """
-    text = pytool.text.wrap(text)
+    text = pytool.text.wrap(text, width=70)
     eq_(text, """\
 This is a description and it is long and spans multiple lines. Hooray.
     It should be indented here and this long line should work out well
@@ -55,5 +55,6 @@ def test_wrap_preserves_first_line_whitespace():
                 production.
         """
 
-    eq_(pytool.text.wrap(text), "This tool is used for managing all the "
+    text = pytool.text.wrap(text, width=70)
+    eq_(text, "This tool is used for managing all the "
         "splits in dev, test and\nproduction.\n")
