@@ -248,16 +248,18 @@ class Command(object):
         # Provide good wrapping
         if 'description' in kwargs:
             kwargs['description'] = pytool.text.wrap(kwargs['description'])
+            kwargs.setdefault('formatter_class',
+                              argparse.RawDescriptionHelpFormatter)
 
         # Propagate environment variable prefix settings
         prefix = getattr(self.parser, '_auto_env_var_prefix', UNSET)
         if prefix is not UNSET:
-            kwargs['auto_env_var_prefix'] = prefix
+            kwargs.setdefault('auto_env_var_prefix', prefix)
 
         # Propagate environment variable help settings
         add_help = getattr(self.parser, '_add_env_var_help', UNSET)
         if add_help is not UNSET:
-            kwargs['add_env_var_help'] = add_help
+            kwargs.setdefault('add_env_var_help', add_help)
 
         parser = self.subparsers.add_parser(name, *args, **kwargs)
         parser.set_defaults(func=run_func)

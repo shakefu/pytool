@@ -17,6 +17,9 @@ class TestCommand(pytool.cmd.Command):
 
 
 class TestSubcommand(pytool.cmd.Command):
+    def parser_opts(self):
+        return dict(auto_env_var_prefix='test_')
+
     def set_opts(self):
         self.opt('--test', action='store_true')
         self.subcommand('action', self.action, self.run_action)
@@ -60,6 +63,14 @@ def test_subcommand_no_args():
     cmd.start([])
     eq_(cmd.args.test, False)
     eq_(cmd.args.command, None)
+
+
+def test_subcommand_env_var_prefix():
+    if six.PY2 or not pytool.cmd.HAS_CAP:
+        raise SkipTest
+    cmd = TestSubcommand()
+    cmd.start([])
+    eq_(cmd.parser._auto_env_var_prefix, 'test_')
 
 
 def test_subcommand_with_arg():
