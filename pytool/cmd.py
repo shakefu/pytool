@@ -142,8 +142,8 @@ class Command(object):
                     def parser_opts(self):
                         return dict(
                                 description="Manual description for cmd.",
-                                auto_env_var_help=True,
-                                auto_env_var_prefix=True,
+                                add_env_var_help=True,
+                                auto_env_var_prefix='mycmd_',
                                 )
         """
         return dict()
