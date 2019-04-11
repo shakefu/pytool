@@ -101,6 +101,11 @@ your life a little easier and your day a little better. Enjoy!
 
 .. autofunction:: wrap
 
+:func:`columns`
+------------
+
+.. autofunction:: columns
+
 :mod:`pytool.time`: Time and Date related helpers
 =================================================
 
