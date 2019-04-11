@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 def readme():
     try:
         return open('README.rst').read()
-    except:
+    except Exception as err:  # noqa
         pass
     return ''
 
@@ -13,9 +13,9 @@ def version():
     try:
         import re
         return re.search("^__version__ = '(.*)'",
-                open('pytool/__init__.py').read(), re.M).group(1)
-    except:
-        raise RuntimeError("Could not get version")
+                         open('pytool/__init__.py').read(), re.M).group(1)
+    except Exception as err:
+        raise RuntimeError("Could not get version:\n" + str(err))
 
 
 setup(
@@ -50,4 +50,3 @@ setup(
             'Topic :: Utilities',
             ]
         )
-
