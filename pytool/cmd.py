@@ -279,7 +279,7 @@ class Command(object):
 
     def start(self, args):
         """ Starts a command and registers single handlers. """
-        self.args = self.parser.parse_args(args)
+        self.args = self.parser.parse_intermixed_args(args)
         signal_handler(RELOAD_SIGNAL, self.reload)
         signal_handler(STOP_SIGNAL, self.stop)
         if self.subparsers and self.args.command:
