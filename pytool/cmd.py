@@ -5,6 +5,7 @@ line utilities.
 """
 import sys
 import signal
+import functools
 
 import six
 from pytool.lang import UNSET
@@ -12,9 +13,11 @@ from pytool.lang import UNSET
 # Handle the optional configargparse lib
 try:
     import configargparse as argparse
+    DefaultFormatter = argparse.ArgumentDefaultsRawHelpFormatter
     HAS_CAP = True
 except ImportError:
     import argparse
+    DefaultFormatter = argparse.RawDescriptionHelpFormatter
     HAS_CAP = False
 
 import pytool.text
@@ -177,8 +180,14 @@ class Command(object):
     def run(self):
         """ Subclasses should override this method to start the command
             process. In other words, this is where the magic happens.
+
+            .. versionchanged:: 3.15.0
+
+                By default, this will just print help and exit.
+
         """
-        raise NotImplementedError("'run' is not implemented")
+        self.parser.print_help()
+        sys.exit(1)
 
     def describe(self, description):
         """
@@ -209,15 +218,25 @@ class Command(object):
         # Update the parser object with the new description
         self.parser.description = description
         # And use the raw class so it doesn't strip our formatting
-        self.parser.formatter_class = argparse.RawDescriptionHelpFormatter
+        self.parser.formatter_class = CommandFormatter
 
-    def subcommand(self, name, func, run_func, *args, **kwargs):
+    def subcommand(self, name, opt_func=None, run_func=None, *args, **kwargs):
         """
-        Add a subcommand `name` with setup `func` and main `run_func` to the
-        argument parser.
+        Add a subcommand `name` with setup `opt_func` and main `run_func` to
+        the argument parser.
 
         Any additional positional or keyword arguments will be passed to the
         ``ArgumentParser`` instance created.
+
+        .. versionchanged:: 3.15.0
+
+            Either `opt_func` or `run_func` may be omitted, in which case a
+            method with a name matching the subcommand name plus ``_opts`` will
+            be bound to `opt_func` and a method matching the subcommand name
+            will be bound to `run_func`.
+
+            For example, a subcommand ``'write'`` will bind the methods
+            :meth:`write_opts` and :meth:`write`.
 
         .. versionadded:: 3.12.0
 
@@ -238,18 +257,32 @@ class Command(object):
                 def run(self):
                     # This runs if there is no subcommand
 
-        :param function func: Function to add
+        :param str name: Subcommand name
+        :param function opt_func: Options function to add
+        :param function run_func: Run function to add
+        :param args: Arguments to pass to the subparser constructor
+        :param kwargs: Keyword arguments to pass to the subparser constructor
 
         """
         if not self.subparsers:
             self.subparsers = self.parser.add_subparsers(title='subcommands',
                                                          dest='command')
 
+        if opt_func is None:
+            opt_func = getattr(self, name.replace('-', '_') + '_opts', None)
+
+        if run_func is None:
+            run_func = getattr(self, name.replace('-', '_'),
+                               self.parser.print_help)
+
+        # Map help text to command descriptions for extra convenience
+        if 'help' in kwargs and 'description' not in kwargs:
+            kwargs['description'] = kwargs['help']
+
         # Provide good wrapping
         if 'description' in kwargs:
             kwargs['description'] = pytool.text.wrap(kwargs['description'])
-            kwargs.setdefault('formatter_class',
-                              argparse.RawDescriptionHelpFormatter)
+            kwargs.setdefault('formatter_class', CommandFormatter)
 
         # Propagate environment variable prefix settings
         prefix = getattr(self.parser, '_auto_env_var_prefix', UNSET)
@@ -265,10 +298,11 @@ class Command(object):
         parser.set_defaults(func=run_func)
 
         # Shenanigans so we can reuse self.opt()
-        opt = self.opt
-        self.opt = parser.add_argument
-        func()
-        self.opt = opt
+        if opt_func:
+            _opt = self.opt
+            self.opt = parser.add_argument
+            opt_func()
+            self.opt = _opt
 
         # Give it back for any further fiddling
         return parser
@@ -316,3 +350,78 @@ class Command(object):
         """
         if pyconfig:
             pyconfig.reload()
+
+
+class CommandFormatter(DefaultFormatter):
+    """
+    Helper class that allows for wide formatting of the options blocks in the
+    command, which makes it much more readable.
+
+    """
+    def __init__(self, *args, **kwargs):
+        width = pytool.text.columns()
+        max_help_position = max(40, int(width / 2))
+        kwargs['max_help_position'] = max_help_position
+        super().__init__(*args, **kwargs)
+
+
+def opt(*args, **kwargs):
+    """
+    Factory function for creating :class:`Command.opt` bindings at the class
+    level for reuse in subcommands.
+
+    **Example**::
+
+        class MyCommand(Command):
+            opt_url = opt('--url', help="Target URL")
+
+            def set_opts(self):
+                self.subcommand('send', self.send_opts, self.send)
+                self.subcommand('listen', self.listen_opts, self.listen)
+
+            def send_opts(self):
+                # This automatically calls self.opt with the correct arguments
+                self.opt_url()
+
+            def listen_opts(self):
+                # It can be reused easily
+                self.opt_url()
+
+            # ...
+
+    """
+    if args:
+        name = 'opt_' + args[0].lstrip('-')
+
+    def opt(self):
+        self.opt(*args, **kwargs)
+
+    opt.__name__ = name
+
+    return opt
+
+
+def run(func):
+    """
+    Decorates a function to handle thrown errors by writing the exception
+    string to stderr and then exiting with status 1.
+
+    **Example**::
+
+        class MyCommand(Command):
+            @run
+            def run(self):
+                ...
+
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as err:
+            sys.stderr.write(str(err))
+            sys.stderr.write('\n')
+            sys.stderr.flush()
+            sys.exit(1)
+    return wrapper
+
