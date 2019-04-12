@@ -5,7 +5,7 @@ import six
 import mock
 
 import pytool
-from .util import eq_, raises, SkipTest
+from .util import eq_, SkipTest
 
 
 class TestCommand(pytool.cmd.Command):
