@@ -48,14 +48,14 @@ def test_command_with_arg():
     eq_(cmd.args.test, True)
 
 
-@raises(NotImplementedError)
-def test_not_implemented():
-    pytool.cmd.Command().start([])
-
-
 def test_pass_coverage():
     # This is a noop
     pytool.cmd.Command().set_opts()
+
+
+def test_pass_coverage_again():
+    # This is a noop
+    pytool.cmd.Command().parser_opts()
 
 
 def test_subcommand_no_args():
