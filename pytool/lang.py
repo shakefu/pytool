@@ -588,16 +588,12 @@ class Namespace(object):
             :param iterable path: An iterable whose elements specify the keys
                 to path over.
 
-        Example:
+            Example usage::
 
-            ns = Namespace({"foo":
-                            [Namespace({"name": "john"}),
-                             Namespace({"name": "jane"})]})
-            ns.traverse(["foo", 1, "name"])
-
-            ... returns ...
-
-            "jane"
+                ns = Namespace({"foo":
+                                [Namespace({"name": "john"}),
+                                Namespace({"name": "jane"})]})
+                ns.traverse(["foo", 1, "name"])  # Returns "jane"
         """
         ns = self
         for key in path:
@@ -619,7 +615,7 @@ def _split_keys(obj):
     Return a generator that yields 2-tuples of lists representing dot-notation
     keys split on the dots, and their values in *obj*.
 
-    Example:
+    Example::
 
         {'foo.bar': 0, 'foo.spam': 1, 'parrot': 2}
 
@@ -703,7 +699,7 @@ def _join_lists(obj):
 
     :param obj: Arbitrary object
 
-    Example:
+    Example::
 
         {'0': 'apple', '1': 'pear', '2': 'orange'}
 
