@@ -367,6 +367,16 @@ def test_namespaces_allow_key_access_for_nested_reserved_words():
     eq_(ns.foo['in'].bar, 1)
 
 
+def test_namespace_can_merge_dict_manually():
+    ns = pytool.lang.Namespace({'foo': {'bar': 1}})
+    ns2 = pytool.lang.Namespace({'foo': {'doot': 2, 'bar': 3}})
+    merge = ns.as_dict()
+    merge.update(ns2.as_dict())
+    ns = pytool.lang.Namespace(merge)
+    eq_(ns.foo.doot, 2)
+    eq_(ns.foo.bar, 3)
+
+
 def test_hashed_singleton_no_args():
     t = HashedSingleton()
     ok_(t is HashedSingleton())
