@@ -32,7 +32,11 @@ try:
 except ImportError:
     signal_handler = signal.signal
 else:
-    signal_handler = gevent.signal
+    try:
+        signal_handler = gevent.signal_handler
+    except AttributeError:
+        # handle gevent<=1.4.0
+        signal_handler = gevent.signal
 
 
 __all__ = [
