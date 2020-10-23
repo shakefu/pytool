@@ -18,7 +18,7 @@ matrix:
     # sudo: required
     python: '3.8'
   - os: linux
-    dist: bionic 
+    dist: focal 
     # sudo: required
     python: '3.9'
   - os: linux
