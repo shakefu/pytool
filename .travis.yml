@@ -18,6 +18,14 @@ matrix:
     # sudo: required
     python: '3.7'
   - os: linux
+    dist: xenial
+    # sudo: required
+    python: '3.8'
+  - os: linux
+    dist: xenial
+    # sudo: required
+    python: '3.9'
+  - os: linux
     # sudo: false
     python: pypy
   - os: linux
@@ -32,7 +40,7 @@ matrix:
     dist: xenial
     # sudo: required
     env: EXTRAS=configargparse
-    python: '3.7'
+    python: '3.8'
 language: python
 install:
   - pip install .
