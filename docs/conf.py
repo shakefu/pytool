@@ -3,7 +3,8 @@ import pytool
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
+              'sphinx.ext.intersphinx']]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -16,7 +17,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pytool'
-copyright = u'2012, Author'
+copyright = u'2012, Jacob Alheid'
 
 # The short X.Y version.
 version = pytool.__version__
@@ -29,6 +30,11 @@ exclude_patterns = ['_build']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "simplejson": ("https://simplejson.readthedocs.io/en/latest/", None),
+}
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -52,6 +58,6 @@ man_pages = [
 # Options for Epub output
 # Bibliographic Dublin Core info.
 epub_title = u'pytool'
-epub_author = u'Author'
-epub_publisher = u'Author'
-epub_copyright = u'2012, Author'
+epub_author = u'Jacob Alheid'
+epub_publisher = u'Jacob Alheid'
+epub_copyright = u'2012, Jacob Alheid'
