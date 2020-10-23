@@ -665,7 +665,7 @@ class Keyspace(Namespace):
     _VALID_NAME = re.compile('.*')
 
     def __init__(self, obj=None):
-        super().__init__(obj)
+        super(Keyspace, self).__init__(obj)
 
     def __setitem__(self, key, value):
         self.__dict__[key] = value

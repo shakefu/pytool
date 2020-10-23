@@ -366,7 +366,7 @@ class CommandFormatter(DefaultFormatter):
         width = pytool.text.columns()
         max_help_position = max(40, int(width / 2))
         kwargs['max_help_position'] = max_help_position
-        super().__init__(*args, **kwargs)
+        super(CommandFormatter, self).__init__(*args, **kwargs)
 
 
 def opt(*args, **kwargs):
