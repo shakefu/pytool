@@ -17,14 +17,14 @@ matrix:
     dist: xenial
     # sudo: required
     python: '3.8'
-  - os: linux
-    dist: focal 
-    # sudo: required
-    python: '3.9'
-  - os: linux
-    dist: focal
-    # sudo: required
-    python: '3.10'
+  # - os: linux
+  #   dist: focal 
+  #   # sudo: required
+  #   python: '3.9'
+  # - os: linux
+  #   dist: focal
+  #   # sudo: required
+  #   python: '3.10'
   - os: linux
     # sudo: false
     python: pypy
@@ -41,11 +41,11 @@ matrix:
     # sudo: required
     env: EXTRAS=configargparse
     python: '3.8'
-  - os: linux
-    dist: bionic
-    # sudo: required
-    env: EXTRAS=configargparse
-    python: '3.9'
+  # - os: linux
+  #   dist: bionic
+  #   # sudo: required
+  #   env: EXTRAS=configargparse
+  #   python: '3.9'
 language: python
 install:
   - pip install .
