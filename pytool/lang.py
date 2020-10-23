@@ -23,7 +23,6 @@ __all__ = [
         ]
 
 
-VALID_NAME = re.compile('^[a-zA-Z0-9_.]+$')
 
 
 def get_name(frame):
@@ -424,6 +423,8 @@ class Namespace(object):
         Added traversal by key/index arrays for nested Namespaces and lists
 
     """
+    _VALID_NAME = re.compile('^[a-zA-Z0-9_.]+$')
+
     def __init__(self, obj=None):
         if obj is not None:
             # Populate the namespace from the give dictionary
@@ -447,7 +448,7 @@ class Namespace(object):
 
     def __getattr__(self, name):
         # Allow implicit nested namespaces by attribute access
-        new_space = Namespace()
+        new_space = type(self)()
         setattr(self, name, new_space)
         return new_space
 
@@ -528,6 +529,43 @@ class Namespace(object):
                         value[i] = value[i].as_dict()
         return space
 
+    def for_json(self, base_name=None):
+        """ Return the current namespace as a JSON suitable nested dictionary.
+
+            :param str base_name: Base namespace (optional)
+
+            This is compatible with the :module:`simplejson` `for_json`
+            behavior flag to recursively encode objects.
+
+            Example::
+
+                import simplejson
+
+                json_str = simplejson.dumps(my_namespace, for_json=True)
+
+        """
+        target = {}
+        obj = target if not base_name else {base_name: target}
+
+        for key in self.__dict__.keys():
+            value = getattr(self, key)
+            target[key] = value
+
+            if isinstance(value, Namespace):
+                value = value.for_json()
+                target[key] = value
+                continue
+
+            if isinstance(value, list):
+                value = copy.copy(value)
+                target[key] = value
+
+                for i in range(len(value)):
+                    if isinstance(value[i], Namespace):
+                        value[i] = value[i].for_json()
+
+        return obj
+
     def from_dict(self, obj):
         """ Populate this Namespace from the given *obj* dictionary.
 
@@ -544,7 +582,7 @@ class Namespace(object):
         def _coerce_value(value):
             """ Helps coerce values to Namespaces recursively. """
             if isinstance(value, dict):
-                return Namespace(value)
+                return type(self)(value)
             elif isinstance(value, list):
                 # We have to copy the list so we can modify in place without
                 # breaking things
@@ -554,12 +592,12 @@ class Namespace(object):
             return value
 
         for key, value in obj.items():
-            assert VALID_NAME.match(key), "Invalid name: {!r}".format(key)
+            assert self._VALID_NAME.match(key), "Invalid name: {!r}".format(key)
             value = _coerce_value(value)
             setattr(self, key, value)
 
     def __repr__(self):
-        return "<Namespace({})>".format(self.as_dict())
+        return "<{}({})>".format(type(self).__name__, self.as_dict())
 
     def copy(self, *args, **kwargs):
         """ Return a copy of a Namespace by writing it to a dict and then
@@ -568,7 +606,7 @@ class Namespace(object):
             Arguments to this method are ignored.
 
         """
-        return Namespace(self.as_dict())
+        return type(self)(self.as_dict())
 
     # Aliases for the stdlib copy module
     __copy__ = copy
@@ -608,6 +646,29 @@ class Namespace(object):
                     # Raise the original error, not the coertion error
                     raise err
         return ns
+
+
+class Keyspace(Namespace):
+    """
+    Keyspace object which extends Namespaces by allowing item assignment and
+    arbitrary key names instead of just python attribute compatible names.
+
+    Example::
+
+        # This would be an error with a Namespace
+        my_ns['foobar'] = True
+
+        # This works with a Keyspace
+        my_ns.foo['foobar'].bar['you'] = True
+
+    """
+    _VALID_NAME = re.compile('.*')
+
+    def __init__(self, obj=None):
+        super().__init__(obj)
+
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
 
 
 def _split_keys(obj):

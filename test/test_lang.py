@@ -3,6 +3,7 @@ import copy
 import inspect
 
 import pytool
+import simplejson
 from .util import eq_, ok_, raises
 
 
@@ -376,6 +377,86 @@ def test_namespace_can_merge_dict_manually():
     eq_(ns.foo.doot, 2)
     eq_(ns.foo.bar, 3)
     eq_(ns.foo.fnord, 0)
+
+
+def test_namespace_for_json_simple():
+    obj = {'foo': 1, 'bar': 2}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.for_json(), obj)
+
+
+def test_namespace_for_json_nested():
+    obj = {'foo': {'bar': 1}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.for_json(), obj)
+    eq_(ns.as_dict(), {'foo.bar': 1})
+
+
+def test_namespace_for_json_base_name():
+    obj = {'foo': {'bar': 1}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.for_json('base'), {'base': obj})
+
+
+def test_namespace_for_json_nested_list():
+    obj = {'foo': [{'bar': {'fnord': 1}}]}
+    ns = pytool.lang.Namespace(obj)
+    eq_(ns.for_json(), obj)
+
+
+def test_namspace_for_json_simplejson_encode():
+    obj = {'foo': {'bar': 1}}
+    ns = pytool.lang.Namespace(obj)
+    eq_(simplejson.dumps(ns, for_json=True), '{"foo": {"bar": 1}}')
+
+
+def test_keyspace_allows_item_assignment():
+    ks = pytool.lang.Keyspace()
+    ks['foo'] = 1
+    ks['key-name'] = 2
+    eq_(ks.as_dict(), {'foo': 1, 'key-name': 2})
+
+
+def test_keyspace_create_keyspace():
+    ks = pytool.lang.Keyspace()
+    ks.foo.bar = 1
+    eq_(type(ks.foo), pytool.lang.Keyspace)
+
+
+def test_keyspace_allows_getitem_traversal():
+    ks = pytool.lang.Keyspace()
+    ks['foo'].bar = 1
+    eq_(ks.as_dict(), {'foo.bar': 1})
+
+
+def test_keyspace_allows_getitem_traversal_with_nonattribute_names():
+    ks = pytool.lang.Keyspace()
+    ks['key-name'].bar = 1
+    eq_(ks.as_dict(), {'key-name.bar': 1})
+
+
+def test_keyspace_allows_getitem_traversal_with_nonattribute_names_deep():
+    ks = pytool.lang.Keyspace()
+    ks.foo['key-name'].bar = 1
+    eq_(ks.as_dict(), {'foo.key-name.bar': 1})
+
+
+def test_keyspace_allows_nested_item_assignment():
+    ks = pytool.lang.Keyspace()
+    ks.foo['bar'] = 1
+    eq_(ks.as_dict(), {'foo.bar': 1})
+
+
+def test_keyspace_copy_works():
+    ks = pytool.lang.Keyspace()
+    ks.foo['key-name'].bar = 1
+    ks2 = copy.copy(ks)
+    eq_(ks.as_dict(), ks2.as_dict())
+
+
+def test_keyspace_reprs_accurately_when_empty():
+    ns = pytool.lang.Keyspace()
+    eq_(repr(ns), '<Keyspace({})>')
 
 
 def test_hashed_singleton_no_args():
