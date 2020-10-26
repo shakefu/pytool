@@ -659,7 +659,15 @@ class Keyspace(Namespace):
         my_ns['foobar'] = True
 
         # This works with a Keyspace
-        my_ns.foo['foobar'].bar['you'] = True
+        my_ks.foo['foobar'].bar['you'] = True
+
+        # This would be an error with a Namespace
+        Namespace({'key-name': True)
+
+        # This works with a Keyspace
+        Keyspace({'key-name': True)
+
+    .. versionadded:: 3.16.0
 
     """
     _VALID_NAME = re.compile('.*')
