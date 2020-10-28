@@ -16,5 +16,5 @@ language: python
 install:
   - pip install .
   - pip install coveralls coverage nose mock $EXTRAS
-script: coverage run --source=pytool setup.py test
+script: coverage run --source=pytool pytest -vv
 after_success: coveralls
