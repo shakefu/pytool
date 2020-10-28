@@ -8,7 +8,7 @@ import pytool
 from .util import eq_, SkipTest
 
 
-class TestCommand(pytool.cmd.Command):
+class Command(pytool.cmd.Command):
     def set_opts(self):
         self.opt('--test', action='store_true', help='This is my test option.')
 
@@ -16,7 +16,7 @@ class TestCommand(pytool.cmd.Command):
         pass
 
 
-class TestSubcommand(pytool.cmd.Command):
+class Subcommand(pytool.cmd.Command):
     def parser_opts(self):
         if pytool.cmd.HAS_CAP:
             return dict(auto_env_var_prefix='test_')
@@ -37,13 +37,13 @@ class TestSubcommand(pytool.cmd.Command):
 
 
 def test_command_no_args():
-    cmd = TestCommand()
+    cmd = Command()
     cmd.start([])
     eq_(cmd.args.test, False)
 
 
 def test_command_with_arg():
-    cmd = TestCommand()
+    cmd = Command()
     cmd.start(['--test'])
     eq_(cmd.args.test, True)
 
@@ -61,7 +61,7 @@ def test_pass_coverage_again():
 def test_subcommand_no_args():
     if six.PY2:
         raise SkipTest
-    cmd = TestSubcommand()
+    cmd = Subcommand()
     cmd.start([])
     eq_(cmd.args.test, False)
     eq_(cmd.args.command, None)
@@ -70,7 +70,7 @@ def test_subcommand_no_args():
 def test_subcommand_env_var_prefix():
     if six.PY2 or not pytool.cmd.HAS_CAP:
         raise SkipTest
-    cmd = TestSubcommand()
+    cmd = Subcommand()
     cmd.start([])
     eq_(cmd.parser._auto_env_var_prefix, 'test_')
 
@@ -78,14 +78,14 @@ def test_subcommand_env_var_prefix():
 def test_subcommand_with_arg():
     if six.PY2:
         raise SkipTest
-    cmd = TestSubcommand()
+    cmd = Subcommand()
     cmd.start(['--test'])
     eq_(cmd.args.test, True)
     eq_(cmd.args.command, None)
 
 
 def test_subcommand_with_cmd():
-    cmd = TestSubcommand()
+    cmd = Subcommand()
     cmd.start(['action'])
     eq_(cmd.args.test, False)
     eq_(cmd.args.command, 'action')
@@ -93,7 +93,7 @@ def test_subcommand_with_cmd():
 
 
 def test_subcommand_with_args():
-    cmd = TestSubcommand()
+    cmd = Subcommand()
     cmd.start(['--test', 'action', '--act'])
     eq_(cmd.args.test, True)
     eq_(cmd.args.command, 'action')
@@ -108,7 +108,7 @@ def test_stop(exit):
 
 @mock.patch('pytool.cmd.Command.start')
 def test_console_script(start):
-    TestCommand().console_script()
+    Command().console_script()
     start.assert_called_with(sys.argv[1:])
 
 
