@@ -22,7 +22,7 @@ setup(
     name='pytool',
     version=version(),
     author="Jacob Alheid",
-    author_email="jake@about.me",
+    author_email="jacob.alheid@gmail.com",
     description="A Collection of Python Tools",
     long_description=readme(),
     url='http://github.com/shakefu/pytool',
