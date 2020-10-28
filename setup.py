@@ -29,7 +29,6 @@ setup(
     license='ALv2',
     packages=find_packages(exclude=['test']),
     install_requires=['simplejson >= 3.2.0', 'six'],
-    test_suite='nose.collector',
     tests_require=[
         'pytest',
         'mock',
