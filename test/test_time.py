@@ -4,26 +4,25 @@ import calendar
 from datetime import datetime, timedelta
 
 import mock
-from nose import SkipTest
+import pytest
 
 import pytool
-from .util import eq_
 
 
 def test_utc_singleton():
-    eq_(pytool.time.UTC(), pytool.time.UTC())
+    assert pytool.time.UTC() == pytool.time.UTC()
 
 
 def test_utc_methods():
-    eq_(pytool.time.UTC().utcoffset(datetime.now()), timedelta(0))
-    eq_(pytool.time.UTC().tzname(datetime.now()), 'UTC')
-    eq_(pytool.time.UTC().dst(datetime.now()), timedelta(0))
+    assert pytool.time.UTC().utcoffset(datetime.now()) == timedelta(0)
+    assert pytool.time.UTC().tzname(datetime.now()) == 'UTC'
+    assert pytool.time.UTC().dst(datetime.now()) == timedelta(0)
 
 
 def test_utc_pickle():
     pickled = pickle.dumps(pytool.time.UTC())
     utc = pickle.loads(pickled)
-    eq_(utc, pytool.time.UTC())
+    assert utc == pytool.time.UTC()
 
 
 @mock.patch('datetime.datetime')
@@ -35,98 +34,98 @@ def test_utcnow(datetime):
 def test_trim_time():
     now = datetime.now()
     stamp = pytool.time.trim_time(now)
-    eq_(stamp.year, now.year)
-    eq_(stamp.month, now.month)
-    eq_(stamp.day, now.day)
-    eq_(stamp.hour, 0)
-    eq_(stamp.minute, 0)
-    eq_(stamp.second, 0)
-    eq_(stamp.tzinfo, now.tzinfo)
+    assert stamp.year == now.year
+    assert stamp.month == now.month
+    assert stamp.day == now.day
+    assert stamp.hour == 0
+    assert stamp.minute == 0
+    assert stamp.second == 0
+    assert stamp.tzinfo == now.tzinfo
 
 
 def test_trim_time_utc():
     now = pytool.time.utcnow()
     stamp = pytool.time.trim_time(now)
 
-    eq_(stamp.year, now.year)
-    eq_(stamp.month, now.month)
-    eq_(stamp.day, now.day)
-    eq_(stamp.hour, 0)
-    eq_(stamp.minute, 0)
-    eq_(stamp.second, 0)
-    eq_(stamp.tzinfo, now.tzinfo)
+    assert stamp.year == now.year
+    assert stamp.month == now.month
+    assert stamp.day == now.day
+    assert stamp.hour == 0
+    assert stamp.minute == 0
+    assert stamp.second == 0
+    assert stamp.tzinfo == now.tzinfo
 
 
 def test_fromutctimestamp_summer():
     d = datetime(2012, 6, 1, tzinfo=pytool.time.UTC())
     stamp = calendar.timegm(d.utctimetuple())
-    eq_(pytool.time.fromutctimestamp(stamp), d)
+    assert pytool.time.fromutctimestamp(stamp) == d
 
 
 def test_fromutctimestamp_winter():
     d = datetime(2012, 1, 1, tzinfo=pytool.time.UTC())
     stamp = calendar.timegm(d.utctimetuple())
-    eq_(pytool.time.fromutctimestamp(stamp), d)
+    assert pytool.time.fromutctimestamp(stamp) == d
 
 
 def test_fromutctimestamp_now():
     d = pytool.time.utcnow()
     stamp = calendar.timegm(d.utctimetuple()) + (1.0 * d.microsecond / 10**6)
-    eq_(pytool.time.fromutctimestamp(stamp), d)
+    assert pytool.time.fromutctimestamp(stamp) == d
 
 
 def test_toutctimestamp():
     d = datetime.now()
     u = pytool.time.utcnow()
     decimal = (1.0 * d.microsecond / 10**6)
-    eq_(pytool.time.toutctimestamp(d), calendar.timegm(u.utctimetuple()) +
+    assert pytool.time.toutctimestamp(d) == (calendar.timegm(u.utctimetuple()) +
         decimal)
 
 
 def test_toutctimestamp_utctz():
     d = pytool.time.utcnow()
     decimal = (1.0 * d.microsecond / 10**6)
-    eq_(pytool.time.toutctimestamp(d), calendar.timegm(d.utctimetuple()) +
+    assert pytool.time.toutctimestamp(d) == (calendar.timegm(d.utctimetuple()) +
         decimal)
 
 
 def test_toutctimestamp_summer():
     d = datetime(2012, 6, 1, tzinfo=pytool.time.UTC())
     s = pytool.time.toutctimestamp(d)
-    eq_(d.timetuple(), pytool.time.fromutctimestamp(s).timetuple())
+    assert d.timetuple() == pytool.time.fromutctimestamp(s).timetuple()
 
 
 def test_toutctimestamp_winter():
     d = datetime(2012, 1, 1, tzinfo=pytool.time.UTC())
     s = pytool.time.toutctimestamp(d)
-    eq_(d.timetuple(), pytool.time.fromutctimestamp(s).timetuple())
+    assert d.timetuple() == pytool.time.fromutctimestamp(s).timetuple()
 
 
 def test_toutctimestamp_close_enough():
     t = int(time.time())
     d = int(pytool.time.toutctimestamp(datetime.now()))
-    eq_(t, d)
+    assert t == d
 
 
 def test_toutctimestamp_close_enough_tzaware():
     t = int(time.time())
     d = int(pytool.time.toutctimestamp(pytool.time.utcnow()))
-    eq_(t, d)
+    assert t == d
 
 
 def test_as_utc():
     d = pytool.time.utcnow()
-    eq_(d, pytool.time.as_utc(d))
+    assert d == pytool.time.as_utc(d)
 
 
 def test_as_utc_multi():
     t = pytool.time.utcnow()
     d = pytool.time.as_utc(t)
-    eq_(d, pytool.time.as_utc(t))
+    assert d == pytool.time.as_utc(t)
     d = pytool.time.as_utc(d)
-    eq_(d, pytool.time.as_utc(t))
+    assert d == pytool.time.as_utc(t)
     d = pytool.time.as_utc(d)
-    eq_(d, pytool.time.as_utc(t))
+    assert d == pytool.time.as_utc(t)
 
 
 def test_as_utc_naive():
@@ -137,85 +136,85 @@ def test_as_utc_naive():
     # Can't compare naive and aware datetimes, so we do it manually
     for field in ('year', 'month', 'day', 'hour', 'minute', 'second',
                   'microsecond'):
-        eq_(getattr(d, field), getattr(d2, field))
+        assert getattr(d, field) == getattr(d2, field)
 
 
 # These daylight savings tests are a bit sloppy, but oh well
+@pytest.mark.skipif('UTC' in time.tzname,
+                    reason="Test doesn't work if server timezone is UTC")
 def test_is_dst():
-    if 'UTC' in time.tzname:
-        raise SkipTest("Test doesn't work if server timezone is UTC")
     d = datetime(2000, 6, 1)
-    eq_(pytool.time.is_dst(d), True)
+    assert pytool.time.is_dst(d) == True
 
 
+@pytest.mark.skipif('UTC' in time.tzname,
+                    reason="Test doesn't work if server timezone is UTC")
 def test_is_not_dst():
-    if 'UTC' in time.tzname:
-        raise SkipTest("Test doesn't work if server timezone is UTC")
     d = datetime(2000, 11, 30)
-    eq_(pytool.time.is_dst(d), False)
+    assert pytool.time.is_dst(d) == False
 
 
 def test_week_start():
     start = pytool.time.week_start(datetime.now())
-    eq_(start.weekday(), 0)
-    eq_(start.hour, 0)
-    eq_(start.minute, 0)
-    eq_(start.second, 0)
-    eq_(start.microsecond, 0)
+    assert start.weekday() == 0
+    assert start.hour == 0
+    assert start.minute == 0
+    assert start.second == 0
+    assert start.microsecond == 0
 
 
 def test_week_seconds_start():
     secs = pytool.time.week_seconds(pytool.time.week_start(datetime.now()))
-    eq_(secs, 0)
+    assert secs == 0
 
 
 def test_week_seconds():
     start = pytool.time.week_start(datetime.now())
     for i in range(7):
-        eq_(pytool.time.week_seconds(start + timedelta(days=i)),
-            timedelta(days=i).total_seconds())
+        assert pytool.time.week_seconds(start + timedelta(days=i)) == \
+            timedelta(days=i).total_seconds()
 
 
 def test_week_seconds_to_datetime():
     for i in range(7):
-        eq_(pytool.time.week_start(datetime.now()) + timedelta(days=i),
+        assert pytool.time.week_start(datetime.now()) + timedelta(days=i) == \
             pytool.time.week_seconds_to_datetime(
-                timedelta(days=i).total_seconds()))
+                timedelta(days=i).total_seconds())
 
 
 def test_make_week_seconds():
-    eq_(pytool.time.make_week_seconds(0, 1), 60*60)
-    eq_(pytool.time.make_week_seconds(1, 0), 60*60*24)
-    eq_(pytool.time.make_week_seconds(7, 0), 0)
-    eq_(pytool.time.make_week_seconds(2, 1, 1, 1), 60*60*24*2 + 60*60 + 60 + 1)
+    assert pytool.time.make_week_seconds(0, 1) == 60*60
+    assert pytool.time.make_week_seconds(1, 0) == 60*60*24
+    assert pytool.time.make_week_seconds(7, 0) == 0
+    assert pytool.time.make_week_seconds(2, 1, 1, 1) == 60*60*24*2 + 60*60 + 60 + 1
 
 
 def test_floor_minute():
     stamp = pytool.time.utcnow()
-    eq_(pytool.time.floor_minute(stamp), datetime(stamp.year, stamp.month,
-        stamp.day, stamp.hour, stamp.minute, tzinfo=stamp.tzinfo))
+    assert pytool.time.floor_minute(stamp) ==  datetime(stamp.year, stamp.month,
+        stamp.day, stamp.hour, stamp.minute, tzinfo=stamp.tzinfo)
 
 
 def test_floor_day():
     stamp = pytool.time.utcnow()
-    eq_(pytool.time.floor_day(stamp),
+    assert pytool.time.floor_day(stamp) == \
         datetime(*stamp.date().timetuple()[:-3],
-                 tzinfo=pytool.time.UTC()))
+                 tzinfo=pytool.time.UTC())
 
 
 def test_floor_week():
     stamp = pytool.time.utcnow()
     start = stamp - timedelta(days=stamp.weekday())
-    eq_(pytool.time.floor_week(stamp),
+    assert pytool.time.floor_week(stamp) == \
         datetime(start.year, start.month, start.day,
-                 tzinfo=pytool.time.UTC()))
+                 tzinfo=pytool.time.UTC())
 
 
 def test_floor_month():
     stamp = pytool.time.utcnow()
-    eq_(pytool.time.floor_month(stamp),
+    assert pytool.time.floor_month(stamp) == \
         datetime(*(stamp.date().timetuple()[:2] + (1,)),
-                 tzinfo=pytool.time.UTC()))
+                 tzinfo=pytool.time.UTC())
 
 
 def test_timer_init_works():
@@ -228,10 +227,10 @@ def test_timer_elapsed_works():
         t = pytool.time.Timer()
     with mock.patch('pytool.time.utcnow') as utcnow:
         utcnow.return_value = datetime(2010, 1, 1, 0, 1, 0)
-        eq_(t.elapsed, timedelta(seconds=60))
+        assert t.elapsed == timedelta(seconds=60)
     with mock.patch('pytool.time.utcnow') as utcnow:
         utcnow.return_value = datetime(2010, 1, 1, 1, 0, 0)
-        eq_(t.elapsed, timedelta(seconds=60*60))
+        assert t.elapsed == timedelta(seconds=60*60)
 
 
 def test_timer_mark_works():
@@ -240,10 +239,10 @@ def test_timer_mark_works():
         t = pytool.time.Timer()
     with mock.patch('pytool.time.utcnow') as utcnow:
         utcnow.return_value = datetime(2010, 1, 1, 0, 1, 0)
-        eq_(t.mark(), timedelta(seconds=60))
+        assert t.mark() == timedelta(seconds=60)
     with mock.patch('pytool.time.utcnow') as utcnow:
         utcnow.return_value = datetime(2010, 1, 1, 0, 3, 0)
-        eq_(t.mark(), timedelta(seconds=2*60))
+        assert t.mark() == timedelta(seconds=2*60)
 
 
 def test_ago_regular():
@@ -253,7 +252,7 @@ def test_ago_regular():
     ago = unix - (24*60*60) - (60*60) - 60 - 1
     ago = pytool.time.fromutctimestamp(ago)
 
-    eq_(pytool.time.ago(stamp, days=1, hours=1, minutes=1, seconds=1), ago)
+    assert pytool.time.ago(stamp, days=1, hours=1, minutes=1, seconds=1) == ago
 
 
 def test_ago_shorter():
@@ -263,7 +262,7 @@ def test_ago_shorter():
     ago = unix - (24*60*60) - (60*60) - 60 - 1
     ago = pytool.time.fromutctimestamp(ago)
 
-    eq_(pytool.time.ago(stamp, days=1, hrs=1, mins=1, secs=1), ago)
+    assert pytool.time.ago(stamp, days=1, hrs=1, mins=1, secs=1) == ago
 
 
 def test_ago_shorthand():
@@ -273,4 +272,4 @@ def test_ago_shorthand():
     ago = unix - (24*60*60) - (60*60) - 60 - 1
     ago = pytool.time.fromutctimestamp(ago)
 
-    eq_(pytool.time.ago(stamp, d=1, h=1, m=1, s=1), ago)
+    assert pytool.time.ago(stamp, d=1, h=1, m=1, s=1) == ago

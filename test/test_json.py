@@ -1,58 +1,58 @@
 from datetime import datetime
 
 import mock
-from nose import SkipTest
+import pytest
 try:
     import bson
 except ImportError:
     bson = None
 
 import pytool
-from .util import eq_, raises
 
 
 def test_as_json_datetime():
     n = datetime.now()
-    eq_(pytool.json.as_json(n),
-        '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
+    assert pytool.json.as_json(n) == \
+        '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip())
 
 
 def test_as_json_datetime_with_tz():
     n = pytool.time.utcnow()
-    eq_(pytool.json.as_json(n),
-        '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip()))
+    assert pytool.json.as_json(n) == \
+        '"{}"'.format(n.strftime('%a %b %d %Y %H:%M:%S %z').strip())
 
 
+@pytest.mark.skipif(not bson, reason="missing bson module")
 def test_as_json_ObjectId():
-    if not bson:
-        raise SkipTest("missing bson module")
     b = bson.ObjectId()
-    eq_(pytool.json.as_json(b), '"{}"'.format(b))
+    assert pytool.json.as_json(b) == '"{}"'.format(b)
 
 
-@raises(TypeError)
 def test_as_json_bad():
-    d = {'test': 1, 'two': type()}
-    pytool.json.as_json(d)
+    d = {'test': 1, 'two': object()}
+
+    with pytest.raises(TypeError):
+        pytool.json.as_json(d)
 
 
 @mock.patch('pytool.json.json.loads')
 def test_from_json(loads):
     loads.return_value = '1'
     val = pytool.json.from_json(loads.return_value)
-    eq_(val, loads.return_value)
+    assert val == loads.return_value
     loads.assert_called_with(loads.return_value)
 
 
 def test_as_json_with_bson():
     obj = pytool.json.bson.ObjectId()
-    eq_(pytool.json.as_json(obj), pytool.json.as_json(str(obj)))
+    assert pytool.json.as_json(obj) == pytool.json.as_json(str(obj))
 
 
-@raises(TypeError)
 def test_as_json_with_bad():
     obj = object()
-    pytool.json.as_json(obj)
+
+    with pytest.raises(TypeError):
+        pytool.json.as_json(obj)
 
 
 def test_asdict_encodes():
@@ -60,7 +60,7 @@ def test_asdict_encodes():
         def _asdict(self):
             return {'_asdict': 1}
 
-    eq_(pytool.json.as_json(Test()), '{"_asdict": 1}')
+    assert pytool.json.as_json(Test()) == '{"_asdict": 1}'
 
 
 def test_for_json_hook_with_dict():
@@ -68,7 +68,7 @@ def test_for_json_hook_with_dict():
         def for_json(self):
             return {'for_json': 1}
 
-    eq_(pytool.json.as_json(Test()), '{"for_json": 1}')
+    assert pytool.json.as_json(Test()) == '{"for_json": 1}'
 
 
 def test_for_json_hook_with_list():
@@ -76,7 +76,7 @@ def test_for_json_hook_with_list():
         def for_json(self):
             return ['for_json']
 
-    eq_(pytool.json.as_json(Test()), '["for_json"]')
+    assert pytool.json.as_json(Test()) == '["for_json"]'
 
 
 def test_for_json_hook_nested():
@@ -88,7 +88,7 @@ def test_for_json_hook_nested():
         def for_json(self):
             return [Test()]
 
-    eq_(pytool.json.as_json(Test2()), '[{"for_json": 1}]')
+    assert pytool.json.as_json(Test2()) == '[{"for_json": 1}]'
 
 
 def test_for_json_hook_called_when_within_a_list_within_a_dict():
@@ -97,7 +97,7 @@ def test_for_json_hook_called_when_within_a_list_within_a_dict():
             return {'for_json': 1}
 
     obj = {'list': [Test()]}
-    eq_(pytool.json.as_json(obj), '{"list": [{"for_json": 1}]}')
+    assert pytool.json.as_json(obj) == '{"list": [{"for_json": 1}]}'
 
 
 def test_for_json_hook_called_when_dict_subclass_buried_in_objects():
@@ -106,4 +106,4 @@ def test_for_json_hook_called_when_dict_subclass_buried_in_objects():
             return {'for_json': 1}
 
     obj = {'list': [Test()]}
-    eq_(pytool.json.as_json(obj), '{"list": [{"for_json": 1}]}')
+    assert pytool.json.as_json(obj) == '{"list": [{"for_json": 1}]}'

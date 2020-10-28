@@ -2,12 +2,11 @@
 Tests for pytool.text.
 """
 import pytool
-from .util import eq_
 
 
 def test_wrap_empty():
     text = ''
-    eq_(pytool.text.wrap(text), '')
+    assert pytool.text.wrap(text) == ''
 
 
 def test_wrap():
@@ -30,7 +29,7 @@ def test_wrap():
                             really hope they do.
                     """
     text = pytool.text.wrap(text, width=70)
-    eq_(text, """\
+    assert text == ("""\
 This is a description and it is long and spans multiple lines. Hooray.
     It should be indented here and this long line should work out well
     when rewrapped.
@@ -56,5 +55,5 @@ def test_wrap_preserves_first_line_whitespace():
         """
 
     text = pytool.text.wrap(text, width=70)
-    eq_(text, "This tool is used for managing all the "
+    assert text == ("This tool is used for managing all the "
         "splits in dev, test and\nproduction.\n")

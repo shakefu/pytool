@@ -3,9 +3,9 @@ import sys
 
 import six
 import mock
+import pytest
 
 import pytool
-from .util import eq_, SkipTest
 
 
 class Command(pytool.cmd.Command):
@@ -39,13 +39,13 @@ class Subcommand(pytool.cmd.Command):
 def test_command_no_args():
     cmd = Command()
     cmd.start([])
-    eq_(cmd.args.test, False)
+    assert cmd.args.test == False
 
 
 def test_command_with_arg():
     cmd = Command()
     cmd.start(['--test'])
-    eq_(cmd.args.test, True)
+    assert cmd.args.test == True
 
 
 def test_pass_coverage():
@@ -58,46 +58,44 @@ def test_pass_coverage_again():
     pytool.cmd.Command().parser_opts()
 
 
+@pytest.mark.skipif(six.PY2, reason="Python 3")
 def test_subcommand_no_args():
-    if six.PY2:
-        raise SkipTest
     cmd = Subcommand()
     cmd.start([])
-    eq_(cmd.args.test, False)
-    eq_(cmd.args.command, None)
+    assert cmd.args.test == False
+    assert cmd.args.command == None
 
 
+@pytest.mark.skipif(six.PY2 or not pytool.cmd.HAS_CAP,
+                    reason="configargparse missing")
 def test_subcommand_env_var_prefix():
-    if six.PY2 or not pytool.cmd.HAS_CAP:
-        raise SkipTest
     cmd = Subcommand()
     cmd.start([])
-    eq_(cmd.parser._auto_env_var_prefix, 'test_')
+    assert cmd.parser._auto_env_var_prefix == 'test_'
 
 
+@pytest.mark.skipif(six.PY2, reason="Python 3")
 def test_subcommand_with_arg():
-    if six.PY2:
-        raise SkipTest
     cmd = Subcommand()
     cmd.start(['--test'])
-    eq_(cmd.args.test, True)
-    eq_(cmd.args.command, None)
+    assert cmd.args.test == True
+    assert cmd.args.command == None
 
 
 def test_subcommand_with_cmd():
     cmd = Subcommand()
     cmd.start(['action'])
-    eq_(cmd.args.test, False)
-    eq_(cmd.args.command, 'action')
-    eq_(cmd.args.act, False)
+    assert cmd.args.test == False
+    assert cmd.args.command == 'action'
+    assert cmd.args.act == False
 
 
 def test_subcommand_with_args():
     cmd = Subcommand()
     cmd.start(['--test', 'action', '--act'])
-    eq_(cmd.args.test, True)
-    eq_(cmd.args.command, 'action')
-    eq_(cmd.args.act, True)
+    assert cmd.args.test == True
+    assert cmd.args.command == 'action'
+    assert cmd.args.act == True
 
 
 @mock.patch('sys.exit')
@@ -112,11 +110,9 @@ def test_console_script(start):
     start.assert_called_with(sys.argv[1:])
 
 
+@pytest.mark.skipif(not pytool.cmd.HAS_CAP, reason="configargparse missing")
 class test_configargparse():
     def setup(self):
-        if not pytool.cmd.HAS_CAP:
-            raise SkipTest
-
         class Cmd(pytool.cmd.Command):
             def parser_opts(self):
                 return dict(auto_env_var_prefix='test_')
@@ -135,9 +131,9 @@ class test_configargparse():
     def test_env_var(self):
         cmd = self.Cmd()
         cmd.start([])
-        eq_(cmd.args.test, True)
+        assert cmd.args.test == True
 
     def test_conf_file(self):
         cmd = self.Cmd()
         cmd.start(['-c', 'test/test_conf.yml'])
-        eq_(cmd.args.test, True)
+        assert cmd.args.test == True
