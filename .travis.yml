@@ -15,6 +15,6 @@ env:
 language: python
 install:
   - pip install .
-  - pip install coveralls coverage nose mock $EXTRAS
+  - pip install coveralls coverage bson mock $EXTRAS
 script: coverage run --source=pytool -m pytest -vv
 after_success: coveralls

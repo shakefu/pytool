@@ -32,7 +32,6 @@ setup(
     test_suite='nose.collector',
     tests_require=[
         'pytest',
-        'nose',  # This needs to be removed after converting test code
         'mock',
         ],
     classifiers=[
