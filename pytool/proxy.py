@@ -2,14 +2,14 @@
 This module contains implmentations of proxy-list and proxy-dictionary objects.
 """
 # flake8: noqa
-import collections
+from six.moves import collections_abc
 
 
 def cmp(a, b):
     return (a > b) - (a < b)
 
 
-class ListProxy(collections.MutableSequence):
+class ListProxy(collections_abc.MutableSequence):
     """
     Proxies all methods for a list instance. This is useful when you want to
     modify a list's behavior without copying the list.
@@ -123,7 +123,7 @@ class ListProxy(collections.MutableSequence):
         return self._data
 
 
-class DictProxy(collections.MutableMapping):
+class DictProxy(collections_abc.MutableMapping):
     """
     Proxies all methods for a dict instance.
 
