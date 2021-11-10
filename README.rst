@@ -7,8 +7,8 @@ life easier or fill in gaps in the Python Standard Library.
 Pytool is compatible with Python 2 (tested against 2.7) or Python 3.3 and
 higher. *Compatibility added August 4, 2015.*
 
-*Note: Python 2 is now `End of Life <https://www.python.org/doc/sunset-python-2/>`_ 
-and support in Pytool is deprecated and will be removed in Pytool 4.x.*
+*Note*: Python 2 is now `End of Life <https://www.python.org/doc/sunset-python-2/>`_ 
+and support in Pytool is deprecated and will be removed in Pytool 4.x.
 
 Pytool's source is hosted on Github: `<https://github.com/shakefu/pytool>`_
 
