@@ -8,7 +8,7 @@ python:
   - '3.7'
   - '3.8'
   - '3.9'
-  - '3.10'
+  # - '3.10' # 3.10 not a target on TravisCI yet
   # - pypy  # This no longer builds
   - pypy3
 env:
