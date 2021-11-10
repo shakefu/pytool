@@ -59,6 +59,12 @@ issue <https://github.com/shakefu/pytool/issues>`_.
 .. autoclass:: Namespace
    :members:
 
+:class:`Keyspace`
+------------------
+
+.. autoclass:: Keyspace
+   :members:
+
 :class:`UNSET`
 --------------
 
