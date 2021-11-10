@@ -13,6 +13,9 @@ env:
   - EXTRAS=
   - EXTRAS=configargparse
 language: python
+before_install:
+  - python -m pip install --upgrade pip
+  - python -m pip install --upgrade virtualenv
 install:
   - pip install .
   - pip install coveralls coverage bson mock $EXTRAS
