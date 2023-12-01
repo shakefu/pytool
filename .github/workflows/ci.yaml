@@ -13,17 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - run: pipx install poetry
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4
         with:
           python-version: ${{ matrix.python-version }}
-          # cache: pip
+          cache: poetry
       - run: |
-          pip install .
-          pip install ".[test]"
-          # TODO: Setup pre-commit, use it
+          poetry install
+          poetry run pre-commit run -a
 
   test:
     name: Test
@@ -31,19 +31,19 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - run: pipx install poetry
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4
         with:
           python-version: ${{ matrix.python-version }}
-          # cache: pip
+          cache: poetry
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pip install .
-          pip install ".[test]"
-          coverage run --source=pytool -m pytest -vv
+          poetry install
+          poetry run pytest --cov
           coveralls
       # - uses: MishaKav/pytest-coverage-comment@main
 
@@ -54,10 +54,10 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+    if: github.actor == 'renovatebot' || github.actor == 'renovate[bot]'
     steps:
       - name: Auto-approve
         uses: hmarr/auto-approve-action@44888193675f29a83e04faf4002fa8c0b537b1e4 # v3.2.1
-        if: github.actor == 'renovatebot' || github.actor == 'renovate[bot]'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -68,10 +68,10 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+    if: github.actor == 'renovatebot' || github.actor == 'renovate[bot]'
     steps:
       - name: Auto-merge
         uses: pascalgn/automerge-action@22948e0bc22f0aa673800da838595a3e7347e584 # v0.15.6
-        if: github.actor == 'renovatebot' || github.actor == 'renovate[bot]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: dependencies
