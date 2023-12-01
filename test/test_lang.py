@@ -90,8 +90,8 @@ def test_singleton():
 
 
 def test_unset_false():
-    assert pytool.lang.UNSET == False
-    assert pytool.lang.UNSET == None
+    assert pytool.lang.UNSET == False  # noqa
+    assert pytool.lang.UNSET == None  # noqa
     assert pytool.lang.UNSET == 0
     assert pytool.lang.UNSET == ""
     assert not bool(pytool.lang.UNSET)
@@ -214,16 +214,16 @@ def test_namespace_contains_does_not_create_new_fields():
 
 def test_namespace_evaluates_to_false_when_empty():
     ns = pytool.lang.Namespace()
-    assert bool(ns) == False
+    assert bool(ns) is False
     assert not ns
-    assert bool(ns.attr) == False
+    assert bool(ns.attr) is False
     assert not ns.attr
 
 
 def test_namespace_evaluates_as_true_when_has_an_item():
     ns = pytool.lang.Namespace()
     ns.item = 1
-    assert bool(ns) == True
+    assert bool(ns) is True
     assert ns
 
 

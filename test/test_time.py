@@ -145,7 +145,7 @@ def test_as_utc_naive():
 )
 def test_is_dst():
     d = datetime(2000, 6, 1)
-    assert pytool.time.is_dst(d) == True
+    assert pytool.time.is_dst(d) is True
 
 
 @pytest.mark.skipif(
@@ -153,7 +153,7 @@ def test_is_dst():
 )
 def test_is_not_dst():
     d = datetime(2000, 11, 30)
-    assert pytool.time.is_dst(d) == False
+    assert pytool.time.is_dst(d) is False
 
 
 def test_week_start():
