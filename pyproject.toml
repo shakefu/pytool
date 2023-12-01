@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "pytool"
+version = "3.16.2"
+description = "Pytool is a collection of utilities and language enhancements for Python"
+authors = ["Jacob Alheid <shakefu@gmail.com>"]
+license = "ALv2"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+simplejson = "^3.19.2"
+six = "^1.16.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+mock = "^5.1.0"
+bson = "^0.5.10"
+configargparse = "^1.7"
+coverage = "^6.5.0"
+coveralls = "^3.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
