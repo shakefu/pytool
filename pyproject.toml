@@ -19,6 +19,9 @@ bson = "^0.5.10"
 configargparse = "^1.7"
 coverage = "^6.5.0"
 coveralls = "^3.3.1"
+pre-commit = "^3.5.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.12.0"
 
 [build-system]
 requires = ["poetry-core"]
