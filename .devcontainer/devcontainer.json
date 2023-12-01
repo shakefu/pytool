@@ -1,0 +1,95 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go
+{
+  // Home template
+  "name": "solidsystems/trading-bot",
+
+  // Home image
+  // "image": "shakefu/home:1.8.0",
+  "build": {
+    "dockerfile": "./Dockerfile"
+  },
+
+  // Mounting in the host docker socket for docker-in-docker
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  // Needed to support non-root user
+  "overrideCommand": false,
+
+  // Configure extensions for pre-loading
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "4ops.terraform",
+        "aaron-bond.better-comments",
+        "bierner.markdown-preview-github-styles",
+        "charliermarsh.ruff",
+        "DavidAnson.vscode-markdownlint",
+        "dbaeumer.jshint",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "eg2.vscode-npm-script",
+        "esbenp.prettier-vscode",
+        "gerane.Theme-IRBlack",
+        "GitHub.codespaces",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.copilot-labs",
+        "GitHub.github-vscode-theme",
+        "GitHub.heygithub",
+        "GitHub.remotehub",
+        "github.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "golang.go",
+        "Gruntfuggly.todo-tree",
+        "hashicorp.terraform",
+        "jetmartin.bats",
+        "jmreicha.tender",
+        "joelalejandro.nrql-language",
+        "markis.code-coverage",
+        "mikestead.dotenv",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.isort",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter-keymap",
+        "ms-vscode.anycode-c-sharp",
+        "ms-vscode.anycode-cpp",
+        "ms-vscode.anycode-go",
+        "ms-vscode.anycode-java",
+        "ms-vscode.anycode-php",
+        "ms-vscode.anycode-python",
+        "ms-vscode.anycode-rust",
+        "ms-vscode.anycode-typescript",
+        "ms-vscode.azure-repos",
+        "ms-vscode.remote-repositories",
+        "ms-vsliveshare.vsliveshare",
+        "Orta.vscode-jest",
+        "pamaron.pytest-runner",
+        "redhat.vscode-yaml",
+        "renxzen.google-colab-theme",
+        "samverschueren.final-newline",
+        "stevencl.addDocComments",
+        "stkb.rewrap",
+        "timonwong.shellcheck",
+        "vivaxy.vscode-conventional-commits",
+        "vscode-icons-team.vscode-icons",
+        "windmilleng.vscode-go-autotest",
+        "zeshuaro.vscode-python-poetry"
+      ]
+    }
+  },
+
+  // Explicitly set user to match container
+  // TODO: Decide if we want this to be shakefu instead?
+  "remoteUser": "vscode",
+
+  // Used by docker-in-docker for host mounting filesystem
+  // ref: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/docker-from-docker#using-bind-mounts-when-working-with-docker-inside-the-container
+  "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" }
+}
