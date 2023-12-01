@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 def readme():
     try:
-        return open('README.rst').read()
+        return open('README.md').read()
     except Exception as err:  # noqa
         pass
     return ''
