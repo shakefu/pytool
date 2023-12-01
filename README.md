@@ -6,8 +6,7 @@ Python Standard Library.
 
 Pytool is compatible with and tested against Python 3.8 and higher. End of life Python versions are not supported.
 
-> [!NOTE]
-> *Note*: Python 2 and `<3.8` is now [End of
+> [!NOTE] > _Note_: Python 2 and `<3.8` is now [End of
 > Life](https://www.python.org/doc/sunset-python-2/) and support in Pytool
 > is deprecated and will be removed in Pytool 4.x.
 
@@ -30,7 +29,7 @@ Docs](https://readthedocs.org)!
 
 Pytool is available on PyPI for your installation ease.
 
-``` bash
+```bash
 pip install pytool
 ```
 

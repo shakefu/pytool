@@ -13,27 +13,25 @@ from six.moves import range
 
 
 __all__ = [
-        'get_name',
-        'classproperty',
-        'singleton',
-        'hashed_singleton',
-        'UNSET',
-        'Namespace',
-        'unflatten',
-        ]
-
-
+    "get_name",
+    "classproperty",
+    "singleton",
+    "hashed_singleton",
+    "UNSET",
+    "Namespace",
+    "unflatten",
+]
 
 
 def get_name(frame):
-    """ Gets the name of the passed frame.
+    """Gets the name of the passed frame.
 
-        :warning: It's very important to delete a stack frame after you're done
-               using it, as it can cause circular references that prevents
-               garbage collection.
+    :warning: It's very important to delete a stack frame after you're done
+           using it, as it can cause circular references that prevents
+           garbage collection.
 
-        :param frame: Stack frame to inspect.
-        :returns: Name of the frame in the form *module.class.method*.
+    :param frame: Stack frame to inspect.
+    :returns: Name of the frame in the form *module.class.method*.
 
     """
     module = inspect.getmodule(frame)
@@ -53,16 +51,15 @@ def get_name(frame):
                 if isinstance(maybe_cls, type):
                     maybe_func = maybe_cls.__dict__[frame.f_code.co_name]
                 else:
-                    maybe_func = maybe_cls.__class__\
-                        .__dict__[frame.f_code.co_name]
+                    maybe_func = maybe_cls.__class__.__dict__[frame.f_code.co_name]
             except:  # noqa
                 maybe_func = getattr(maybe_cls, frame.f_code.co_name)
 
             # If we have self, or a classmethod, we need the class name
-            if (varname in ('self', 'cls') or maybe_func.im_self == maybe_cls):
-                cls_name = (getattr(maybe_cls, '__name__', None) or
-                            getattr(getattr(maybe_cls, '__class__', None),
-                                    '__name__', None))
+            if varname in ("self", "cls") or maybe_func.im_self == maybe_cls:
+                cls_name = getattr(maybe_cls, "__name__", None) or getattr(
+                    getattr(maybe_cls, "__class__", None), "__name__", None
+                )
 
                 if cls_name:
                     name = "%s.%s" % (cls_name, name)
@@ -74,7 +71,7 @@ def get_name(frame):
     if module:
         if not isinstance(module, six.string_types):
             module = module.__name__
-        if name != '<module>':
+        if name != "<module>":
             return "%s.%s" % (module, name)
         else:
             return module
@@ -102,38 +99,43 @@ def classproperty(func):
         MyClass().attr # Still 'Hello World'
 
     """
+
     def __get__(self, instance, owner):
         return func(owner)
 
-    return type(func.__name__, (object,), {
-        '__get__': __get__,
-        '__module__': func.__module__,
-        '__doc__': func.__doc__,
-        })()
+    return type(
+        func.__name__,
+        (object,),
+        {
+            "__get__": __get__,
+            "__module__": func.__module__,
+            "__doc__": func.__doc__,
+        },
+    )()
 
 
 def singleton(klass):
-    """ Wraps a class to create a singleton version of it.
+    """Wraps a class to create a singleton version of it.
 
-        :param klass: Class to decorate
+    :param klass: Class to decorate
 
-        .. versionchanged:: 3.4.2
+    .. versionchanged:: 3.4.2
 
-            `@singleton` wrapped classes now preserve their `@staticmethod`
-            functions on the class type as well as the instance.
+        `@singleton` wrapped classes now preserve their `@staticmethod`
+        functions on the class type as well as the instance.
 
-        Example usage::
+    Example usage::
 
-            # Make a class directly behave as a singleton
-            @singleton
-            class Test(object):
-                pass
+        # Make a class directly behave as a singleton
+        @singleton
+        class Test(object):
+            pass
 
-            # Make an imported class behave as a singleton
-            Test = singleton(Test)
+        # Make an imported class behave as a singleton
+        Test = singleton(Test)
 
     """
-    cls_dict = {'_singleton': None}
+    cls_dict = {"_singleton": None}
 
     # Mirror original class
     cls_name = klass.__name__
@@ -153,64 +155,64 @@ def singleton(klass):
         return cls._singleton
 
     # Add new method to singleton class dict
-    cls_dict['__new__'] = __new__
+    cls_dict["__new__"] = __new__
 
     # Build and return new class
     return type(cls_name, (object,), cls_dict)
 
 
 def hashed_singleton(klass):
-    """ Wraps a class to create a hashed singleton version of it. A hashed
-        singleton is like a singleton in that there will be only a single
-        instance of the class for each call signature.
+    """Wraps a class to create a hashed singleton version of it. A hashed
+    singleton is like a singleton in that there will be only a single
+    instance of the class for each call signature.
 
-        The singleton is kept as a `weak reference
-        <http://docs.python.org/2/library/weakref.html>`_, so if your program
-        ceases to reference the hashed singleton, you may get a new instance if
-        the Python interpreter has garbage collected your original instance.
+    The singleton is kept as a `weak reference
+    <http://docs.python.org/2/library/weakref.html>`_, so if your program
+    ceases to reference the hashed singleton, you may get a new instance if
+    the Python interpreter has garbage collected your original instance.
 
-        This will not work for classes that take arguments that are unhashable
-        (e.g. dicts, sets).
+    This will not work for classes that take arguments that are unhashable
+    (e.g. dicts, sets).
 
-        :param klass: Class to decorate
+    :param klass: Class to decorate
 
-        .. versionadded:: 2.1
+    .. versionadded:: 2.1
 
-        .. versionchanged:: 3.4.2
+    .. versionchanged:: 3.4.2
 
-            `@hashed_singleton` wrapped classes now preserve their
-            `@staticmethod` functions on the class type as well as the
-            instance.
+        `@hashed_singleton` wrapped classes now preserve their
+        `@staticmethod` functions on the class type as well as the
+        instance.
 
-        Example usage::
+    Example usage::
 
-            # Make a class directly behave as a hashed singleton
-            @hashed_singleton
-            class Test(object):
-                def __init__(self, *args, **kwargs):
-                    pass
+        # Make a class directly behave as a hashed singleton
+        @hashed_singleton
+        class Test(object):
+            def __init__(self, *args, **kwargs):
+                pass
 
-            # Make an imported class behave as a hashed singleton
-            Test = hashed_singleton(Test)
+        # Make an imported class behave as a hashed singleton
+        Test = hashed_singleton(Test)
 
-            # The same arguments give you the same class instance back
-            test = Test('a', k='k')
-            test is Test('a', k='k') # True
+        # The same arguments give you the same class instance back
+        test = Test('a', k='k')
+        test is Test('a', k='k') # True
 
-            # A different argument signature will give you a new instance
-            test is Test('b', k='k') # False
-            test is Test('a', k='j') # False
+        # A different argument signature will give you a new instance
+        test is Test('b', k='k') # False
+        test is Test('a', k='j') # False
 
-            # Removing all references to a hashed singleton instance will allow
-            # it to be garbage collected like normal, because it's only kept
-            # as a weak reference
-            del test
-            test = Test('a', k='k') # If the Python interpreter has garbage
-                                    # collected, you will get a new instance
+        # Removing all references to a hashed singleton instance will allow
+        # it to be garbage collected like normal, because it's only kept
+        # as a weak reference
+        del test
+        test = Test('a', k='k') # If the Python interpreter has garbage
+                                # collected, you will get a new instance
 
 
     """
-    cls_dict = {'_singletons': weakref.WeakValueDictionary()}
+    cls_dict = {"_singletons": weakref.WeakValueDictionary()}
 
     # Mirror original class
     cls_name = klass.__name__
@@ -237,7 +239,7 @@ def hashed_singleton(klass):
         return obj
 
     # Add new method to singleton class dict
-    cls_dict['__new__'] = __new__
+    cls_dict["__new__"] = __new__
 
     # Build and return new class
     return type(cls_name, (object,), cls_dict)
@@ -271,40 +273,41 @@ class _UNSETMeta(type):
     __next__ = next
 
     def __repr__(cls):
-        return 'UNSET'
+        return "UNSET"
 
 
 @six.add_metaclass(_UNSETMeta)
 class UNSET(object):
-    """ Special class that evaluates to ``bool(False)``, but can be distinctly
-        identified as seperate from ``None`` or ``False``. This class can and
-        should be used without instantiation.
+    """Special class that evaluates to ``bool(False)``, but can be distinctly
+    identified as seperate from ``None`` or ``False``. This class can and
+    should be used without instantiation.
 
-        ::
+    ::
 
-            >>> from pytool.lang import UNSET
-            >>> # Evaluates to False
-            >>> bool(UNSET)
-            False
-            >>> # Is a class-singleton (cannot become an instance)
-            >>> UNSET() is UNSET
-            True
-            >>> # Is good for checking default values
-            >>> if {}.get('example', UNSET) is UNSET:
-            ...     print "Key is missing."
-            ...
-            Key is missing.
-            >>> # Has no length
-            >>> len(UNSET)
-            0
-            >>> # Is iterable, but has no iterations
-            >>> list(UNSET)
-            []
-            >>> # It has a repr() equal to itself
-            >>> UNSET
-            UNSET
+        >>> from pytool.lang import UNSET
+        >>> # Evaluates to False
+        >>> bool(UNSET)
+        False
+        >>> # Is a class-singleton (cannot become an instance)
+        >>> UNSET() is UNSET
+        True
+        >>> # Is good for checking default values
+        >>> if {}.get('example', UNSET) is UNSET:
+        ...     print "Key is missing."
+        ...
+        Key is missing.
+        >>> # Has no length
+        >>> len(UNSET)
+        0
+        >>> # Is iterable, but has no iterations
+        >>> list(UNSET)
+        []
+        >>> # It has a repr() equal to itself
+        >>> UNSET
+        UNSET
 
     """
+
     def __new__(cls):
         return cls
 
@@ -423,7 +426,8 @@ class Namespace(object):
         Added traversal by key/index arrays for nested Namespaces and lists
 
     """
-    _VALID_NAME = re.compile('^[a-zA-Z0-9_.]+$')
+
+    _VALID_NAME = re.compile("^[a-zA-Z0-9_.]+$")
 
     def __init__(self, obj=None):
         if obj is not None:
@@ -433,14 +437,14 @@ class Namespace(object):
     def __getattribute__(self, name):
         # Implement descriptor protocol for reading
         value = object.__getattribute__(self, name)
-        if not isinstance(value, Namespace) and hasattr(value, '__get__'):
+        if not isinstance(value, Namespace) and hasattr(value, "__get__"):
             value = value.__get__(self, self.__class__)
         return value
 
     # Allow for dict-like key access and traversal
     def __getitem__(self, item):
-        if isinstance(item, six.string_types) and '.' in item:
-            return self.traverse(item.split('.'))
+        if isinstance(item, six.string_types) and "." in item:
+            return self.traverse(item.split("."))
         try:
             return self.__getattribute__(item)
         except AttributeError:
@@ -456,7 +460,7 @@ class Namespace(object):
         return self.iteritems()
 
     def __contains__(self, name):
-        names = name.split('.')
+        names = name.split(".")
 
         obj = self
         for name in names:
@@ -483,16 +487,16 @@ class Namespace(object):
         return bool(self.__dict__)
 
     def iteritems(self, base_name=None):
-        """ Return generator which returns ``(key, value)`` tuples.
+        """Return generator which returns ``(key, value)`` tuples.
 
-            :param str base_name: Base namespace (optional)
+        :param str base_name: Base namespace (optional)
 
         """
         for name in self.__dict__.keys():
             value = getattr(self, name)
 
             if base_name:
-                name = base_name + '.' + name
+                name = base_name + "." + name
 
             # Allow for nested namespaces
             if isinstance(value, Namespace):
@@ -502,19 +506,19 @@ class Namespace(object):
                 yield name, value
 
     def items(self, base_name=None):
-        """ Return generator which returns ``(key, value)`` tuples.
+        """Return generator which returns ``(key, value)`` tuples.
 
-            Analagous to dict.items() behavior in Python3
+        Analagous to dict.items() behavior in Python3
 
-            :param str base_name: Base namespace (optional)
+        :param str base_name: Base namespace (optional)
 
         """
         return self.iteritems(base_name)
 
     def as_dict(self, base_name=None):
-        """ Return the current namespace as a dictionary.
+        """Return the current namespace as a dictionary.
 
-            :param str base_name: Base namespace (optional)
+        :param str base_name: Base namespace (optional)
 
         """
         space = dict(self.iteritems(base_name))
@@ -530,18 +534,18 @@ class Namespace(object):
         return space
 
     def for_json(self, base_name=None):
-        """ Return the current namespace as a JSON suitable nested dictionary.
+        """Return the current namespace as a JSON suitable nested dictionary.
 
-            :param str base_name: Base namespace (optional)
+        :param str base_name: Base namespace (optional)
 
-            This is compatible with the :module:`simplejson` `for_json`
-            behavior flag to recursively encode objects.
+        This is compatible with the :module:`simplejson` `for_json`
+        behavior flag to recursively encode objects.
 
-            Example::
+        Example::
 
-                import simplejson
+            import simplejson
 
-                json_str = simplejson.dumps(my_namespace, for_json=True)
+            json_str = simplejson.dumps(my_namespace, for_json=True)
 
         """
         target = {}
@@ -567,20 +571,19 @@ class Namespace(object):
         return obj
 
     def from_dict(self, obj):
-        """ Populate this Namespace from the given *obj* dictionary.
+        """Populate this Namespace from the given *obj* dictionary.
 
-            :param dict obj: Dictionary object to merge into this Namespace
+        :param dict obj: Dictionary object to merge into this Namespace
 
-            .. versionadded:: 3.5.0
+        .. versionadded:: 3.5.0
 
         """
         obj = unflatten(obj)
 
-        assert isinstance(obj, dict), \
-            "Bad Namespace value: '{!r}'".format(obj)
+        assert isinstance(obj, dict), "Bad Namespace value: '{!r}'".format(obj)
 
         def _coerce_value(value):
-            """ Helps coerce values to Namespaces recursively. """
+            """Helps coerce values to Namespaces recursively."""
             if isinstance(value, dict):
                 return type(self)(value)
             elif isinstance(value, list):
@@ -600,10 +603,10 @@ class Namespace(object):
         return "<{}({})>".format(type(self).__name__, self.as_dict())
 
     def copy(self, *args, **kwargs):
-        """ Return a copy of a Namespace by writing it to a dict and then
-            writing back to a Namespace.
+        """Return a copy of a Namespace by writing it to a dict and then
+        writing back to a Namespace.
 
-            Arguments to this method are ignored.
+        Arguments to this method are ignored.
 
         """
         return type(self)(self.as_dict())
@@ -613,25 +616,25 @@ class Namespace(object):
     __deepcopy__ = copy
 
     def traverse(self, path):
-        """ Traverse the Namespace and any nested elements by following the
-            elements in an iterable *path* and return the item found at the end
-            of *path*.
+        """Traverse the Namespace and any nested elements by following the
+        elements in an iterable *path* and return the item found at the end
+        of *path*.
 
-            Traversal is achieved using the __getitem__ method, allowing for
-            traversal of nested structures such as arrays and dictionaries.
+        Traversal is achieved using the __getitem__ method, allowing for
+        traversal of nested structures such as arrays and dictionaries.
 
-            AttributeError is raised if one of the attributes in *path* does
-            not exist at the expected depth.
+        AttributeError is raised if one of the attributes in *path* does
+        not exist at the expected depth.
 
-            :param iterable path: An iterable whose elements specify the keys
-                to path over.
+        :param iterable path: An iterable whose elements specify the keys
+            to path over.
 
-            Example usage::
+        Example usage::
 
-                ns = Namespace({"foo":
-                                [Namespace({"name": "john"}),
-                                Namespace({"name": "jane"})]})
-                ns.traverse(["foo", 1, "name"])  # Returns "jane"
+            ns = Namespace({"foo":
+                            [Namespace({"name": "john"}),
+                            Namespace({"name": "jane"})]})
+            ns.traverse(["foo", 1, "name"])  # Returns "jane"
         """
         ns = self
         for key in path:
@@ -670,7 +673,8 @@ class Keyspace(Namespace):
     .. versionadded:: 3.16.0
 
     """
-    _VALID_NAME = re.compile('.*')
+
+    _VALID_NAME = re.compile(".*")
 
     def __init__(self, obj=None):
         super(Keyspace, self).__init__(obj)
@@ -701,7 +705,7 @@ def _split_keys(obj):
         if not isinstance(key, str):
             yield [key], value
         else:
-            yield key.split('.'), value
+            yield key.split("."), value
 
 
 def _unflatten(obj):
@@ -786,7 +790,7 @@ def _join_lists(obj):
         return obj
 
     # If there's not a '0' key it's not a possible list
-    if '0' not in obj and 0 not in obj:
+    if "0" not in obj and 0 not in obj:
         # Recurse into it
         for key, value in obj.items():
             obj[key] = _join_lists(value)
