@@ -39,13 +39,13 @@ class Subcommand(pytool.cmd.Command):
 def test_command_no_args():
     cmd = Command()
     cmd.start([])
-    assert cmd.args.test == False
+    assert cmd.args.test is False
 
 
 def test_command_with_arg():
     cmd = Command()
     cmd.start(["--test"])
-    assert cmd.args.test == True
+    assert cmd.args.test is True
 
 
 def test_pass_coverage():
@@ -62,8 +62,8 @@ def test_pass_coverage_again():
 def test_subcommand_no_args():
     cmd = Subcommand()
     cmd.start([])
-    assert cmd.args.test == False
-    assert cmd.args.command == None
+    assert cmd.args.test is False
+    assert cmd.args.command is None
 
 
 @pytest.mark.skipif(six.PY2 or not pytool.cmd.HAS_CAP, reason="configargparse missing")
@@ -77,24 +77,24 @@ def test_subcommand_env_var_prefix():
 def test_subcommand_with_arg():
     cmd = Subcommand()
     cmd.start(["--test"])
-    assert cmd.args.test == True
-    assert cmd.args.command == None
+    assert cmd.args.test is True
+    assert cmd.args.command is None
 
 
 def test_subcommand_with_cmd():
     cmd = Subcommand()
     cmd.start(["action"])
-    assert cmd.args.test == False
+    assert cmd.args.test is False
     assert cmd.args.command == "action"
-    assert cmd.args.act == False
+    assert cmd.args.act is False
 
 
 def test_subcommand_with_args():
     cmd = Subcommand()
     cmd.start(["--test", "action", "--act"])
-    assert cmd.args.test == True
+    assert cmd.args.test is True
     assert cmd.args.command == "action"
-    assert cmd.args.act == True
+    assert cmd.args.act is True
 
 
 @mock.patch("sys.exit")
@@ -129,9 +129,9 @@ class test_configargparse:
     def test_env_var(self):
         cmd = self.Cmd()
         cmd.start([])
-        assert cmd.args.test == True
+        assert cmd.args.test is True
 
     def test_conf_file(self):
         cmd = self.Cmd()
         cmd.start(["-c", "test/test_conf.yml"])
-        assert cmd.args.test == True
+        assert cmd.args.test is True

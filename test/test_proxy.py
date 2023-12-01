@@ -284,7 +284,7 @@ def test_dict_proxy_update():
 def test_dict_proxy_get():
     d = {}
     p = pytool.proxy.DictProxy(d)
-    assert p.get("none") == None
+    assert p.get("none") is None
     assert p.get("none", 1) == 1
     assert p.setdefault("some", "hun") == "hun"
     assert p.get("some") == "hun"
