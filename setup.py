@@ -30,8 +30,12 @@ setup(
     packages=find_packages(exclude=['test']),
     install_requires=['simplejson >= 3.2.0', 'six'],
     tests_require=[
-        'pytest',
+        'bson',
+        'configargparse',
+        'coverage',
+        'coveralls',
         'mock',
+        'pytest',
         ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
