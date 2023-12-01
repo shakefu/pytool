@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci:
-    # name: Lint & Test
+    name: CI
     uses: ./.github/workflows/ci.yaml
 
   release:
