@@ -111,7 +111,7 @@ Here you'll find a record of the changes in each version of :mod:`pytool`.
 
 - Implement a instance-descriptor read-only protocol for
   :class:`pytool.lang.Namespace` objects. This means you can assign descriptor
-  instances to Namespace instances, and their values can be read, but not set. 
+  instances to Namespace instances, and their values can be read, but not set.
 
   This differs from normal python descriptor behavior, where the descriptor
   instance must be present in the class rather than the instance.
@@ -149,4 +149,3 @@ Pre-2.0.0
 ---------
 
 Sorry, I was lazy and didn't keep a Changelog until 2.0. Apologies!
-

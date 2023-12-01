@@ -39,7 +39,6 @@ def test_list_proxy_proxies_comparisons():
     assert (c != b) == (p != b)
 
 
-
 @pytest.mark.skipif(six.PY3, reason="Python 2")
 def test_list_proxy_comparison_operator():
     c = [1, 2]
@@ -48,7 +47,7 @@ def test_list_proxy_comparison_operator():
     p = pytool.proxy.ListProxy(c)
     assert cmp(c == a, cmp(p, a))
     assert cmp(c == b, cmp(p, b))
-    assert cmp(c == 'foo', cmp(p, 'foo'))
+    assert cmp(c == "foo", cmp(p, "foo"))
     assert cmp(p == a, p.__cmp__(a))
 
 
@@ -144,7 +143,7 @@ def test_list_proxy_addition():
 
 def test_list_proxy_as_json():
     c = pytool.proxy.ListProxy([])
-    c.append('foo')
+    c.append("foo")
     assert pytool.json.as_json(c) == '["foo"]'
 
 
@@ -186,14 +185,14 @@ def test_dict_proxy_instantiates():
 
 
 def test_dict_proxy_repr():
-    d = {'one': 1, 'two': 2}
+    d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
     assert repr(d) == repr(p)
 
 
 @pytest.mark.skipif(six.PY3, reason="Python 2")
 def test_dict_proxy_compare():
-    d = {'one': 1, 'two': 2}
+    d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
     assert cmp(p == d, cmp(d, d))
     assert p.__cmp__(d) == cmp(d, d)
@@ -201,20 +200,20 @@ def test_dict_proxy_compare():
 
 
 def test_dict_proxy_compare_again():
-    d = {'one': 1, 'two': 2}
+    d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
     assert d == p
     assert p == p
 
 
 def test_dict_proxy_get_set_del_item():
-    d = {'one': 1}
+    d = {"one": 1}
     p = pytool.proxy.DictProxy(d)
-    assert d['one'] == p['one']
-    p['one'] = 1
-    assert d['one'] == p['one']
-    assert d['one'] == 1
-    del p['one']
+    assert d["one"] == p["one"]
+    p["one"] = 1
+    assert d["one"] == p["one"]
+    assert d["one"] == 1
+    del p["one"]
     assert d == p
     assert d == {}
     assert p == {}
@@ -224,13 +223,14 @@ def test_dict_proxy_missing_handling():
     class MissingProxy(pytool.proxy.DictProxy):
         def __missing__(self, key):
             return pytool.lang.UNSET
-    d = {'one': 1, 'two': 2}
+
+    d = {"one": 1, "two": 2}
     m = MissingProxy(d)
-    assert m['three'] == pytool.lang.UNSET
+    assert m["three"] == pytool.lang.UNSET
 
 
 def test_dict_proxy_clear():
-    d = {'one': 1, 'two': 2}
+    d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
     p.clear()
     assert d == {}
@@ -238,7 +238,7 @@ def test_dict_proxy_clear():
 
 
 def test_dict_proxy_copy():
-    d = {'one': 1, 'two': 2}
+    d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
     c = p.copy()
     assert c is not d
@@ -256,60 +256,60 @@ def test_dict_proxy_copy():
 
 
 def test_dict_proxy_update():
-    d = {'one': 1, 'two': 2}
-    u = {'three': 3}
+    d = {"one": 1, "two": 2}
+    u = {"three": 3}
     p = pytool.proxy.DictProxy(d)
     p.update(p)
     assert d == p
     p.update(u)
     assert d == p
-    assert p == {'one': 1, 'two': 2, 'three': 3}
+    assert p == {"one": 1, "two": 2, "three": 3}
     p.update(None)
-    p.update([('four', 4)])
+    p.update([("four", 4)])
     assert d == p
-    assert p == {'one': 1, 'two': 2, 'three': 3, 'four': 4}
+    assert p == {"one": 1, "two": 2, "three": 3, "four": 4}
 
     class Items(object):
         def items(self):
-            return [('five', 5)]
+            return [("five", 5)]
 
     p.update(Items())
     assert d == p
-    assert p == {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5}
+    assert p == {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
     p.update(six=6)
     assert d == p
-    assert p == {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6}
+    assert p == {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
 
 
 def test_dict_proxy_get():
     d = {}
     p = pytool.proxy.DictProxy(d)
-    assert p.get('none') == None
-    assert p.get('none', 1) == 1
-    assert p.setdefault('some','hun') == 'hun'
-    assert p.get('some') == 'hun'
+    assert p.get("none") == None
+    assert p.get("none", 1) == 1
+    assert p.setdefault("some", "hun") == "hun"
+    assert p.get("some") == "hun"
 
 
 def test_dict_proxy_pop():
-    d = {'one': 1}
+    d = {"one": 1}
     p = pytool.proxy.DictProxy(d)
-    assert p.pop('one') == 1
-    assert p.pop('one' == 2, 2)
-    d['one'] = 1
-    assert p.popitem() == ('one', 1)
+    assert p.pop("one") == 1
+    assert p.pop("one" == 2, 2)
+    d["one"] = 1
+    assert p.popitem() == ("one", 1)
     assert d == {}
     assert d == p
 
 
 def test_dict_proxy_iter():
-    d = {'one': 1, 'two': 2}
+    d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
-    assert sorted(list(iter(p))) == ['one', 'two']
+    assert sorted(list(iter(p))) == ["one", "two"]
 
 
 def test_dict_proxy_as_json():
     d = pytool.proxy.DictProxy({})
-    d['foo'] = 'bar'
+    d["foo"] = "bar"
     assert pytool.json.as_json(d) == '{"foo": "bar"}'
 
 
@@ -317,4 +317,4 @@ def test_dict_proxy_raises_key_error():
     d = pytool.proxy.DictProxy({})
 
     with pytest.raises(KeyError):
-        d['foo']
+        d["foo"]

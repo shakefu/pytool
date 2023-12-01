@@ -20,7 +20,7 @@ issue <https://github.com/shakefu/pytool/issues>`_.
 :class:`pytool.cmd.Command`
 ---------------------------
 
-.. autoclass:: pytool.cmd.Command 
+.. autoclass:: pytool.cmd.Command
    :members:
 
 :mod:`pytool.json`: JSON helpers
@@ -234,5 +234,3 @@ issue <https://github.com/shakefu/pytool/issues>`_.
 
 .. autoclass:: ListProxy
    :members:
-
-

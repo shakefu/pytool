@@ -23,10 +23,10 @@ def columns(default=79):
         width, _ = shutil.get_terminal_size()
         return width - 1
 
-    return os.environ.get('COLUMNS', default)
+    return os.environ.get("COLUMNS", default)
 
 
-def wrap(text, width=None, indent=''):
+def wrap(text, width=None, indent=""):
     """
     Return `text` wrapped to `width` while trimming leading indentation and
     preserving paragraphs.
@@ -72,9 +72,9 @@ def wrap(text, width=None, indent=''):
     # Preserve this for later, since we reuse `indent` as a variable
     initial_indent = indent
     # De-indent the text and remove any leading newlines
-    text = textwrap.dedent(text).lstrip('\n')
+    text = textwrap.dedent(text).lstrip("\n")
     # Split the text into lines
-    lines = text.split('\n')
+    lines = text.split("\n")
     # Hey, if there's no lines, we do nothing, but this shouldn't ever happen
     if not lines:  # pragma: no cover
         return
@@ -84,7 +84,7 @@ def wrap(text, width=None, indent=''):
     line = lines[0]  # The current line we're parsing
     last_indent = len(line) - len(line.lstrip())  # Last line indent
     # List of paragraphs, primed with the first wrapped line fragment
-    paragraphs = [line + ' ']
+    paragraphs = [line + " "]
     for i in range(1, len(lines)):
         # Strip trailing spaces, which may just be random whitespace
         line = lines[i].rstrip()
@@ -103,12 +103,12 @@ def wrap(text, width=None, indent=''):
             # Start a new unwrapped line
             c += 1
             last_indent = indent
-            paragraphs.append(line + ' ')
+            paragraphs.append(line + " ")
             continue
 
         # If we got this far, the indentation matched, so it was part of the
         # same paragraph, and we just add it to the current paragraph
-        paragraphs[c] += line.lstrip() + ' '
+        paragraphs[c] += line.lstrip() + " "
 
     # Iterate over the paragraphs rewrapping them at 70 chrs
     for i in range(len(paragraphs)):
@@ -116,15 +116,15 @@ def wrap(text, width=None, indent=''):
         line = paragraphs[i]
         # Calculate the indentation
         sub_indent = len(line) - len(line.lstrip())
-        sub_indent = initial_indent + (sub_indent * ' ')
+        sub_indent = initial_indent + (sub_indent * " ")
         # Wrap the line into a paragraph
-        wrapper = textwrap.TextWrapper(initial_indent=initial_indent,
-                                       subsequent_indent=sub_indent,
-                                       width=width)
+        wrapper = textwrap.TextWrapper(
+            initial_indent=initial_indent, subsequent_indent=sub_indent, width=width
+        )
         line = wrapper.fill(line)
         # Remove trailing whitespace
         paragraphs[i] = line.rstrip()
 
     # Join all the wrapped paragraphs into a single string
-    text = '\n'.join(paragraphs)
+    text = "\n".join(paragraphs)
     return text

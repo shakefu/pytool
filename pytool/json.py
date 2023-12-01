@@ -11,27 +11,27 @@ into JSON automatically.
 from datetime import datetime
 
 import simplejson as json
+
 # Conditionally handle bson import so we don't have to depend on pymongo
 try:
     import bson
 except ImportError:
     # Make a mock bson module (as a class object)
-    bson = type('bson', (object,),
-                {'ObjectId': type('ObjectId', (object,), {})})
+    bson = type("bson", (object,), {"ObjectId": type("ObjectId", (object,), {})})
 
 
 __all__ = [
-        'as_json',
-        'from_json',
+    "as_json",
+    "from_json",
 ]
 
 
 def _default(obj):
-    """ Handle encoding of an object which isn't JSON serializable by the
-    regular encoder. """
+    """Handle encoding of an object which isn't JSON serializable by the
+    regular encoder."""
     # Datetime objects get encoded according to the ISO standard
     if isinstance(obj, datetime):
-        return obj.strftime('%a %b %d %Y %H:%M:%S %z').strip()
+        return obj.strftime("%a %b %d %Y %H:%M:%S %z").strip()
     # BSON ObjectId types get encoded as their hex string
     if isinstance(obj, bson.ObjectId):
         return str(obj)
@@ -78,10 +78,10 @@ def as_json(obj, **kwargs):
 
 
 def from_json(value):
-    """ Decodes a JSON string into an object.
+    """Decodes a JSON string into an object.
 
-        :param str value: String to decode
-        :returns: Decoded JSON object
+    :param str value: String to decode
+    :returns: Decoded JSON object
 
     """
     return json.loads(value)

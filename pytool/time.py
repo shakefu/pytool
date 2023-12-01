@@ -11,7 +11,7 @@ import datetime
 from pytool.lang import singleton
 
 # Importing the system module
-time = importlib.import_module('time')
+time = importlib.import_module("time")
 
 
 class Timer(object):
@@ -27,6 +27,7 @@ class Timer(object):
         print timer.elapsed, "total elapsed"
 
     """
+
     def __init__(self):
         self._start = utcnow()
         self._last = self._start
@@ -52,22 +53,23 @@ class Timer(object):
 
 @singleton
 class UTC(datetime.tzinfo):
-    """ UTC timezone. This is necessary since Python doesn't include any
-        explicit timezone objects in the standard library. This can be used
-        to create timezone-aware datetime objects, which are a pain to work
-        with, but a necessary evil sometimes.
+    """UTC timezone. This is necessary since Python doesn't include any
+    explicit timezone objects in the standard library. This can be used
+    to create timezone-aware datetime objects, which are a pain to work
+    with, but a necessary evil sometimes.
 
-        ::
+    ::
 
-            from datetime import datetime
-            from pytool.time import UTC
+        from datetime import datetime
+        from pytool.time import UTC
 
-            utc_now = datetime.now(UTC())
+        utc_now = datetime.now(UTC())
 
     """
+
     @property
     def _utcoffset(self):
-        """ Helps make this work with pytz. """
+        """Helps make this work with pytz."""
         return datetime.timedelta(0)
 
     def utcoffset(self, stamp):
@@ -80,7 +82,7 @@ class UTC(datetime.tzinfo):
         return datetime.timedelta(0)
 
     def __repr__(self):
-        return 'UTC()'
+        return "UTC()"
 
     def __reduce__(self):
         # This method makes the UTC object pickleable
@@ -88,36 +90,36 @@ class UTC(datetime.tzinfo):
 
 
 def is_dst(stamp):
-    """ Return ``True`` if `stamp` is daylight savings.
+    """Return ``True`` if `stamp` is daylight savings.
 
-        :param datetime stamp: Datetime
-        :returns: ``True`` if `stamp` is daylight savings, otherwise ``False``.
+    :param datetime stamp: Datetime
+    :returns: ``True`` if `stamp` is daylight savings, otherwise ``False``.
 
     """
     return time.localtime(time.mktime(stamp.timetuple())).tm_isdst == 1
 
 
 def utcnow():
-    """ Return the current UTC time as a timezone-aware datetime.
+    """Return the current UTC time as a timezone-aware datetime.
 
-        :returns: The current UTC time
+    :returns: The current UTC time
 
     """
     return datetime.datetime.now(UTC())
 
 
 def fromutctimestamp(stamp):
-    """ Return a timezone-aware datetime object from a UTC unix timestamp.
+    """Return a timezone-aware datetime object from a UTC unix timestamp.
 
-        :param float stamp: Unix timestamp in UTC
-        :returns: UTC datetime object
+    :param float stamp: Unix timestamp in UTC
+    :returns: UTC datetime object
 
-        ::
+    ::
 
-            import time
-            from pytool.time import fromutctimestamp
+        import time
+        from pytool.time import fromutctimestamp
 
-            utc_datetime = fromutctimestamp(time.time())
+        utc_datetime = fromutctimestamp(time.time())
 
     """
     decimal = int(round(10**6 * (stamp - int(stamp))))
@@ -130,22 +132,22 @@ def fromutctimestamp(stamp):
 
 
 def toutctimestamp(stamp):
-    """ Converts a naive datetime object to a UTC unix timestamp. This has an
-        advantage over `time.mktime` in that it preserves the decimal portion
-        of the timestamp when converting.
+    """Converts a naive datetime object to a UTC unix timestamp. This has an
+    advantage over `time.mktime` in that it preserves the decimal portion
+    of the timestamp when converting.
 
-        :param datetime stamp: Datetime to convert
-        :returns: Unix timestamp as a ``float``
+    :param datetime stamp: Datetime to convert
+    :returns: Unix timestamp as a ``float``
 
-        ::
+    ::
 
-            from datetime import datetime
-            from pytool.time import toutctimestamp
+        from datetime import datetime
+        from pytool.time import toutctimestamp
 
-            utc_stamp = toutctimestamp(datetime.now())
+        utc_stamp = toutctimestamp(datetime.now())
 
     """
-    decimal = (1.0 * stamp.microsecond / 10**6)
+    decimal = 1.0 * stamp.microsecond / 10**6
     if stamp.tzinfo:
         # Hooray, it's timezone aware, we are saved!
         return calendar.timegm(stamp.utctimetuple()) + decimal
@@ -155,43 +157,42 @@ def toutctimestamp(stamp):
 
 
 def as_utc(stamp):
-    """ Converts any datetime (naive or aware) to UTC time.
+    """Converts any datetime (naive or aware) to UTC time.
 
-        :param datetime stamp: Datetime to convert
-        :returns: `stamp` as UTC time
+    :param datetime stamp: Datetime to convert
+    :returns: `stamp` as UTC time
 
-        ::
+    ::
 
-            from datetime import datetime
-            from pytool.time import as_utc
+        from datetime import datetime
+        from pytool.time import as_utc
 
-            utc_datetime = as_utc(datetime.now())
+        utc_datetime = as_utc(datetime.now())
 
     """
     return fromutctimestamp(toutctimestamp(stamp))
 
 
 def trim_time(stamp):
-    """ Trims the time portion off of `stamp`, leaving the date intact.
-        Returns a datetime of the same date, set to 00:00:00 hours. Preserves
-        timezone information.
+    """Trims the time portion off of `stamp`, leaving the date intact.
+    Returns a datetime of the same date, set to 00:00:00 hours. Preserves
+    timezone information.
 
-        :param datetime stamp: Timestamp to trim
-        :returns: Trimmed timestamp
+    :param datetime stamp: Timestamp to trim
+    :returns: Trimmed timestamp
 
     """
-    return datetime.datetime(*stamp.date().timetuple()[:-3],
-                             tzinfo=stamp.tzinfo)
+    return datetime.datetime(*stamp.date().timetuple()[:-3], tzinfo=stamp.tzinfo)
 
 
 def week_start(stamp):
-    """ Return the start of the week containing `stamp`.
+    """Return the start of the week containing `stamp`.
 
-        .. versionchanged:: 2.0
-           Preserves timezone information.
+    .. versionchanged:: 2.0
+       Preserves timezone information.
 
-        :param datetime stamp: Timestamp
-        :returns: A datetime for 00:00 Monday of the given week
+    :param datetime stamp: Timestamp
+    :returns: A datetime for 00:00 Monday of the given week
 
     """
     stamp = stamp - datetime.timedelta(days=stamp.weekday())
@@ -200,10 +201,10 @@ def week_start(stamp):
 
 
 def week_seconds(stamp):
-    """ Return `stamp` converted to seconds since 00:00 Monday.
+    """Return `stamp` converted to seconds since 00:00 Monday.
 
-        :param datetime stamp: Timestamp to convert
-        :returns: Seconds since 00:00 monday
+    :param datetime stamp: Timestamp to convert
+    :returns: Seconds since 00:00 monday
 
     """
     difference = stamp - week_start(stamp)
@@ -211,65 +212,66 @@ def week_seconds(stamp):
 
 
 def week_seconds_to_datetime(seconds):
-    """ Return the datetime that is `seconds` from the start of this week.
+    """Return the datetime that is `seconds` from the start of this week.
 
-        :param int seconds: Seconds
-        :returns: Datetime for 00:00 Monday plus `seconds`
+    :param int seconds: Seconds
+    :returns: Datetime for 00:00 Monday plus `seconds`
 
     """
-    return (week_start(datetime.datetime.now())
-            + datetime.timedelta(seconds=seconds))
+    return week_start(datetime.datetime.now()) + datetime.timedelta(seconds=seconds)
 
 
 def make_week_seconds(day, hour, minute=0, seconds=0):
-    """ Return :func:`week_seconds` for the given `day` of the week, `hour`
-        and `minute`.
+    """Return :func:`week_seconds` for the given `day` of the week, `hour`
+    and `minute`.
 
-        :param int day: Zero-indexed day of the week
-        :param int hour: Zero-indexed 24-hour
-        :param int minute: Minute (default: ``0``)
-        :param int seconds: Seconds (default: ``0``)
-        :returns: Seconds since 00:00 Monday
+    :param int day: Zero-indexed day of the week
+    :param int hour: Zero-indexed 24-hour
+    :param int minute: Minute (default: ``0``)
+    :param int seconds: Seconds (default: ``0``)
+    :returns: Seconds since 00:00 Monday
 
     """
     stamp = week_start(datetime.datetime.now())
     stamp += datetime.timedelta(days=day)
-    stamp = datetime.datetime.combine(stamp.date(),
-                                      datetime.time(hour, minute, seconds))
+    stamp = datetime.datetime.combine(
+        stamp.date(), datetime.time(hour, minute, seconds)
+    )
     return week_seconds(stamp)
 
 
 def floor_minute(stamp=None):
-    """ Return `stamp` floored to the current minute. If no `stamp` is
-        specified, the current time is used. Preserves timezone information.
+    """Return `stamp` floored to the current minute. If no `stamp` is
+    specified, the current time is used. Preserves timezone information.
 
-        .. versionadded:: 2.0
+    .. versionadded:: 2.0
 
-        :param datetime stamp: `datetime` object to floor (default: now)
-        :returns: Datetime floored to the minute
+    :param datetime stamp: `datetime` object to floor (default: now)
+    :returns: Datetime floored to the minute
 
     """
-    stamp = stamp - datetime.timedelta(seconds=stamp.second,
-                                       microseconds=stamp.microsecond)
+    stamp = stamp - datetime.timedelta(
+        seconds=stamp.second, microseconds=stamp.microsecond
+    )
     return stamp
 
 
 def floor_day(stamp=None):
-    """ Return `stamp` floored to the current day. If no `stamp` is specified,
-        the current time is used. This is similar to the
-        :meth:`~datetime.datetime.date` method, but returns a
-        :class:`~datetime.datetime` object, instead of a
-        :class:`~datetime.date` object.
+    """Return `stamp` floored to the current day. If no `stamp` is specified,
+    the current time is used. This is similar to the
+    :meth:`~datetime.datetime.date` method, but returns a
+    :class:`~datetime.datetime` object, instead of a
+    :class:`~datetime.date` object.
 
-        This is the same as :func:`~pytool.time.trim_time`.
+    This is the same as :func:`~pytool.time.trim_time`.
 
-        .. versionchanged:: 2.0
-           Preserves timezone information if it exists, and uses
-           :func:`pytool.time.utcnow` instead of :meth:`datetime.datetime.now`
-           if `stamp` is not given.
+    .. versionchanged:: 2.0
+       Preserves timezone information if it exists, and uses
+       :func:`pytool.time.utcnow` instead of :meth:`datetime.datetime.now`
+       if `stamp` is not given.
 
-        :param datetime stamp: `datetime` object to floor (default: now)
-        :returns: Datetime floored to the day
+    :param datetime stamp: `datetime` object to floor (default: now)
+    :returns: Datetime floored to the day
 
     """
     stamp = stamp or utcnow()
@@ -277,16 +279,16 @@ def floor_day(stamp=None):
 
 
 def floor_week(stamp=None):
-    """ Return `stamp` floored to the current week, at 00:00 Monday. If no
-        `stamp` is specified, the current time is used. Preserves timezone
-        information.
+    """Return `stamp` floored to the current week, at 00:00 Monday. If no
+    `stamp` is specified, the current time is used. Preserves timezone
+    information.
 
-        This is the same as :func:`~pytool.time.week_start`
+    This is the same as :func:`~pytool.time.week_start`
 
-        .. versionadded:: 2.0
+    .. versionadded:: 2.0
 
-        :param datetime stamp: `datetime` object to floor (default now:)
-        :returns: Datetime floored to the week
+    :param datetime stamp: `datetime` object to floor (default now:)
+    :returns: Datetime floored to the week
 
     """
     stamp = stamp or utcnow()
@@ -294,16 +296,16 @@ def floor_week(stamp=None):
 
 
 def floor_month(stamp=None):
-    """ Return `stamp` floored to the current month. If no `stamp` is specified,
-        the current time is used.
+    """Return `stamp` floored to the current month. If no `stamp` is specified,
+    the current time is used.
 
-        .. versionchanged:: 2.0
-           Preserves timezone information if it exists, and uses
-           :func:`pytool.time.utcnow` instead of :meth:`datetime.datetime.now`
-           if `stamp` is not given.
+    .. versionchanged:: 2.0
+       Preserves timezone information if it exists, and uses
+       :func:`pytool.time.utcnow` instead of :meth:`datetime.datetime.now`
+       if `stamp` is not given.
 
-        :param datetime stamp: `datetime` object to floor (default: now)
-        :returns: Datetime floored to the month
+    :param datetime stamp: `datetime` object to floor (default: now)
+    :returns: Datetime floored to the month
 
     """
     stamp = stamp or utcnow()
@@ -311,54 +313,54 @@ def floor_month(stamp=None):
 
 
 def ago(stamp=None, **kwargs):
-    """ Return the current time as UTC minutes the specified timeframe.
+    """Return the current time as UTC minutes the specified timeframe.
 
-        This is a helper for simplifying the common pattern of
-        `pytool.time.utcnow() - datetime.timedelta(mintues=15)`.
+    This is a helper for simplifying the common pattern of
+    `pytool.time.utcnow() - datetime.timedelta(mintues=15)`.
 
-        :param stamp: An optional timestamp instead of `utcnow()`
-        :param days: Days previous
-        :param hours: Hours previous
-        :param minutes: Minutes previous
-        :param seconds: Days previous
-        :returns: UTC timestamp
+    :param stamp: An optional timestamp instead of `utcnow()`
+    :param days: Days previous
+    :param hours: Hours previous
+    :param minutes: Minutes previous
+    :param seconds: Days previous
+    :returns: UTC timestamp
 
-        If you like brevity in your arguments, you can use the shorter
-        versions, `hrs=`, `mins=` and `secs=`.
+    If you like brevity in your arguments, you can use the shorter
+    versions, `hrs=`, `mins=` and `secs=`.
 
-        Or if you really want a short signature, you can use `d=`, `h=`, `m=`,
-        `s=`.
+    Or if you really want a short signature, you can use `d=`, `h=`, `m=`,
+    `s=`.
 
-        ::
+    ::
 
-            import pytool
+        import pytool
 
-            yesterday = pytool.time.ago(days=1)
+        yesterday = pytool.time.ago(days=1)
 
-            a_little_while_ago = pytool.time.ago(minutes=1)
+        a_little_while_ago = pytool.time.ago(minutes=1)
 
-            a_little_before = pytool.time.ago(my_date, hours=1)
+        a_little_before = pytool.time.ago(my_date, hours=1)
 
-            # Shorter arguments
-            shorter = pytool.time.ago(hrs=1, mins=1, secs=1)
+        # Shorter arguments
+        shorter = pytool.time.ago(hrs=1, mins=1, secs=1)
 
-            # Shorthand argument names
-            short = pytool.time.ago(d=1, h=1, m=1, s=1)
+        # Shorthand argument names
+        short = pytool.time.ago(d=1, h=1, m=1, s=1)
 
     """
     _map = {
-            'days': 'days',
-            'd': 'days',
-            'hours': 'hours',
-            'hrs': 'hours',
-            'h': 'hours',
-            'minutes': 'minutes',
-            'mins': 'minutes',
-            'm': 'minutes',
-            'seconds': 'seconds',
-            'secs': 'seconds',
-            's': 'seconds',
-            }
+        "days": "days",
+        "d": "days",
+        "hours": "hours",
+        "hrs": "hours",
+        "h": "hours",
+        "minutes": "minutes",
+        "mins": "minutes",
+        "m": "minutes",
+        "seconds": "seconds",
+        "secs": "seconds",
+        "s": "seconds",
+    }
 
     args = {}
 

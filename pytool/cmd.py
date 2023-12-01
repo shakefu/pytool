@@ -13,14 +13,17 @@ from pytool.lang import UNSET
 # Handle the optional configargparse lib
 try:
     import configargparse as argparse
+
     DefaultFormatter = argparse.ArgumentDefaultsRawHelpFormatter
     HAS_CAP = True
 except ImportError:
     import argparse
+
     DefaultFormatter = argparse.RawDescriptionHelpFormatter
     HAS_CAP = False
 
 import pytool.text
+
 try:
     import pyconfig
 except ImportError:
@@ -40,10 +43,10 @@ else:
 
 
 __all__ = [
-        'RELOAD_SIGNAL',
-        'STOP_SIGNAL',
-        'Command',
-        ]
+    "RELOAD_SIGNAL",
+    "STOP_SIGNAL",
+    "Command",
+]
 
 
 try:
@@ -135,59 +138,59 @@ class Command(object):
     refer to that documentation for more information.
 
     """
+
     def __init__(self):
-        self.parser = argparse.ArgumentParser(add_help=False,
-                                              **self.parser_opts())
+        self.parser = argparse.ArgumentParser(add_help=False, **self.parser_opts())
         self.subparsers = None
         self.set_opts()
-        self.opt('--help', action='help', help='display this help and exit')
+        self.opt("--help", action="help", help="display this help and exit")
 
     def parser_opts(self):
-        """ Subclasses should override this method to return a dictionary of
-            additional arguments to the parser instance.
+        """Subclasses should override this method to return a dictionary of
+        additional arguments to the parser instance.
 
-            **Example**::
+        **Example**::
 
-                class MyCommand(Command):
-                    def parser_opts(self):
-                        return dict(
-                                description="Manual description for cmd.",
-                                add_env_var_help=True,
-                                auto_env_var_prefix='mycmd_',
-                                )
+            class MyCommand(Command):
+                def parser_opts(self):
+                    return dict(
+                            description="Manual description for cmd.",
+                            add_env_var_help=True,
+                            auto_env_var_prefix='mycmd_',
+                            )
         """
         return dict()
 
     def set_opts(self):
-        """ Subclasses should override this method to configure the command
-            line arguments and options.
+        """Subclasses should override this method to configure the command
+        line arguments and options.
 
-            **Example**::
+        **Example**::
 
-                class MyCommand(Command):
-                    def set_opts(self):
-                        self.opt('--verbose', '-v', action='store_true',
-                                help="be more verbose")
+            class MyCommand(Command):
+                def set_opts(self):
+                    self.opt('--verbose', '-v', action='store_true',
+                            help="be more verbose")
 
-                    def run(self):
-                        if self.args.verbose:
-                            print "I'm verbose."
+                def run(self):
+                    if self.args.verbose:
+                        print "I'm verbose."
         """
         pass
 
     def opt(self, *args, **kwargs):
-        """ Add an option to this command. This takes the same arguments as
-            :meth:`ArgumentParser.add_argument`.
+        """Add an option to this command. This takes the same arguments as
+        :meth:`ArgumentParser.add_argument`.
         """
         self.parser.add_argument(*args, **kwargs)
 
     def run(self):
-        """ Subclasses should override this method to start the command
-            process. In other words, this is where the magic happens.
+        """Subclasses should override this method to start the command
+        process. In other words, this is where the magic happens.
 
-            .. versionchanged:: 3.15.0
+        .. versionchanged:: 3.15.0
 
-                By default, this will just print help and exit.
+            By default, this will just print help and exit.
 
         """
         self.parser.print_help()
@@ -269,34 +272,34 @@ class Command(object):
 
         """
         if not self.subparsers:
-            self.subparsers = self.parser.add_subparsers(title='subcommands',
-                                                         dest='command')
+            self.subparsers = self.parser.add_subparsers(
+                title="subcommands", dest="command"
+            )
 
         if opt_func is None:
-            opt_func = getattr(self, name.replace('-', '_') + '_opts', None)
+            opt_func = getattr(self, name.replace("-", "_") + "_opts", None)
 
         if run_func is None:
-            run_func = getattr(self, name.replace('-', '_'),
-                               self.parser.print_help)
+            run_func = getattr(self, name.replace("-", "_"), self.parser.print_help)
 
         # Map help text to command descriptions for extra convenience
-        if 'help' in kwargs and 'description' not in kwargs:
-            kwargs['description'] = kwargs['help']
+        if "help" in kwargs and "description" not in kwargs:
+            kwargs["description"] = kwargs["help"]
 
         # Provide good wrapping
-        if 'description' in kwargs:
-            kwargs['description'] = pytool.text.wrap(kwargs['description'])
-            kwargs.setdefault('formatter_class', CommandFormatter)
+        if "description" in kwargs:
+            kwargs["description"] = pytool.text.wrap(kwargs["description"])
+            kwargs.setdefault("formatter_class", CommandFormatter)
 
         # Propagate environment variable prefix settings
-        prefix = getattr(self.parser, '_auto_env_var_prefix', UNSET)
+        prefix = getattr(self.parser, "_auto_env_var_prefix", UNSET)
         if prefix is not UNSET:
-            kwargs.setdefault('auto_env_var_prefix', prefix)
+            kwargs.setdefault("auto_env_var_prefix", prefix)
 
         # Propagate environment variable help settings
-        add_help = getattr(self.parser, '_add_env_var_help', UNSET)
+        add_help = getattr(self.parser, "_add_env_var_help", UNSET)
         if add_help is not UNSET:
-            kwargs.setdefault('add_env_var_help', add_help)
+            kwargs.setdefault("add_env_var_help", add_help)
 
         parser = self.subparsers.add_parser(name, *args, **kwargs)
         parser.set_defaults(func=run_func)
@@ -313,13 +316,13 @@ class Command(object):
 
     @classmethod
     def console_script(cls):
-        """ Method used to start the command when launched from a distutils
-            console script.
+        """Method used to start the command when launched from a distutils
+        console script.
         """
         cls().start(sys.argv[1:])
 
     def start(self, args):
-        """ Starts a command and registers single handlers. """
+        """Starts a command and registers single handlers."""
         if six.PY3 and sys.version_info >= (3, 7):
             # Unfortunately this doesn't work and I don't know why... will fix
             # it later.
@@ -362,10 +365,11 @@ class CommandFormatter(DefaultFormatter):
     command, which makes it much more readable.
 
     """
+
     def __init__(self, *args, **kwargs):
         width = pytool.text.columns()
         max_help_position = max(40, int(width / 2))
-        kwargs['max_help_position'] = max_help_position
+        kwargs["max_help_position"] = max_help_position
         super(CommandFormatter, self).__init__(*args, **kwargs)
 
 
@@ -395,7 +399,7 @@ def opt(*args, **kwargs):
 
     """
     if args:
-        name = 'opt_' + args[0].lstrip('-')
+        name = "opt_" + args[0].lstrip("-")
 
     def opt(self):
         self.opt(*args, **kwargs)
@@ -418,13 +422,15 @@ def run(func):
                 ...
 
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
             func(*args, **kwargs)
         except Exception as err:
             sys.stderr.write(str(err))
-            sys.stderr.write('\n')
+            sys.stderr.write("\n")
             sys.stderr.flush()
             sys.exit(1)
+
     return wrapper
