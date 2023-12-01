@@ -1,5 +1,4 @@
-LICENSE
-=======
+# LICENSE
 
 Copyright 2012 Jacob Alheid
 
