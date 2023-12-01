@@ -17,6 +17,14 @@ def version():
     except Exception as err:
         raise RuntimeError("Could not get version:\n" + str(err))
 
+TESTS_REQUIRE = [
+        'bson',
+        'configargparse',
+        'coverage',
+        'coveralls',
+        'mock',
+        'pytest',
+        ]
 
 setup(
     name='pytool',
@@ -29,27 +37,18 @@ setup(
     license='ALv2',
     packages=find_packages(exclude=['test']),
     install_requires=['simplejson >= 3.2.0', 'six'],
-    tests_require=[
-        'bson',
-        'configargparse',
-        'coverage',
-        'coveralls',
-        'mock',
-        'pytest',
-        ],
+    tests_require=TESTS_REQUIRE,
+    extras_require={ "test": TESTS_REQUIRE},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries',
         'Topic :: Utilities',

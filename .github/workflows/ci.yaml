@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  REGISTRY: "registry.digitalocean.com/solidsystems"
-
 jobs:
   lint:
     name: Lint
@@ -21,16 +18,17 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4
         with:
-          cache: pip
           python-version: ${{ matrix.python-version }}
+          # cache: pip
       - run: |
           pip install .
-          pip install .[test]
+          pip install ".[test]"
           # TODO: Setup pre-commit, use it
 
   test:
     name: Test
     runs-on: ubuntu-latest
+    needs: lint
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
@@ -38,37 +36,40 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4
         with:
-          cache: pip
-      - run: |
+          python-version: ${{ matrix.python-version }}
+          # cache: pip
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           pip install .
-          pip install .[test]
+          pip install ".[test]"
           coverage run --source=pytool -m pytest -vv
           coveralls
       # - uses: MishaKav/pytest-coverage-comment@main
 
   autoapprove:
-    name: Renovate
+    name: Renovate / Approve
     needs: [lint, test]
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
-      - name: Approve
+      - name: Auto-approve
         uses: hmarr/auto-approve-action@44888193675f29a83e04faf4002fa8c0b537b1e4 # v3.2.1
         if: github.actor == 'renovatebot' || github.actor == 'renovate[bot]'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   automerge:
-    name: Renovate
+    name: Renovate / Merge
     needs: autoapprove
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
-      - name: Merge
+      - name: Auto-merge
         uses: pascalgn/automerge-action@22948e0bc22f0aa673800da838595a3e7347e584 # v0.15.6
         if: github.actor == 'renovatebot' || github.actor == 'renovate[bot]'
         env:
