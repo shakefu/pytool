@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 import mock
 import pytest
+from dateutil import tz
 
 import pytool
 
@@ -35,7 +36,10 @@ def test_utc_makes_tzaware_utc_datetime():
     stamp = pytool.time.utc(2023, 12, 1)
     assert stamp.tzinfo == pytool.time.UTC()
     assert stamp == datetime(2023, 12, 1, tzinfo=pytool.time.UTC())
-    assert stamp == pytool.time.as_utc(datetime(2023, 11, 30, 16, 0))
+    expected = pytool.time.as_utc(
+        datetime(2023, 11, 30, 16, 0, tzinfo=tz.gettz("America/Los_Angeles"))
+    )
+    assert stamp == expected
 
 
 def test_trim_time():
