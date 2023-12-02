@@ -17,10 +17,61 @@ jobs:
     permissions:
       contents: write
       issues: write
-      packages: write
       pull-requests: write
+      id-token: write
     steps:
-      - uses: open-turo/actions-python/release@v1
-        id: release
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Install poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4
+        with:
+          cache: poetry
+      - name: Poetry install
+        run: poetry install
+      - name: Find version
+        id: version
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          dry_run: true
+          branches: |
+            ["main"]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update version
+        if: steps.version.outputs.new_release_published == 'true'
+        shell: bash
+        run: |
+          # Use poetry to bump the version in pyproject.toml
+          poetry version "${{ steps.version.outputs.new_release_version }}"
+
+          EMAIL="shakefu@gmail.com"
+          NAME="Jake Alheid"
+
+          # Set our git config for pushing
+          git config user.email "$EMAIL"
+          git config user.name "$NAME"
+
+          # Commit the bumped project version with a non-semver chore: commit message
+          git add pyproject.toml
+          git --no-pager diff --staged
+          git commit \
+            --author="$NAME <$EMAIL>" \
+            -m "chore: release ${{ steps.version.outputs.new_release_version }}" \
+            -m "[skip actions]"
+
+          git push || { echo "::error:: Failed to push version update for pyproject.toml, check your github-token permissions, or branch protections."; exit 1; }
+
+          # Nice logging, generate success exit code from this run step
+          echo "::notice::Version successfully updated in pyproject.toml to ${{ steps.version.outputs.new_release_version }}."
+      - name: Poetry build
+        run: poetry build
+      - name: Publish to PyPI
+        if: steps.version.outputs.new_release_published == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Release
+        if: steps.version.outputs.new_release_published == 'true'
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
