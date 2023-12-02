@@ -30,7 +30,7 @@ class Singleton(object):
 
 def test_get_name():
     frame = inspect.currentframe()
-    assert pytool.lang.get_name(frame) == "test.test_lang.test_get_name"
+    assert pytool.lang.get_name(frame) == "tests.test_lang.test_get_name"
     del frame
 
 
@@ -38,7 +38,7 @@ def test_get_name_class():
     class Test(object):
         def test(self):
             frame = inspect.currentframe()
-            assert pytool.lang.get_name(frame) == "test.test_lang.Test.test"
+            assert pytool.lang.get_name(frame) == "tests.test_lang.Test.test"
             del frame
 
     Test().test()
@@ -49,7 +49,7 @@ def test_get_name_class_method():
         @classmethod
         def test(cls):
             frame = inspect.currentframe()
-            assert pytool.lang.get_name(frame) == "test.test_lang.Test.test"
+            assert pytool.lang.get_name(frame) == "tests.test_lang.Test.test"
             del frame
 
     Test.test()
@@ -64,7 +64,7 @@ def test_get_name_class_property():
             del frame
             return this_name
 
-    assert Test().test == "test.test_lang.Test.test"
+    assert Test().test == "tests.test_lang.Test.test"
 
 
 def test_classproperty():
