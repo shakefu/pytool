@@ -36,6 +36,7 @@ jobs:
           body-includes: release-notes-preview
       - name: Comment preview
         uses: peter-evans/create-or-update-comment@v1
+        if: steps.notes.outputs.new-release-notes != ''
         with:
           comment-id: ${{ steps.find.outputs.comment-id }}
           issue-number: ${{ github.event.number }}
