@@ -1,6 +1,6 @@
 # Pytool Package
 
-`pytool`` is a collection of often used
+`pytool` is a collection of often used
 helper methods and classes that make life easier or fill in gaps in the
 Python Standard Library.
 
@@ -15,9 +15,8 @@ Pytool's source is hosted on Github: <https://github.com/shakefu/pytool>
 Any comments, issues or requests should be submitted via Github:
 <https://github.com/shakefu/pytool/issues>
 
-[![image](https://travis-ci.com/shakefu/pytool.svg?branch=master)](https://travis-ci.com/shakefu/pytool)
-
-[![image](https://coveralls.io/repos/shakefu/pytool/badge.svg?branch=master&service=github)](https://coveralls.io/github/shakefu/pytool?branch=master)
+![CI](https://github.com/shakefu/pytool/actions/workflows/ci.yaml/badge.svg)
+[![Coveralls](https://coveralls.io/repos/shakefu/pytool/badge.svg?branch=master&service=github)](https://coveralls.io/github/shakefu/pytool?branch=master)
 
 ## Documentation
 
