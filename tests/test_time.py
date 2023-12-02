@@ -31,6 +31,13 @@ def test_utcnow(datetime):
     datetime.now.assert_called_with(pytool.time.UTC())
 
 
+def test_utc_makes_tzaware_utc_datetime():
+    stamp = pytool.time.utc(2023, 12, 1)
+    assert stamp.tzinfo == pytool.time.UTC()
+    assert stamp == datetime(2023, 12, 1, tzinfo=pytool.time.UTC())
+    assert stamp == pytool.time.as_utc(datetime(2023, 11, 30, 16, 0))
+
+
 def test_trim_time():
     now = datetime.now()
     stamp = pytool.time.trim_time(now)
