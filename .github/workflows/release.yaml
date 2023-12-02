@@ -5,6 +5,9 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: release
+
 jobs:
   ci:
     name: CI
@@ -32,46 +35,29 @@ jobs:
         run: poetry install
       - name: Find version
         id: version
-        uses: cycjimmy/semantic-release-action@v3
+        uses: open-turo/actions-release/semantic-release@v4
         with:
-          dry_run: true
-          branches: |
-            ["main"]
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # branches: ${{ github.head_ref }}
+          # override-github-ref-name: ${{ github.head_ref }}
+          dry-run: true
+          ci: false
+      - name: Release check
+        if: steps.version.outputs.new-release-published != 'true'
+        run: exit 1
       - name: Update version
-        if: steps.version.outputs.new_release_published == 'true'
         shell: bash
-        run: |
-          # Use poetry to bump the version in pyproject.toml
-          poetry version "${{ steps.version.outputs.new_release_version }}"
-
-          EMAIL="shakefu@gmail.com"
-          NAME="Jake Alheid"
-
-          # Set our git config for pushing
-          git config user.email "$EMAIL"
-          git config user.name "$NAME"
-
-          # Commit the bumped project version with a non-semver chore: commit message
-          git add pyproject.toml
-          git --no-pager diff --staged
-          git commit \
-            --author="$NAME <$EMAIL>" \
-            -m "chore: release ${{ steps.version.outputs.new_release_version }}" \
-            -m "[skip actions]"
-
-          git push || { echo "::error:: Failed to push version update for pyproject.toml, check your github-token permissions, or branch protections."; exit 1; }
-
-          # Nice logging, generate success exit code from this run step
-          echo "::notice::Version successfully updated in pyproject.toml to ${{ steps.version.outputs.new_release_version }}."
+        run: poetry version "${{ steps.version.outputs.new-release-version }}"
+      - name: Commit & push version
+        uses: actions-js/push@master
+        with:
+          message: "chore: ${{ steps.version.outputs.new-release-version }} [skip actions]"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Poetry build
         run: poetry build
       - name: Publish to PyPI
-        if: steps.version.outputs.new_release_published == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
       - name: Release
-        if: steps.version.outputs.new_release_published == 'true'
         uses: cycjimmy/semantic-release-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
