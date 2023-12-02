@@ -7,7 +7,45 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.event.number }}
+  cancel-in-progress: true
+
 jobs:
+  preview:
+    name: Release preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          fetch-depth: 0
+      - name: Generate notes
+        id: notes
+        uses: open-turo/actions-release/semantic-release@v4
+        with:
+          branches: ${{ github.head_ref }}
+          override-github-ref-name: ${{ github.head_ref }}
+          dry-run: true
+          ci: false
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: find
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: release-notes-preview
+      - name: Comment preview
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.find.outputs.comment-id }}
+          issue-number: ${{ github.event.number }}
+          edit-mode: replace
+          body: |
+            <!-- release-notes-preview -->
+
+            ## Release notes preview
+
+            ${{ steps.notes.outputs.new-release-notes }}
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
