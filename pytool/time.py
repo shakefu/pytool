@@ -68,25 +68,45 @@ class UTC(datetime.tzinfo):
     """
 
     @property
-    def _utcoffset(self):
+    def _utcoffset(self) -> datetime.timedelta:
         """Helps make this work with pytz."""
         return datetime.timedelta(0)
 
-    def utcoffset(self, stamp):
+    def utcoffset(self, stamp) -> datetime.timedelta:
         return datetime.timedelta(0)
 
-    def tzname(self, stamp):
+    def tzname(self, stamp) -> str:
         return "UTC"
 
-    def dst(self, stamp):
+    def dst(self, stamp) -> datetime.timedelta:
         return datetime.timedelta(0)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "UTC()"
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
         # This method makes the UTC object pickleable
         return UTC, ()
+
+
+def utc(
+    year, month, day, hour=0, minute=0, second=0, microsecond=0
+) -> datetime.datetime:
+    """Return a timezone-aware datetime object for the given UTC time.
+
+    :param int year: Year
+    :param int month: Month
+    :param int day: Day
+    :param int hour: Hour (default: ``0``)
+    :param int minute: Minute (default: ``0``)
+    :param int second: Second (default: ``0``)
+    :param int microsecond: Microsecond (default: ``0``)
+    :returns: UTC datetime object
+
+    """
+    return datetime.datetime(
+        year, month, day, hour, minute, second, microsecond, tzinfo=UTC()
+    )
 
 
 def is_dst(stamp):
@@ -99,7 +119,7 @@ def is_dst(stamp):
     return time.localtime(time.mktime(stamp.timetuple())).tm_isdst == 1
 
 
-def utcnow():
+def utcnow() -> datetime.datetime:
     """Return the current UTC time as a timezone-aware datetime.
 
     :returns: The current UTC time
@@ -108,7 +128,7 @@ def utcnow():
     return datetime.datetime.now(UTC())
 
 
-def fromutctimestamp(stamp):
+def fromutctimestamp(stamp) -> datetime.datetime:
     """Return a timezone-aware datetime object from a UTC unix timestamp.
 
     :param float stamp: Unix timestamp in UTC
@@ -131,7 +151,7 @@ def fromutctimestamp(stamp):
     return new_stamp
 
 
-def toutctimestamp(stamp):
+def toutctimestamp(stamp) -> datetime.datetime:
     """Converts a naive datetime object to a UTC unix timestamp. This has an
     advantage over `time.mktime` in that it preserves the decimal portion
     of the timestamp when converting.
@@ -156,7 +176,7 @@ def toutctimestamp(stamp):
     return time.mktime(stamp.timetuple()) + decimal
 
 
-def as_utc(stamp):
+def as_utc(stamp) -> datetime.datetime:
     """Converts any datetime (naive or aware) to UTC time.
 
     :param datetime stamp: Datetime to convert
@@ -173,7 +193,7 @@ def as_utc(stamp):
     return fromutctimestamp(toutctimestamp(stamp))
 
 
-def trim_time(stamp):
+def trim_time(stamp) -> datetime.datetime:
     """Trims the time portion off of `stamp`, leaving the date intact.
     Returns a datetime of the same date, set to 00:00:00 hours. Preserves
     timezone information.
@@ -185,7 +205,7 @@ def trim_time(stamp):
     return datetime.datetime(*stamp.date().timetuple()[:-3], tzinfo=stamp.tzinfo)
 
 
-def week_start(stamp):
+def week_start(stamp) -> datetime.datetime:
     """Return the start of the week containing `stamp`.
 
     .. versionchanged:: 2.0
@@ -200,7 +220,7 @@ def week_start(stamp):
     return stamp
 
 
-def week_seconds(stamp):
+def week_seconds(stamp) -> int:
     """Return `stamp` converted to seconds since 00:00 Monday.
 
     :param datetime stamp: Timestamp to convert
@@ -211,7 +231,7 @@ def week_seconds(stamp):
     return int(difference.total_seconds())
 
 
-def week_seconds_to_datetime(seconds):
+def week_seconds_to_datetime(seconds) -> datetime.datetime:
     """Return the datetime that is `seconds` from the start of this week.
 
     :param int seconds: Seconds
@@ -221,7 +241,7 @@ def week_seconds_to_datetime(seconds):
     return week_start(datetime.datetime.now()) + datetime.timedelta(seconds=seconds)
 
 
-def make_week_seconds(day, hour, minute=0, seconds=0):
+def make_week_seconds(day, hour, minute=0, seconds=0) -> int:
     """Return :func:`week_seconds` for the given `day` of the week, `hour`
     and `minute`.
 
@@ -240,7 +260,7 @@ def make_week_seconds(day, hour, minute=0, seconds=0):
     return week_seconds(stamp)
 
 
-def floor_minute(stamp=None):
+def floor_minute(stamp=None) -> datetime.datetime:
     """Return `stamp` floored to the current minute. If no `stamp` is
     specified, the current time is used. Preserves timezone information.
 
