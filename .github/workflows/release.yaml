@@ -38,8 +38,6 @@ jobs:
         uses: open-turo/actions-release/semantic-release@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # branches: ${{ github.head_ref }}
-          # override-github-ref-name: ${{ github.head_ref }}
           dry-run: true
           ci: false
       - name: Release check
@@ -58,6 +56,6 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
       - name: Release
-        uses: cycjimmy/semantic-release-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: open-turo/actions-release/semantic-release@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
