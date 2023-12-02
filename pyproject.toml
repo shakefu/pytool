@@ -3,7 +3,7 @@ name = "pytool"
 version = "3.16.2"
 description = "Pytool is a collection of utilities and language enhancements for Python"
 authors = ["Jacob Alheid <shakefu@gmail.com>"]
-license = "ALv2"
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
