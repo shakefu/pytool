@@ -42,7 +42,9 @@ jobs:
           ci: false
       - name: Release check
         if: steps.version.outputs.new-release-published != 'true'
-        run: exit 1
+        run: |
+          echo "::notice:: No new release version!"
+          exit 1
       - name: Update version
         shell: bash
         run: poetry version "${{ steps.version.outputs.new-release-version }}"
