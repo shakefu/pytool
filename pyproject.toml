@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytool"
-version = "3.16.2"
+version = "3.16.3"
 description = "Pytool is a collection of utilities and language enhancements for Python"
 authors = ["Jacob Alheid <shakefu@gmail.com>"]
 license = "MIT"
