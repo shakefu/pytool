@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "pytool"
-version = "4.0.0"
+version = "5.0.0"
 description = "Pytool is a collection of utilities and language enhancements for Python"
 authors = ["Jacob Alheid <shakefu@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 simplejson = "^3.19.2"
 six = "^1.16.0"
 
