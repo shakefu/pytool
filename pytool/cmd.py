@@ -3,11 +3,11 @@ This module contains helpers related to writing scripts and creating command
 line utilities.
 
 """
-import sys
-import signal
 import functools
+import signal
+import sys
+from typing import Callable, Optional
 
-import six
 from pytool.lang import UNSET
 
 # Handle the optional configargparse lib
@@ -145,7 +145,7 @@ class Command(object):
         self.set_opts()
         self.opt("--help", action="help", help="display this help and exit")
 
-    def parser_opts(self):
+    def parser_opts(self) -> dict:
         """Subclasses should override this method to return a dictionary of
         additional arguments to the parser instance.
 
@@ -161,7 +161,7 @@ class Command(object):
         """
         return dict()
 
-    def set_opts(self):
+    def set_opts(self) -> None:
         """Subclasses should override this method to configure the command
         line arguments and options.
 
@@ -178,13 +178,13 @@ class Command(object):
         """
         pass
 
-    def opt(self, *args, **kwargs):
+    def opt(self, *args, **kwargs) -> None:
         """Add an option to this command. This takes the same arguments as
         :meth:`ArgumentParser.add_argument`.
         """
         self.parser.add_argument(*args, **kwargs)
 
-    def run(self):
+    def run(self) -> None:
         """Subclasses should override this method to start the command
         process. In other words, this is where the magic happens.
 
@@ -196,7 +196,7 @@ class Command(object):
         self.parser.print_help()
         sys.exit(1)
 
-    def describe(self, description):
+    def describe(self, description: str) -> None:
         """
         Describe the command in more detail. This will be displayed in addition
         to the argument help.
@@ -227,7 +227,14 @@ class Command(object):
         # And use the raw class so it doesn't strip our formatting
         self.parser.formatter_class = CommandFormatter
 
-    def subcommand(self, name, opt_func=None, run_func=None, *args, **kwargs):
+    def subcommand(
+        self,
+        name: str,
+        opt_func: Optional[Callable] = None,
+        run_func=None,
+        *args,
+        **kwargs,
+    ) -> None:
         """
         Add a subcommand `name` with setup `opt_func` and main `run_func` to
         the argument parser.
@@ -315,21 +322,18 @@ class Command(object):
         return parser
 
     @classmethod
-    def console_script(cls):
+    def console_script(cls) -> None:
         """Method used to start the command when launched from a distutils
         console script.
         """
         cls().start(sys.argv[1:])
 
-    def start(self, args):
+    def start(self, args: list[str]) -> None:
         """Starts a command and registers single handlers."""
-        if six.PY3 and sys.version_info >= (3, 7):
-            # Unfortunately this doesn't work and I don't know why... will fix
-            # it later.
-            # self.args = self.parser.parse_intermixed_args(args)
-            self.args = self.parser.parse_args(args)
-        else:
-            self.args = self.parser.parse_args(args)
+        # Unfortunately this doesn't work and I don't know why... will fix
+        # it later.
+        # self.args = self.parser.parse_intermixed_args(args)
+        self.args = self.parser.parse_args(args)
         signal_handler(RELOAD_SIGNAL, self.reload)
         signal_handler(STOP_SIGNAL, self.stop)
         if self.subparsers and self.args.command:
@@ -373,7 +377,7 @@ class CommandFormatter(DefaultFormatter):
         super(CommandFormatter, self).__init__(*args, **kwargs)
 
 
-def opt(*args, **kwargs):
+def opt(*args, **kwargs) -> Callable:
     """
     Factory function for creating :class:`Command.opt` bindings at the class
     level for reuse in subcommands.
