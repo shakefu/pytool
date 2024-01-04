@@ -2,15 +2,12 @@
 This module contains items that are "missing" from the Python standard library,
 that do miscelleneous things.
 """
-import re
 import copy
-import inspect
-import weakref
 import functools
-
-import six
-from six.moves import range
-
+import inspect
+import re
+import weakref
+from typing import TypeVar
 
 __all__ = [
     "get_name",
@@ -23,7 +20,7 @@ __all__ = [
 ]
 
 
-def get_name(frame):
+def get_name(frame) -> str:
     """Gets the name of the passed frame.
 
     :warning: It's very important to delete a stack frame after you're done
@@ -69,7 +66,7 @@ def get_name(frame):
             pass
 
     if module:
-        if not isinstance(module, six.string_types):
+        if not isinstance(module, (str, bytes)):
             module = module.__name__
         if name != "<module>":
             return "%s.%s" % (module, name)
@@ -114,7 +111,10 @@ def classproperty(func):
     )()
 
 
-def singleton(klass):
+_Singleton = TypeVar("_Singleton", bound=object)
+
+
+def singleton(klass: _Singleton) -> _Singleton:
     """Wraps a class to create a singleton version of it.
 
     :param klass: Class to decorate
@@ -161,7 +161,7 @@ def singleton(klass):
     return type(cls_name, (object,), cls_dict)
 
 
-def hashed_singleton(klass):
+def hashed_singleton(klass: _Singleton) -> _Singleton:
     """Wraps a class to create a hashed singleton version of it. A hashed
     singleton is like a singleton in that there will be only a single
     instance of the class for each call signature.
@@ -227,7 +227,7 @@ def hashed_singleton(klass):
 
     # Make new method that controls singleton behavior
     def __new__(cls, *args, **kwargs):
-        hashable_kwargs = tuple(sorted(six.iteritems(kwargs)))
+        hashable_kwargs = tuple(sorted(kwargs.items()))
         signature = (args, hashable_kwargs)
 
         if signature not in cls._singletons:
@@ -276,8 +276,7 @@ class _UNSETMeta(type):
         return "UNSET"
 
 
-@six.add_metaclass(_UNSETMeta)
-class UNSET(object):
+class UNSET(object, metaclass=_UNSETMeta):
     """Special class that evaluates to ``bool(False)``, but can be distinctly
     identified as seperate from ``None`` or ``False``. This class can and
     should be used without instantiation.
@@ -443,7 +442,7 @@ class Namespace(object):
 
     # Allow for dict-like key access and traversal
     def __getitem__(self, item):
-        if isinstance(item, six.string_types) and "." in item:
+        if isinstance(item, (str, bytes)) and "." in item:
             return self.traverse(item.split("."))
         try:
             return self.__getattribute__(item)
