@@ -1,6 +1,7 @@
 """
 Tests for pytool.text.
 """
+
 import pytool
 
 
@@ -58,6 +59,5 @@ def test_wrap_preserves_first_line_whitespace():
 
     text = pytool.text.wrap(text, width=70)
     assert text == (
-        "This tool is used for managing all the "
-        "splits in dev, test and\nproduction.\n"
+        "This tool is used for managing all the splits in dev, test and\nproduction.\n"
     )

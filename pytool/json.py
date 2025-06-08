@@ -8,6 +8,7 @@ If the `bson` module exists, it allows `bson.ObjectId` objects to be decoded
 into JSON automatically.
 
 """
+
 from datetime import datetime
 
 import simplejson as json
