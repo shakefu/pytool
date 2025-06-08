@@ -1,6 +1,7 @@
 """
 This module contains time related things that make life easier.
 """
+
 # The regular 'import time' fails, because for some insane reason, Python lets
 # a module import itself. This is a work around to import the non-relative
 # module.

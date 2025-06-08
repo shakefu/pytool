@@ -2,6 +2,7 @@
 This module contains items that are "missing" from the Python standard library,
 that do miscelleneous things.
 """
+
 import copy
 import functools
 import inspect
