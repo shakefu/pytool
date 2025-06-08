@@ -1,5 +1,5 @@
-import gc
 import copy
+import gc
 import inspect
 
 import pytest
@@ -420,7 +420,7 @@ def test_keyspace_allows_item_assignment():
 def test_keyspace_create_keyspace():
     ks = pytool.lang.Keyspace()
     ks.foo.bar = 1
-    assert type(ks.foo) == pytool.lang.Keyspace
+    assert type(ks.foo) is pytool.lang.Keyspace
 
 
 def test_keyspace_allows_getitem_traversal():

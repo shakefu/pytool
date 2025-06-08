@@ -4,7 +4,8 @@
 helper methods and classes that make life easier or fill in gaps in the
 Python Standard Library.
 
-Pytool is compatible with and tested against Python 3.8 and higher. End of life Python versions are not supported.
+Pytool is compatible with and tested against Python 3.8 and higher.
+End of life Python versions are not supported.
 
 > [!NOTE]
 > Pytool 4.x is a major release that is not backwards compatible with earlier
