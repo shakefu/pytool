@@ -3,6 +3,7 @@ This module contains helpers related to writing scripts and creating command
 line utilities.
 
 """
+
 import functools
 import signal
 import sys
@@ -12,7 +13,7 @@ from pytool.lang import UNSET
 
 # Handle the optional configargparse lib
 try:
-    import configargparse as argparse
+    import configargparse as argparse  # type: ignore[import]
 
     DefaultFormatter = argparse.ArgumentDefaultsRawHelpFormatter
     HAS_CAP = True
@@ -25,13 +26,13 @@ except ImportError:
 import pytool.text
 
 try:
-    import pyconfig
+    import pyconfig  # type: ignore[import]
 except ImportError:
     pyconfig = None
 
 # Implicitly handle gevent
 try:
-    import gevent
+    import gevent  # type: ignore[import]
 except ImportError:
     signal_handler = signal.signal
 else:

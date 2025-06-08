@@ -1,13 +1,9 @@
 """
 This module contains implmentations of proxy-list and proxy-dictionary objects.
 """
-# flake8: noqa
-import six
 
-if six.PY2:
-    import collections as abc
-else:
-    import collections.abc as abc
+# flake8: noqa
+import collections.abc as abc
 
 
 def cmp(a, b):

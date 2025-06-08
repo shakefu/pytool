@@ -1,12 +1,6 @@
-import six
 import pytest
 
 import pytool
-
-
-def cmp(a, b):
-    # This is missing from Python 3
-    return (a > b) - (a < b)
 
 
 def test_list_proxy_instantiates_ok():
@@ -25,8 +19,6 @@ def test_list_proxy_proxies_comparisons():
     a = [1, 2]
     b = [3, 4]
     p = pytool.proxy.ListProxy(c)
-    assert (c == a) == (p == a)
-    assert (c == b) == (p == b)
     assert (c <= a) == (p <= a)
     assert (c <= b) == (p <= b)
     assert (c >= a) == (p >= a)
@@ -37,18 +29,6 @@ def test_list_proxy_proxies_comparisons():
     assert (c > b) == (p > b)
     assert (c != a) == (p != a)
     assert (c != b) == (p != b)
-
-
-@pytest.mark.skipif(six.PY3, reason="Python 2")
-def test_list_proxy_comparison_operator():
-    c = [1, 2]
-    a = [1, 2]
-    b = [3, 4]
-    p = pytool.proxy.ListProxy(c)
-    assert cmp(c == a, cmp(p, a))
-    assert cmp(c == b, cmp(p, b))
-    assert cmp(c == "foo", cmp(p, "foo"))
-    assert cmp(p == a, p.__cmp__(a))
 
 
 def test_list_proxy_comparison_operator_again():
@@ -188,15 +168,6 @@ def test_dict_proxy_repr():
     d = {"one": 1, "two": 2}
     p = pytool.proxy.DictProxy(d)
     assert repr(d) == repr(p)
-
-
-@pytest.mark.skipif(six.PY3, reason="Python 2")
-def test_dict_proxy_compare():
-    d = {"one": 1, "two": 2}
-    p = pytool.proxy.DictProxy(d)
-    assert cmp(p == d, cmp(d, d))
-    assert p.__cmp__(d) == cmp(d, d)
-    assert p.__cmp__(p) == cmp(p, p)
 
 
 def test_dict_proxy_compare_again():

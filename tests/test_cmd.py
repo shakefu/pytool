@@ -1,7 +1,6 @@
 import os
 import sys
 
-import six
 import mock
 import pytest
 
@@ -58,7 +57,6 @@ def test_pass_coverage_again():
     pytool.cmd.Command().parser_opts()
 
 
-@pytest.mark.skipif(six.PY2, reason="Python 3")
 def test_subcommand_no_args():
     cmd = Subcommand()
     cmd.start([])
@@ -66,14 +64,13 @@ def test_subcommand_no_args():
     assert cmd.args.command is None
 
 
-@pytest.mark.skipif(six.PY2 or not pytool.cmd.HAS_CAP, reason="configargparse missing")
+@pytest.mark.skipif(not pytool.cmd.HAS_CAP, reason="configargparse missing")
 def test_subcommand_env_var_prefix():
     cmd = Subcommand()
     cmd.start([])
     assert cmd.parser._auto_env_var_prefix == "test_"
 
 
-@pytest.mark.skipif(six.PY2, reason="Python 3")
 def test_subcommand_with_arg():
     cmd = Subcommand()
     cmd.start(["--test"])

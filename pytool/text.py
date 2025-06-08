@@ -1,12 +1,9 @@
 """
 This module contains text related things that make life easier.
 """
-import os
+
 import shutil
 import textwrap
-
-import six
-from six.moves import range
 
 
 def columns(default=79):
@@ -19,11 +16,8 @@ def columns(default=79):
     Uses `default` (79) if no value can be found.
 
     """
-    if six.PY34:
-        width, _ = shutil.get_terminal_size()
-        return width - 1
-
-    return os.environ.get("COLUMNS", default)
+    width, _ = shutil.get_terminal_size()
+    return width - 1
 
 
 def wrap(text, width=None, indent=""):

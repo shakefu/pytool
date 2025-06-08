@@ -26,16 +26,20 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
-      - name: Install poetry
-        run: pipx install poetry
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4
+      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v5
         with:
-          cache: poetry
-      - name: Poetry install
-        run: poetry install
+          cache: "pip"
+      - name: Install uv
+        uses: astral-sh/setup-uv@f0ec1fc3b38f5e7cd731bb6ce540c5af426746bb # v6.1.0
+        with:
+          version: "0.7.12"
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+      - name: Install dependencies
+        run: uv sync --locked --all-extras --dev
       - name: Find version
         id: version
-        uses: open-turo/actions-release/semantic-release@v4
+        uses: open-turo/actions-release/semantic-release@4d8a6b6aa2d051e7dba0429d8d08beef827b5ccd # v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dry-run: true
@@ -46,18 +50,18 @@ jobs:
           echo "::notice:: No new release version!"
           exit 1
       - name: Update version
-        shell: bash
-        run: poetry version "${{ steps.version.outputs.new-release-version }}"
+        run: uv version ${{ steps.version.outputs.new-release-version }}
       - name: Commit & push version
         uses: actions-js/push@master
         with:
           message: "chore: ${{ steps.version.outputs.new-release-version }} [skip actions]"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Poetry build
-        run: poetry build
+      - name: Build package
+        run: |
+          uv build
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1
       - name: Release
-        uses: open-turo/actions-release/semantic-release@v4
+        uses: open-turo/actions-release/semantic-release@4d8a6b6aa2d051e7dba0429d8d08beef827b5ccd # v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

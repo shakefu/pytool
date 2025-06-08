@@ -1,28 +1,36 @@
-[tool.poetry]
+[project]
 name = "pytool"
 version = "5.0.1"
 description = "Pytool is a collection of utilities and language enhancements for Python"
-authors = ["Jacob Alheid <shakefu@gmail.com>"]
-license = "MIT"
 readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Jacob Alheid", email = "shakefu@gmail.com"},
+]
+requires-python = ">=3.9,<4.0"
+dependencies = [
+    "simplejson >=3.19.2, <4.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-simplejson = "^3.19.2"
-six = "^1.16.0"
+[dependency-groups]
+dev = [
+    "pytest >=7.4.4, <8.0.0",
+    "mock >=5.1.0, <6.0.0",
+    "bson >=0.5.10, <1.0.0",
+    "configargparse >=1.7, <2.0",
+    "coverage >=6.5.0, <7.0.0",
+    "coveralls >=3.3.1, <4.0.0",
+    "pre-commit >=3.6.0, <4.0.0",
+    "pytest-cov >=4.1.0, <5.0.0",
+    "pytest-mock >=3.14.0, <4.0.0",
+]
 
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.4"
-mock = "^5.1.0"
-bson = "^0.5.10"
-configargparse = "^1.7"
-coverage = "^6.5.0"
-coveralls = "^3.3.1"
-pre-commit = "^3.6.0"
-pytest-cov = "^4.1.0"
-pytest-mock = "^3.14.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv]
+dev-dependencies = [
+    "bson>=0.5.10",
+    "configargparse>=1.7.1",
+    "mock>=5.2.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.0",
+    "python-dateutil>=2.9.0.post0",
+]
