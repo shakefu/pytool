@@ -21,6 +21,7 @@ Contributors
 
 .. toctree::
    :maxdepth: 5
+   :titlesonly:
 
    pytool
 
