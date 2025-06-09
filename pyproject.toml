@@ -3,7 +3,7 @@ name = "pytool"
 version = "6.0.1"
 description = "Pytool is a collection of utilities and language enhancements for Python"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Jacob Alheid", email = "shakefu@gmail.com"},
 ]
@@ -30,3 +30,7 @@ docs = [
     "sphinx-rtd-theme >=2.0.0, <3.0.0",
     "sphinx-autodoc-typehints >=1.25.2, <2.0.0",
 ]
+
+# This is required so setuptools doesn't see "script" as a package
+[tool.setuptools]
+packages = ["pytool"]
