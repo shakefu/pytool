@@ -23,8 +23,15 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      - name: Authenticate with GitHub App
+        id: authenticate
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
+        with:
+          app-id: ${{ secrets.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_CLIENT_SECRET }}
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
+          token: ${{ steps.authenticate.outputs.token }}
           fetch-depth: 0
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v5
         with:
@@ -41,7 +48,7 @@ jobs:
         id: version
         uses: open-turo/actions-release/semantic-release@4d8a6b6aa2d051e7dba0429d8d08beef827b5ccd # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.authenticate.outputs.token }}
           dry-run: true
           ci: false
       - name: Release check
@@ -55,7 +62,7 @@ jobs:
         uses: actions-js/push@master
         with:
           message: "chore: ${{ steps.version.outputs.new-release-version }} [skip actions]"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.authenticate.outputs.token }}
       - name: Build package
         run: |
           uv build
@@ -64,4 +71,4 @@ jobs:
       - name: Release
         uses: open-turo/actions-release/semantic-release@4d8a6b6aa2d051e7dba0429d8d08beef827b5ccd # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.authenticate.outputs.token }}
