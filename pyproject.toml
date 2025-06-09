@@ -1,6 +1,6 @@
 [project]
 name = "pytool"
-version = "6.0.1"
+version = "6.0.2"
 description = "Pytool is a collection of utilities and language enhancements for Python"
 readme = "README.md"
 license = "MIT"
