@@ -86,9 +86,28 @@ jobs:
           uv run pytest --cov
           uv run coveralls
 
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v5
+        with:
+          python-version-file: ".python-version"
+      - uses: astral-sh/setup-uv@f0ec1fc3b38f5e7cd731bb6ce540c5af426746bb # v6.1.0
+        with:
+          version: "0.7.12"
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Build docs
+          uv run script/docs
+
   checks:
     name: Checks
-    needs: [lint, test]
+    needs: [lint, test, docs]
     runs-on: ubuntu-latest
     permissions:
       issues: write
