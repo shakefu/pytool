@@ -59,17 +59,7 @@ jobs:
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install uv
-        uses: astral-sh/setup-uv@f0ec1fc3b38f5e7cd731bb6ce540c5af426746bb # v6.1.0
-        with:
-          version: "0.7.12"
-          python-version: ${{ matrix.python-version }}
-          enable-cache: true
-          cache-dependency-glob: "pyproject.toml"
-      - name: Install dependencies
-        run: |
-          uv sync --locked --all-extras --dev
-          uv run pre-commit run -a
+      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
 
   test:
     name: Test
@@ -82,8 +72,7 @@ jobs:
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install uv
-        uses: astral-sh/setup-uv@f0ec1fc3b38f5e7cd731bb6ce540c5af426746bb # v6.1.0
+      - uses: astral-sh/setup-uv@f0ec1fc3b38f5e7cd731bb6ce540c5af426746bb # v6.1.0
         with:
           version: "0.7.12"
           python-version: ${{ matrix.python-version }}
@@ -92,6 +81,7 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Pytest
           uv sync --locked --all-extras --dev
           uv run pytest --cov
           uv run coveralls
