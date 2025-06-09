@@ -111,7 +111,7 @@ issue <https://github.com/shakefu/pytool/issues>`_.
 .. autofunction:: wrap
 
 :func:`columns`
-------------
+---------------
 
 .. autofunction:: columns
 

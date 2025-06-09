@@ -538,7 +538,7 @@ class Namespace(object):
 
         :param str base_name: Base namespace (optional)
 
-        This is compatible with the :module:`simplejson` `for_json`
+        This is compatible with the :mod:`simplejson` `for_json`
         behavior flag to recursively encode objects.
 
         Example::
