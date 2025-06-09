@@ -28,7 +28,7 @@ jobs:
         uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
         with:
           app-id: ${{ secrets.BOT_CLIENT_ID }}
-          private-key: ${{ secrets.BOT_CLIENT_SECRET }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           token: ${{ steps.authenticate.outputs.token }}
