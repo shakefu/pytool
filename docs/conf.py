@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pytool
+from importlib import metadata
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -19,9 +19,9 @@ project = "pytool"
 copyright = "2012, Jacob Alheid"
 
 # The short X.Y version.
-version = pytool.__version__
+version = metadata.version("pytool")
 # The full version, including alpha/beta/rc tags.
-release = pytool.__version__
+release = version
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
