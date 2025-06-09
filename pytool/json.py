@@ -57,7 +57,7 @@ def as_json(obj, **kwargs):
     :class:`bson.ObjectId`.
 
     :param object obj: An object to encode.
-    :param **kwargs: Any optional keyword arguments to pass to the \
+    :param \*\*kwargs: Any optional keyword arguments to pass to the \
                        JSONEncoder
     :returns: JSON encoded version of `obj`.
 
