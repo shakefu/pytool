@@ -36,6 +36,11 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     if: needs.release.outputs.published == 'true'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
       - id: authenticate
         uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
