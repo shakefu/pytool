@@ -44,35 +44,33 @@ def as_json(obj, **kwargs):
     """
     Returns an object JSON encoded properly.
 
-    This method allows you to implement a hook method ``for_json()`` on your
+    This method allows you to implement a hook method `for_json()` on your
     objects if you want to allow arbitrary objects to be encoded to JSON. A
-    ``for_json()`` hook must return a basic JSON type (dict, list, int, float,
+    `for_json()` hook must return a basic JSON type (dict, list, int, float,
     string, unicode, float or None), or a basic JSON type which contains other
-    objects which implement the ``for_json()`` hook.
+    objects which implement the `for_json()` hook.
 
-    If an object implements both ``_asdict()`` and ``for_json()`` the latter is
+    If an object implements both `_asdict()` and `for_json()` the latter is
     given preference.
 
-    Also adds additional encoders for :class:`~datetime.datetime` and
-    :class:`bson.ObjectId`.
+    Also adds additional encoders for `datetime.datetime` and
+    `bson.ObjectId`.
 
     :param object obj: An object to encode.
     :param kwargs: Any optional keyword arguments to pass to the \
                    JSONEncoder
     :returns: JSON encoded version of `obj`.
 
-    .. versionadded:: 2.4
-       Objects which have an ``_asdict()`` method will have that method
-       called as part of encoding to JSON, even when not using simplejson.
+    *Added in version 2.4:* Objects which have an `_asdict()` method will have
+    that method called as part of encoding to JSON, even when not using
+    simplejson.
 
-    .. versionadded:: 2.4
-       Objects which have a ``for_json()`` method will have that method called
-       and the return value used for encoding instead.
+    *Added in version 2.4:* Objects which have a `for_json()` method will have
+    that method called and the return value used for encoding instead.
 
-    .. versionchanged:: 3.0
-       simplejson (``>= 3.2.0``) is now required, and relied upon for the
-       ``_asdict()`` and ``for_json()`` hooks. This change may break backwards
-       compatibility in any code that uses these hooks.
+    *Changed in version 3.0:* simplejson (`>= 3.2.0`) is now required, and
+    relied upon for the `_asdict()` and `for_json()` hooks. This change may
+    break backwards compatibility in any code that uses these hooks.
 
     """
     return json.dumps(obj, default=_default, for_json=True)

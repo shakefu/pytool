@@ -62,81 +62,88 @@ except AttributeError:
 class Command(object):
     """
     Base class for creating commands that can be run easily as scripts. This
-    class is designed to be used with the ``console_scripts`` entry point to
+    class is designed to be used with the `console_scripts` entry point to
     create Python-based commands for your packages.
 
-    .. versionadded:: 3.11.0
+    *Added in version 3.11.0:* If the
+    [configargparse](https://github.com/bw2/ConfigArgParse) library is
+    installed, Pytool will automatically use that as a drop-in replacement for
+    the stdlib
+    [argparse](https://docs.python.org/3/howto/argparse.html) module that is
+    used by default.
 
-        If the `configargparse <https://github.com/bw2/ConfigArgParse>`_
-        library is installed, Pytool will automatically use that as a drop-in
-        replacement for the stdlib `argparse
-        <https://docs.python.org/3/howto/argparse.html>`_ module that is used
-        by default.
+    You should use `parser_opts` to give additional configuration arguments if
+    you want to enable `configargparse` features like automatically using
+    environment variables.
 
-        You should use :meth:`parser_opts` to give additional configuration
-        arguments if you want to enable `configargparse` features like
-        automatically using environment variables.
+    **Hello world example**
 
-    **Hello world example**::
+    ```python
+    # hello.py
+    from pytool.cmd import Command
 
-        # hello.py
-        from pytool.cmd import Command
+    class HelloWorld(Command):
+        def run(self):
+            print "Hello World."
+    ```
 
-        class HelloWorld(Command):
-            def run(self):
-                print "Hello World."
+    The only thing that *must* be defined in the subclass is the `run` method,
+    which should contain the code to launch your application, all other methods
+    are optional.
 
-    The only thing that *must* be defined in the subclass is the :meth:`run`
-    method, which should contain the code to launch your application, all other
-    methods are optional.
+    **Example setup.py**
 
-    **Example setup.py**::
+    ```python
+    # setup.py
+    from setuptools import setup
 
-        # setup.py
-        from setuptools import setup
+    setup(
+        # ...
+        entry_points={
+            'console_scripts':[
+                'helloworld = hello:HelloWorld.console_script',
+                ],
+            },
+        )
+    ```
 
-        setup(
-            # ...
-            entry_points={
-                'console_scripts':[
-                    'helloworld = hello:HelloWorld.console_script',
-                    ],
-                },
-            )
+    When using an entry point script, the `Command` has a special
+    `console_script` method for launching the application.
 
-    When using an entry point script, the :class:`Command` has a special
-    :meth:`console_script` method for launching the application.
+    **Starting without an entry point script**
 
-    **Starting without an entry point script**::
+    ```python
+    # hello.py [cont'd]
+    if __name__ == '__main__':
+        import sys
+        HelloWorld().start(sys.argv[1:])
+    ```
 
-        # hello.py [cont'd]
-        if __name__ == '__main__':
-            import sys
-            HelloWorld().start(sys.argv[1:])
+    The `start` method always requires an argument - even if it's just an
+    empty list.
 
-    The :meth:`start` method always requires an argument - even if it's just
-    an empty list.
+    **More complex example**
 
-    **More complex example**::
+    ```python
+    from pytool.cmd import Command
 
-        from pytool.cmd import Command
+    class HelloAll(Command):
+        def set_opts(self):
+            self.opt('--world', default='World', help="use a different "
+                    "world")
+            self.opt('--verbose', '-v', action='store_true', help="use "
+                    "more verbose output")
 
-        class HelloAll(Command):
-            def set_opts(self):
-                self.opt('--world', default='World', help="use a different "
-                        "world")
-                self.opt('--verbose', '-v', action='store_true', help="use "
-                        "more verbose output")
+        def run(self):
+            print "Hello", self.args.world
 
-            def run(self):
-                print "Hello", self.args.world
-
-                if self.args.verbose:
-                    print "Hola", self.args.world
+            if self.args.verbose:
+                print "Hola", self.args.world
+    ```
 
     Whenever there are arguments for a command, they're made available for your
-    use as :attr:`self.args`. This object is created by :mod:`argparse` so
-    refer to that documentation for more information.
+    use as `self.args`. This object is created by `argparse` so refer to that
+    documentation for more information.
 
     """
 
@@ -150,15 +157,17 @@ class Command(object):
         """Subclasses should override this method to return a dictionary of
         additional arguments to the parser instance.
 
-        **Example**::
+        **Example**
 
-            class MyCommand(Command):
-                def parser_opts(self):
-                    return dict(
-                            description="Manual description for cmd.",
-                            add_env_var_help=True,
-                            auto_env_var_prefix='mycmd_',
-                            )
+        ```python
+        class MyCommand(Command):
+            def parser_opts(self):
+                return dict(
+                        description="Manual description for cmd.",
+                        add_env_var_help=True,
+                        auto_env_var_prefix='mycmd_',
+                        )
+        ```
         """
         return dict()
 
@@ -166,22 +175,24 @@ class Command(object):
         """Subclasses should override this method to configure the command
         line arguments and options.
 
-        **Example**::
+        **Example**
 
-            class MyCommand(Command):
-                def set_opts(self):
-                    self.opt('--verbose', '-v', action='store_true',
-                            help="be more verbose")
+        ```python
+        class MyCommand(Command):
+            def set_opts(self):
+                self.opt('--verbose', '-v', action='store_true',
+                        help="be more verbose")
 
-                def run(self):
-                    if self.args.verbose:
-                        print "I'm verbose."
+            def run(self):
+                if self.args.verbose:
+                    print "I'm verbose."
+        ```
         """
         pass
 
     def opt(self, *args, **kwargs) -> None:
         """Add an option to this command. This takes the same arguments as
-        :meth:`ArgumentParser.add_argument`.
+        `ArgumentParser.add_argument`.
         """
         self.parser.add_argument(*args, **kwargs)
 
@@ -189,9 +200,8 @@ class Command(object):
         """Subclasses should override this method to start the command
         process. In other words, this is where the magic happens.
 
-        .. versionchanged:: 3.15.0
-
-            By default, this will just print help and exit.
+        *Changed in version 3.15.0:* By default, this will just print help and
+        exit.
 
         """
         self.parser.print_help()
@@ -203,19 +213,20 @@ class Command(object):
         to the argument help.
 
         This automatically strips leading indentation but does not strip all
-        formatting like the ``ArgumentParser(description='')`` keyword.
+        formatting like the `ArgumentParser(description='')` keyword.
 
-        **Example**::
+        **Example**
 
-            class MyCommand(Command):
-                def set_opts(self):
-                    self.describe(\"\"\"
-                        This is an example command. To use the example command,
-                        run it.\"\"\")
+        ```python
+        class MyCommand(Command):
+            def set_opts(self):
+                self.describe(\"\"\"
+                    This is an example command. To use the example command,
+                    run it.\"\"\")
 
-                def run(self):
-                    pass
-
+            def run(self):
+                pass
+        ```
 
         """
         # This has to be called from within set_opts(), when the parser exists
@@ -241,25 +252,24 @@ class Command(object):
         the argument parser.
 
         Any additional positional or keyword arguments will be passed to the
-        ``ArgumentParser`` instance created.
+        `ArgumentParser` instance created.
 
-        .. versionchanged:: 3.15.0
+        *Changed in version 3.15.0:* Either `opt_func` or `run_func` may be
+        omitted, in which case a method with a name matching the subcommand
+        name plus `_opts` will be bound to `opt_func` and a method matching the
+        subcommand name will be bound to `run_func`.
 
-            Either `opt_func` or `run_func` may be omitted, in which case a
-            method with a name matching the subcommand name plus ``_opts`` will
-            be bound to `opt_func` and a method matching the subcommand name
-            will be bound to `run_func`.
+        For example, a subcommand `'write'` will bind the methods `write_opts`
+        and `write`.
 
-            For example, a subcommand ``'write'`` will bind the methods
-            :meth:`write_opts` and :meth:`write`.
+        *Added in version 3.12.0.*
 
-        .. versionadded:: 3.12.0
+        **Example**
 
-        **Example**::
-
-            class MyCommand(Command):
-                def set_opts(self):
-                    self.subcommand('thing', self.thing, self.run_thing)
+        ```python
+        class MyCommand(Command):
+            def set_opts(self):
+                self.subcommand('thing', self.thing, self.run_thing)
 
                 def thing(self):
                     # Set thing specific options
@@ -271,6 +281,8 @@ class Command(object):
 
                 def run(self):
                     # This runs if there is no subcommand
+
+        ```
 
         :param str name: Subcommand name
         :param function opt_func: Options function to add
@@ -353,7 +365,7 @@ class Command(object):
 
     def reload(self):
         """
-        Reloads `pyconfig <https://pypi.org/project/pyconfig/>`_ if it is
+        Reloads [pyconfig](https://pypi.org/project/pyconfig/) if it is
         available.
 
         Override this in your subclass if you wish to implement different
@@ -380,17 +392,18 @@ class CommandFormatter(DefaultFormatter):
 
 def opt(*args, **kwargs) -> Callable:
     """
-    Factory function for creating :class:`Command.opt` bindings at the class
-    level for reuse in subcommands.
+    Factory function for creating `Command.opt` bindings at the class level
+    for reuse in subcommands.
 
-    **Example**::
+    **Example**
 
-        class MyCommand(Command):
-            opt_url = opt('--url', help="Target URL")
+    ```python
+    class MyCommand(Command):
+        opt_url = opt('--url', help="Target URL")
 
-            def set_opts(self):
-                self.subcommand('send', self.send_opts, self.send)
-                self.subcommand('listen', self.listen_opts, self.listen)
+        def set_opts(self):
+            self.subcommand('send', self.send_opts, self.send)
+            self.subcommand('listen', self.listen_opts, self.listen)
 
             def send_opts(self):
                 # This automatically calls self.opt with the correct arguments
@@ -401,6 +414,7 @@ def opt(*args, **kwargs) -> Callable:
                 self.opt_url()
 
             # ...
+    ```
 
     """
     if args:

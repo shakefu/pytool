@@ -79,22 +79,22 @@ def get_name(frame) -> str:
 
 def classproperty(func):
     """
-    Makes a ``@classmethod`` style property (since ``@property`` only works on
+    Makes a `@classmethod` style property (since `@property` only works on
     instances).
 
-    ::
+    ```python
+    from pytool.lang import classproperty
 
-        from pytool.lang import classproperty
+    class MyClass(object):
+        _attr = 'Hello World'
 
-        class MyClass(object):
-            _attr = 'Hello World'
+        @classproperty
+        def attr(cls):
+            return cls._attr
 
-            @classproperty
-            def attr(cls):
-                return cls._attr
-
-        MyClass.attr # 'Hello World'
-        MyClass().attr # Still 'Hello World'
+    MyClass.attr # 'Hello World'
+    MyClass().attr # Still 'Hello World'
+    ```
 
     """
 
@@ -120,20 +120,20 @@ def singleton(klass: _Singleton) -> _Singleton:
 
     :param klass: Class to decorate
 
-    .. versionchanged:: 3.4.2
+    *Changed in version 3.4.2:* `@singleton` wrapped classes now preserve their
+    `@staticmethod` functions on the class type as well as the instance.
 
-        `@singleton` wrapped classes now preserve their `@staticmethod`
-        functions on the class type as well as the instance.
+    Example usage:
 
-    Example usage::
+    ```python
+    # Make a class directly behave as a singleton
+    @singleton
+    class Test(object):
+        pass
 
-        # Make a class directly behave as a singleton
-        @singleton
-        class Test(object):
-            pass
-
-        # Make an imported class behave as a singleton
-        Test = singleton(Test)
+    # Make an imported class behave as a singleton
+    Test = singleton(Test)
+    ```
 
     """
     cls_dict = {"_singleton": None}
@@ -167,50 +167,50 @@ def hashed_singleton(klass: _Singleton) -> _Singleton:
     singleton is like a singleton in that there will be only a single
     instance of the class for each call signature.
 
-    The singleton is kept as a `weak reference
-    <http://docs.python.org/2/library/weakref.html>`_, so if your program
-    ceases to reference the hashed singleton, you may get a new instance if
-    the Python interpreter has garbage collected your original instance.
+    The singleton is kept as a
+    [weak reference](http://docs.python.org/2/library/weakref.html), so if your
+    program ceases to reference the hashed singleton, you may get a new
+    instance if the Python interpreter has garbage collected your original
+    instance.
 
     This will not work for classes that take arguments that are unhashable
     (e.g. dicts, sets).
 
     :param klass: Class to decorate
 
-    .. versionadded:: 2.1
+    *Added in version 2.1.*
 
-    .. versionchanged:: 3.4.2
+    *Changed in version 3.4.2:* `@hashed_singleton` wrapped classes now
+    preserve their `@staticmethod` functions on the class type as well as the
+    instance.
 
-        `@hashed_singleton` wrapped classes now preserve their
-        `@staticmethod` functions on the class type as well as the
-        instance.
+    Example usage:
 
-    Example usage::
+    ```python
+    # Make a class directly behave as a hashed singleton
+    @hashed_singleton
+    class Test(object):
+        def __init__(self, *args, **kwargs):
+            pass
 
-        # Make a class directly behave as a hashed singleton
-        @hashed_singleton
-        class Test(object):
-            def __init__(self, *args, **kwargs):
-                pass
+    # Make an imported class behave as a hashed singleton
+    Test = hashed_singleton(Test)
 
-        # Make an imported class behave as a hashed singleton
-        Test = hashed_singleton(Test)
+    # The same arguments give you the same class instance back
+    test = Test('a', k='k')
+    test is Test('a', k='k') # True
 
-        # The same arguments give you the same class instance back
-        test = Test('a', k='k')
-        test is Test('a', k='k') # True
+    # A different argument signature will give you a new instance
+    test is Test('b', k='k') # False
+    test is Test('a', k='j') # False
 
-        # A different argument signature will give you a new instance
-        test is Test('b', k='k') # False
-        test is Test('a', k='j') # False
-
-        # Removing all references to a hashed singleton instance will allow
-        # it to be garbage collected like normal, because it's only kept
-        # as a weak reference
-        del test
-        test = Test('a', k='k') # If the Python interpreter has garbage
-                                # collected, you will get a new instance
-
+    # Removing all references to a hashed singleton instance will allow
+    # it to be garbage collected like normal, because it's only kept
+    # as a weak reference
+    del test
+    test = Test('a', k='k') # If the Python interpreter has garbage
+                            # collected, you will get a new instance
+    ```
 
     """
     cls_dict = {"_singletons": weakref.WeakValueDictionary()}
@@ -278,33 +278,33 @@ class _UNSETMeta(type):
 
 
 class UNSET(object, metaclass=_UNSETMeta):
-    """Special class that evaluates to ``bool(False)``, but can be distinctly
-    identified as seperate from ``None`` or ``False``. This class can and
+    """Special class that evaluates to `bool(False)`, but can be distinctly
+    identified as seperate from `None` or `False`. This class can and
     should be used without instantiation.
 
-    ::
-
-        >>> from pytool.lang import UNSET
-        >>> # Evaluates to False
-        >>> bool(UNSET)
-        False
-        >>> # Is a class-singleton (cannot become an instance)
-        >>> UNSET() is UNSET
-        True
-        >>> # Is good for checking default values
-        >>> if {}.get('example', UNSET) is UNSET:
-        ...     print "Key is missing."
-        ...
-        Key is missing.
-        >>> # Has no length
-        >>> len(UNSET)
-        0
-        >>> # Is iterable, but has no iterations
-        >>> list(UNSET)
-        []
-        >>> # It has a repr() equal to itself
-        >>> UNSET
-        UNSET
+    ```python
+    >>> from pytool.lang import UNSET
+    >>> # Evaluates to False
+    >>> bool(UNSET)
+    False
+    >>> # Is a class-singleton (cannot become an instance)
+    >>> UNSET() is UNSET
+    True
+    >>> # Is good for checking default values
+    >>> if {}.get('example', UNSET) is UNSET:
+    ...     print "Key is missing."
+    ...
+    Key is missing.
+    >>> # Has no length
+    >>> len(UNSET)
+    0
+    >>> # Is iterable, but has no iterations
+    >>> list(UNSET)
+    []
+    >>> # It has a repr() equal to itself
+    >>> UNSET
+    UNSET
+    ```
 
     """
 
@@ -318,112 +318,105 @@ class Namespace(object):
     to create nested namespace objects. It can represent itself as a dictionary
     of dot notation keys.
 
-    .. rubric:: Basic usage:
+    **Basic usage:**
 
-    ::
-
-        >>> from pytool.lang import Namespace
-        >>> # Namespaces automatically nest
-        >>> myns = Namespace()
-        >>> myns.hello = 'world'
-        >>> myns.example.value = True
-        >>> # Namespaces can be converted to dictionaries
-        >>> myns.as_dict()
-        {'hello': 'world', 'example.value': True}
-        >>> # Namespaces have container syntax
-        >>> 'hello' in myns
-        True
-        >>> 'example.value' in myns
-        True
-        >>> 'example.banana' in myns
-        False
-        >>> 'example' in myns
-        True
-        >>> # Namespaces are iterable
-        >>> for name, value in myns:
-        ...     print name, value
-        ...
-        hello world
-        example.value True
-        >>> # Namespaces that are empty evaluate as False
-        >>> bool(Namespace())
-        False
-        >>> bool(myns.notset)
-        False
-        >>> bool(myns)
-        True
-        >>> # Namespaces allow the __get__ portion of the descriptor protocol
-        >>> # to work on instances (normally they would not)
-        >>> class MyDescriptor(object):
-        ...     def __get__(self, instance, owner):
-        ...         return 'Hello World'
-        ...
-        >>> myns.descriptor = MyDescriptor()
-        >>> myns.descriptor
-        'Hello World'
-        >>> # Namespaces can be created from dictionaries
-        >>> newns = Namespace({'foo': {'bar': 1}})
-        >>> newns.foo.bar
-        1
-        >>> # Namespaces will expand dot-notation dictionaries
-        >>> dotns = Namespace({'foo.bar': 2})
-        >>> dotns.foo.bar
-        2
-        >>> # Namespaces will coerce list-like dictionaries into lists
-        >>> listns = Namespace({'listish': {'0': 'zero', '1': 'one'}})
-        >>> listns.listish
-        ['zero', 'one']
-        >>> # Namespaces can be deepcopied
-        >>> a = Namespace({'foo': [[1, 2], 3]}
-        >>> b = a.copy()
-        >>> b.foo[0][0] = 9
-        >>> a.foo
-        [[1, 2], 3]
-        >>> b.foo
-        [[9, 2], 3]
-        >>> # You can access keys using dict-like syntax, which is useful
-        >>> myns.foo.bar = True
-        >>> myns['foo'].bar
-        True
-        >>> # Dict-like access lets you traverse namespaces
-        >>> myns['foo.bar']
-        True
-        >>> # Dict-like access lets you traverse lists as well
-        >>> listns['listish.0']
-        'zero'
-        >>> listns['listish.1']
-        'one'
-        >>> # Dict-like access lets you traverse nested lists and namespaces
-        >>> nested = Namespace()
-        >>> nested.values = []
-        >>> nested.values.append(Namespace({'foo': 'bar'}))
-        >>> nested['values.0.foo']
-        'bar'
-        >>> # You can also call the traversal method if you need
-        >>> nested.traversal(['values', 0, 'foo'])
-        'bar'
+    ```python
+    >>> from pytool.lang import Namespace
+    >>> # Namespaces automatically nest
+    >>> myns = Namespace()
+    >>> myns.hello = 'world'
+    >>> myns.example.value = True
+    >>> # Namespaces can be converted to dictionaries
+    >>> myns.as_dict()
+    {'hello': 'world', 'example.value': True}
+    >>> # Namespaces have container syntax
+    >>> 'hello' in myns
+    True
+    >>> 'example.value' in myns
+    True
+    >>> 'example.banana' in myns
+    False
+    >>> 'example' in myns
+    True
+    >>> # Namespaces are iterable
+    >>> for name, value in myns:
+    ...     print name, value
+    ...
+    hello world
+    example.value True
+    >>> # Namespaces that are empty evaluate as False
+    >>> bool(Namespace())
+    False
+    >>> bool(myns.notset)
+    False
+    >>> bool(myns)
+    True
+    >>> # Namespaces allow the __get__ portion of the descriptor protocol
+    >>> # to work on instances (normally they would not)
+    >>> class MyDescriptor(object):
+    ...     def __get__(self, instance, owner):
+    ...         return 'Hello World'
+    ...
+    >>> myns.descriptor = MyDescriptor()
+    >>> myns.descriptor
+    'Hello World'
+    >>> # Namespaces can be created from dictionaries
+    >>> newns = Namespace({'foo': {'bar': 1}})
+    >>> newns.foo.bar
+    1
+    >>> # Namespaces will expand dot-notation dictionaries
+    >>> dotns = Namespace({'foo.bar': 2})
+    >>> dotns.foo.bar
+    2
+    >>> # Namespaces will coerce list-like dictionaries into lists
+    >>> listns = Namespace({'listish': {'0': 'zero', '1': 'one'}})
+    >>> listns.listish
+    ['zero', 'one']
+    >>> # Namespaces can be deepcopied
+    >>> a = Namespace({'foo': [[1, 2], 3]}
+    >>> b = a.copy()
+    >>> b.foo[0][0] = 9
+    >>> a.foo
+    [[1, 2], 3]
+    >>> b.foo
+    [[9, 2], 3]
+    >>> # You can access keys using dict-like syntax, which is useful
+    >>> myns.foo.bar = True
+    >>> myns['foo'].bar
+    True
+    >>> # Dict-like access lets you traverse namespaces
+    >>> myns['foo.bar']
+    True
+    >>> # Dict-like access lets you traverse lists as well
+    >>> listns['listish.0']
+    'zero'
+    >>> listns['listish.1']
+    'one'
+    >>> # Dict-like access lets you traverse nested lists and namespaces
+    >>> nested = Namespace()
+    >>> nested.values = []
+    >>> nested.values.append(Namespace({'foo': 'bar'}))
+    >>> nested['values.0.foo']
+    'bar'
+    >>> # You can also call the traversal method if you need
+    >>> nested.traversal(['values', 0, 'foo'])
+    'bar'
+    ```
 
     Namespaces are useful!
 
-    .. versionadded:: 3.5.0
+    *Added in version 3.5.0:* Added the ability to create Namespace instances
+    from dictionaries.
 
-        Added the ability to create Namespace instances from dictionaries.
+    *Added in version 3.6.0:* Added the ability to handle dot-notation keys and
+    list-like dicts.
 
-    .. versionadded:: 3.6.0
+    *Added in version 3.7.0:* Added deepcopy capability to Namespaces.
 
-        Added the ability to handle dot-notation keys and list-like dicts.
+    *Added in version 3.8.0:* Added dict-like access capability to Namespaces.
 
-    .. versionadded:: 3.7.0
-
-        Added deepcopy capability to Namespaces.
-
-    .. versionadded:: 3.8.0
-
-        Added dict-like access capability to Namespaces.
-
-    .. versionadded:: 3.9.0
-
-        Added traversal by key/index arrays for nested Namespaces and lists
+    *Added in version 3.9.0:* Added traversal by key/index arrays for nested
+    Namespaces and lists
 
     """
 
@@ -487,7 +480,7 @@ class Namespace(object):
         return bool(self.__dict__)
 
     def iteritems(self, base_name=None):
-        """Return generator which returns ``(key, value)`` tuples.
+        """Return generator which returns `(key, value)` tuples.
 
         :param str base_name: Base namespace (optional)
 
@@ -506,7 +499,7 @@ class Namespace(object):
                 yield name, value
 
     def items(self, base_name=None):
-        """Return generator which returns ``(key, value)`` tuples.
+        """Return generator which returns `(key, value)` tuples.
 
         Analagous to dict.items() behavior in Python3
 
@@ -538,14 +531,16 @@ class Namespace(object):
 
         :param str base_name: Base namespace (optional)
 
-        This is compatible with the :mod:`simplejson` `for_json`
-        behavior flag to recursively encode objects.
+        This is compatible with the `simplejson` `for_json` behavior flag
+        to recursively encode objects.
 
-        Example::
+        Example:
 
-            import simplejson
+        ```python
+        import simplejson
 
-            json_str = simplejson.dumps(my_namespace, for_json=True)
+        json_str = simplejson.dumps(my_namespace, for_json=True)
+        ```
 
         """
         target = {}
@@ -575,7 +570,7 @@ class Namespace(object):
 
         :param dict obj: Dictionary object to merge into this Namespace
 
-        .. versionadded:: 3.5.0
+        *Added in version 3.5.0.*
 
         """
         obj = unflatten(obj)
@@ -656,21 +651,24 @@ class Keyspace(Namespace):
     Keyspace object which extends Namespaces by allowing item assignment and
     arbitrary key names instead of just python attribute compatible names.
 
-    Example::
+    Example:
 
-        # This would be an error with a Namespace
-        my_ns['foobar'] = True
+    ```python
+    # This would be an error with a Namespace
+    my_ns['foobar'] = True
 
-        # This works with a Keyspace
-        my_ks.foo['foobar'].bar['you'] = True
+    # This works with a Keyspace
+    my_ks.foo['foobar'].bar['you'] = True
 
-        # This would be an error with a Namespace
-        Namespace({'key-name': True)
+    # This would be an error with a Namespace
+    Namespace({'key-name': True})
 
-        # This works with a Keyspace
-        Keyspace({'key-name': True)
+    # This works with a Keyspace
+    Keyspace({'key-name': True})
+    ```
 
-    .. versionadded:: 3.16.0
+    *Added in version 3.16.0.*
+
 
     """
 
@@ -688,16 +686,17 @@ def _split_keys(obj):
     Return a generator that yields 2-tuples of lists representing dot-notation
     keys split on the dots, and their values in *obj*.
 
-    Example::
+    Example:
 
-        {'foo.bar': 0, 'foo.spam': 1, 'parrot': 2}
+    ```python
+    {'foo.bar': 0, 'foo.spam': 1, 'parrot': 2}
 
-        ... yields ...
+    ... yields ...
 
-        (['foo', 'bar'], 0)
-        (['foo', 'spam'], 1)
-        (['parrot'], 2)
-
+    (['foo', 'bar'], 0)
+    (['foo', 'spam'], 1)
+    (['parrot'], 2)
+    ```
     """
     assert isinstance(obj, dict)
 
@@ -772,13 +771,15 @@ def _join_lists(obj):
 
     :param obj: Arbitrary object
 
-    Example::
+    Example:
 
-        {'0': 'apple', '1': 'pear', '2': 'orange'}
+    ```python
+    {'0': 'apple', '1': 'pear', '2': 'orange'}
 
-        ... returns ...
+    ... returns ...
 
-        ['apple', 'pear', 'orange']
+    ['apple', 'pear', 'orange']
+    ```
 
     """
     # If it's not a dict, it's definitely not a dict-list
