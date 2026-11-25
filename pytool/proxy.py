@@ -19,31 +19,33 @@ class ListProxy(abc.MutableSequence):
     return a `list` instance rather than a `ListProxy` instance.
 
     :param data: A list or list-like object (implements all the \
-            :class:`collections.MutableSequence` methods)
+            `collections.MutableSequence` methods)
 
-    .. versionadded:: 2.2
+    *Added in version 2.2.*
 
-    :note: If you intend to use a subclass which modifies the apparent indices
-           or values of this class with :func:`pytool.json.as_json`, remember
-           to override :meth:`for_json` to produce the data you desire.
+    !!! note
+        If you intend to use a subclass which modifies the apparent indices
+        or values of this class with `pytool.json.as_json`, remember to
+        override `for_json` to produce the data you desire.
 
-    Example::
+    **Example**
 
-        from pytool.proxy import ListProxy
+    ```python
+    from pytool.proxy import ListProxy
 
-        class SquaredList(ListProxy):
-            def __setitem__(self, index, value):
-                if isinstance(value, int):
-                    value *= value
-                super(SquaredList, self).__setitem__(index, value)
+    class SquaredList(ListProxy):
+        def __setitem__(self, index, value):
+            if isinstance(value, int):
+                value *= value
+            super(SquaredList, self).__setitem__(index, value)
 
-        my_list = range(5)
-        my_proxy = SquaredList(my_list)
-        my_proxy[3] = 5
+    my_list = range(5)
+    my_proxy = SquaredList(my_list)
+    my_proxy[3] = 5
 
-        my_proxy[3] # 25
-        my_list[3] # 25
-
+    my_proxy[3] # 25
+    my_list[3] # 25
+    ```
     """
 
     def __init__(self, data):
@@ -193,32 +195,34 @@ class DictProxy(abc.MutableMapping):
     modify the original dictionary.
 
     :param data: A dict or dict-like object (implements all the \
-        :class:`collections.MutableMapping` methods)
+        `collections.MutableMapping` methods)
 
-    .. versionadded:: 2.2
+    *Added in version 2.2.*
 
-    :note: If you intend to use a subclass which modifies the apparent keys
-           or values of this class with :func:`pytool.json.as_json`, remember
-           to override :meth:`for_json` to produce the data you desire.
+    !!! note
+        If you intend to use a subclass which modifies the apparent keys or
+        values of this class with `pytool.json.as_json`, remember to override
+        `for_json` to produce the data you desire.
 
-    Example::
+    **Example**
 
-        from pytool.proxy import DictProxy
+    ```python
+    from pytool.proxy import DictProxy
 
-        class SquaredDict(DictProxy):
-            def __getitem__(self, key):
-                value = super(SquaredDict, self).__getitem__(key)
-                if isinstance(value, int):
-                    value *= value
-                return value
+    class SquaredDict(DictProxy):
+        def __getitem__(self, key):
+            value = super(SquaredDict, self).__getitem__(key)
+            if isinstance(value, int):
+                value *= value
+            return value
 
-        my_dict = {}
-        my_proxy = SquaredDict(my_dict)
-        my_proxy['val'] = 5
+    my_dict = {}
+    my_proxy = SquaredDict(my_dict)
+    my_proxy['val'] = 5
 
-        my_proxy['val'] # 25
-        my_dict['val'] # 5
-
+    my_proxy['val'] # 25
+    my_dict['val'] # 5
+    ```
     """
 
     def __init__(self, data):

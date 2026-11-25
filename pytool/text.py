@@ -10,7 +10,7 @@ def columns(default=79):
     """
     Return the number of text columns for the current console or TTY.
 
-    On certain systems it may be necessary to set the ``COLUMNS`` environment
+    On certain systems it may be necessary to set the `COLUMNS` environment
     variable if you want this method to work correctly.
 
     Uses `default` (79) if no value can be found.
@@ -31,7 +31,7 @@ def wrap(text, width=None, indent=""):
 
     The default wrap width is the number of columns available in the current
     console or TTY. If the columns can't be found, then the default wrap width
-    is ``79``.
+    is `79`.
 
     :param text: Text to wrap
     :param width: Width to wrap text at (default: text column width)
@@ -40,26 +40,26 @@ def wrap(text, width=None, indent=""):
     :type width: int
     :type indent: str
 
-    ::
+    ```python
+    >>> import pytool
+    >>> text = '''
+            All this is indented by 8, but will be 0.
+                    This is indented by 16, and a really long long long
+                    line which is hard wrapped at a random character width,
+                    but will be wrapped appropriately at 70 chars
+                    afterwards.
 
-        >>> import pytool
-        >>> text = '''
-                All this is indented by 8, but will be 0.
-                        This is indented by 16, and a really long long long
-                        line which is hard wrapped at a random character width,
-                        but will be wrapped appropriately at 70 chars
-                        afterwards.
+            This is indented by 8 again.
+        '''
+    >>> print pytool.text.wrap(text)
+    All this is indented by 8, but will be 0.
+            This is indented by 16, and a really long long long line which
+            is hard wrapped at a random character width, but will be
+            wrapped appropriately at 70 chars afterwards.
 
-                This is indented by 8 again.
-            '''
-        >>> print pytool.text.wrap(text)
-        All this is indented by 8, but will be 0.
-                This is indented by 16, and a really long long long line which
-                is hard wrapped at a random character width, but will be
-                wrapped appropriately at 70 chars afterwards.
-
-        This is indented by 8 again.
-        >>>
+    This is indented by 8 again.
+    >>>
+    ```
 
     """
     width = width or columns()

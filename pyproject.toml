@@ -26,9 +26,15 @@ dev = [
     "python-dateutil >=2.9.0.post0, <3.0.0",
 ]
 docs = [
-    "sphinx >=7.2.6, <8.0.0",
-    "sphinx-rtd-theme>=2.0.0,<3.0.0",
-    "sphinx-autodoc-typehints >=1.25.2, <2.0.0",
+    "mkdocs >=1.6.0, <2.0.0",
+    "mkdocs-material >=9.6.0, <10.0.0",
+    "mkdocstrings[python] >=0.29.0, <2.0.0",
+    # Used by mkdocstrings to format rendered signatures
+    "ruff >=0.11.0, <1.0.0",
+    # pymdown-extensions 12.2+ requires the Markdown instance in Highlight(),
+    # which mkdocstrings before 1.0.7 does not pass. 1.0.7+ needs Python 3.11,
+    # so cap below 12.2 to keep every mkdocstrings pairing working on 3.9.
+    "pymdown-extensions >=10.2, <12.2",
 ]
 
 # This is required so setuptools doesn't see "script" as a package

@@ -40,9 +40,9 @@ htmlcov/
 # Vim
 *.swp
 
-# Sphinx
-docs/_build
-docs/_output
+# MkDocs
+site
+docs/.venv
 
 # Cursor
 .cursorrules
