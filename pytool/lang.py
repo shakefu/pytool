@@ -24,9 +24,10 @@ __all__ = [
 def get_name(frame) -> str:
     """Gets the name of the passed frame.
 
-    :warning: It's very important to delete a stack frame after you're done
-           using it, as it can cause circular references that prevents
-           garbage collection.
+    !!! warning
+        It's very important to delete a stack frame after you're done
+        using it, as it can cause circular references that prevents
+        garbage collection.
 
     :param frame: Stack frame to inspect.
     :returns: Name of the frame in the form *module.class.method*.
@@ -292,7 +293,7 @@ class UNSET(object, metaclass=_UNSETMeta):
     True
     >>> # Is good for checking default values
     >>> if {}.get('example', UNSET) is UNSET:
-    ...     print "Key is missing."
+    ...     print("Key is missing.")
     ...
     Key is missing.
     >>> # Has no length
@@ -340,7 +341,7 @@ class Namespace(object):
     True
     >>> # Namespaces are iterable
     >>> for name, value in myns:
-    ...     print name, value
+    ...     print(name, value)
     ...
     hello world
     example.value True
@@ -624,12 +625,14 @@ class Namespace(object):
         :param iterable path: An iterable whose elements specify the keys
             to path over.
 
-        Example usage::
+        **Example**
 
-            ns = Namespace({"foo":
-                            [Namespace({"name": "john"}),
-                            Namespace({"name": "jane"})]})
-            ns.traverse(["foo", 1, "name"])  # Returns "jane"
+        ```python
+        ns = Namespace({"foo":
+                        [Namespace({"name": "john"}),
+                        Namespace({"name": "jane"})]})
+        ns.traverse(["foo", 1, "name"])  # Returns "jane"
+        ```
         """
         ns = self
         for key in path:

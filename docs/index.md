@@ -17,7 +17,7 @@ Pytool is compatible with Python 3.10 and higher. Older versions of Python are
 no longer supported going forward. If you need support for earlier Python
 versions, please check the
 [releases](https://github.com/shakefu/pytool/releases) for older versions of
-Pytool. *Compatibility updated June 9, 2025.*
+Pytool. _Compatibility updated June 9, 2025._
 
 ## Contributors
 

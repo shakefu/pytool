@@ -39,7 +39,7 @@ class ListProxy(abc.MutableSequence):
                 value *= value
             super(SquaredList, self).__setitem__(index, value)
 
-    my_list = range(5)
+    my_list = list(range(5))
     my_proxy = SquaredList(my_list)
     my_proxy[3] = 5
 
