@@ -51,7 +51,7 @@ def wrap(text, width=None, indent=""):
 
             This is indented by 8 again.
         '''
-    >>> print pytool.text.wrap(text)
+    >>> print(pytool.text.wrap(text))
     All this is indented by 8, but will be 0.
             This is indented by 16, and a really long long long line which
             is hard wrapped at a random character width, but will be

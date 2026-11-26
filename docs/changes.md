@@ -1,5 +1,9 @@
 # Changelog
 
+<!-- markdownlint-disable MD033 -->
+
+<a id="module-pytool"></a>
+
 ## All releases
 
 Release are now tracked
@@ -10,12 +14,16 @@ see changes from `3.4.2` and later.
 
 Here you'll find a record of the changes in each version of `pytool`.
 
+<a id="id1"></a>
+
 ### 3.4.2
 
 - Preserves `@staticmethod` functions on `pytool.lang.singleton` and
   `pytool.lang.hashed_singleton` decorated classes.
 
-*Released March 19, 2018.*
+_Released March 19, 2018._
+
+<a id="id2"></a>
 
 ### 3.4.1
 
@@ -23,7 +31,9 @@ Here you'll find a record of the changes in each version of `pytool`.
   [PR #3](https://github.com/shakefu/pytool/pull/3). Thanks to
   [abendig](https://github.com/abendig) for the contribution.
 
-*Released August 4, 2015.*
+_Released August 4, 2015._
+
+<a id="id3"></a>
 
 ### 3.4.0
 
@@ -31,14 +41,18 @@ Here you'll find a record of the changes in each version of `pytool`.
   you find any bugs in Python 3. Due to the dependency on `simplejson`, only
   Python 3.3 and later is supported.
 
-*Released August 4, 2015.*
+_Released August 4, 2015._
+
+<a id="id4"></a>
 
 ### 3.3.0
 
 - Adds `pytool.time.ago`, which is a convenient helper for getting times
   relative to a timestamp or the current time.
 
-*Released August 3, 2015.*
+_Released August 3, 2015._
+
+<a id="id5"></a>
 
 ### 3.2.0
 
@@ -47,22 +61,32 @@ Here you'll find a record of the changes in each version of `pytool`.
 - Adds `pytool.cmd.Command.describe` to make it easier to add verbose
   descriptions to your command's `--help`.
 
+<a id="id6"></a>
+
 ### 3.1.1
 
 - Depend on canonical version of simplejson again instead of github fork.
+
+<a id="id7"></a>
 
 ### 3.1.0
 
 - Add `pytool.time.Timer` for easy timing of things.
 
+<a id="id8"></a>
+
 ### 3.0.1
 
 - Fix bug with setup.py which broke installs.
+
+<a id="id9"></a>
 
 ### 3.0.0
 
 - Changed to depend on simplejson (`>=3.2.0`) for the `_asdict()` and
   `for_json()` hooks. This may break backwards compatability.
+
+<a id="id10"></a>
 
 ### 2.4.1
 
@@ -70,6 +94,8 @@ Here you'll find a record of the changes in each version of `pytool`.
   basic types.
 - Fix bug where `pytool.json.as_json` would leave a trailing space on
   timestamps if there is no timezone associated with them.
+
+<a id="id11"></a>
 
 ### 2.4.0
 
@@ -82,9 +108,13 @@ Here you'll find a record of the changes in each version of `pytool`.
 - Add `for_json()` hook to `pytool.proxy.DictProxy` and
   `pytool.proxy.ListProxy`.
 
+<a id="id12"></a>
+
 ### 2.3.2
 
 - Fix descriptor protocol in iteritems.
+
+<a id="id13"></a>
 
 ### 2.3.1
 
@@ -95,28 +125,40 @@ Here you'll find a record of the changes in each version of `pytool`.
   This differs from normal python descriptor behavior, where the descriptor
   instance must be present in the class rather than the instance.
 
+<a id="id14"></a>
+
 ### 2.3.0
 
 - Make `pytool.lang.Namespace` instances evaluate as `False` when empty and
   cast as a `bool()`.
 
+<a id="id15"></a>
+
 ### 2.2.0
 
 - Added `pytool.proxy.DictProxy` and `pytool.proxy.ListProxy`.
+
+<a id="id16"></a>
 
 ### 2.1.0
 
 - Added `pytool.lang.hashed_singleton`.
 
+<a id="id17"></a>
+
 ### 2.0.1
 
 - Update setup.py to include classifiers.
+
+<a id="id18"></a>
 
 ### 2.0.0
 
 - Add `pytool.time.floor_minute` and `pytool.time.floor_week`.
 - Change `pytool.time.floor_month` and `pytool.time.floor_day` to preserve
   timezone information.
+
+<a id="pre-2-0-0"></a>
 
 ### Pre-2.0.0
 

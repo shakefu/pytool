@@ -2,7 +2,10 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      # mkdocs.yml uses MkDocs-specific tags such as !ENV; the docs CI job
+      # validates it with `mkdocs build`.
       - id: check-yaml
+        exclude: ^mkdocs\.yml$
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook

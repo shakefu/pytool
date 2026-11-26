@@ -84,7 +84,7 @@ class Command(object):
 
     class HelloWorld(Command):
         def run(self):
-            print "Hello World."
+            print("Hello World.")
     ```
 
     The only thing that *must* be defined in the subclass is the `run` method,
@@ -135,10 +135,10 @@ class Command(object):
                     "more verbose output")
 
         def run(self):
-            print "Hello", self.args.world
+            print("Hello", self.args.world)
 
             if self.args.verbose:
-                print "Hola", self.args.world
+                print("Hola", self.args.world)
     ```
 
     Whenever there are arguments for a command, they're made available for your
@@ -185,7 +185,7 @@ class Command(object):
 
             def run(self):
                 if self.args.verbose:
-                    print "I'm verbose."
+                    print("I'm verbose.")
         ```
         """
         pass
@@ -433,12 +433,14 @@ def run(func):
     Decorates a function to handle thrown errors by writing the exception
     string to stderr and then exiting with status 1.
 
-    **Example**::
+    **Example**
 
-        class MyCommand(Command):
-            @run
-            def run(self):
-                ...
+    ```python
+    class MyCommand(Command):
+        @run
+        def run(self):
+            ...
+    ```
 
     """
 

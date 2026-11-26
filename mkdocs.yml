@@ -1,6 +1,7 @@
 site_name: Pytool
 site_description: Helpers for Python
-site_url: https://pytool.readthedocs.org/en/latest/
+site_url:
+  !ENV [READTHEDOCS_CANONICAL_URL, "https://pytool.readthedocs.io/en/latest/"]
 
 repo_url: https://github.com/shakefu/pytool
 repo_name: shakefu/pytool

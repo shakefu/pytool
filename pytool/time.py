@@ -23,8 +23,8 @@ class Timer(object):
     timer = pytool.time.Timer()
     for i in (1, 2, 3):
         sleep(i)
-        print timer.mark(), "elapsed since last mark or start"
-    print timer.elapsed, "total elapsed"
+        print(timer.mark(), "elapsed since last mark or start")
+    print(timer.elapsed, "total elapsed")
     ```
 
     """
